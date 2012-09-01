@@ -1,0 +1,25 @@
+{
+    "name": "mouf/mvc.splash-common",
+    "description": "The Core part of Splash (an MVC framework). It is used by Splash itself, but also by Drusplash (the Splash wrapper for Drupal)",
+    "keywords": ["mvc", "framework", "mouf", "splash", "splash-common"],
+    "homepage": "https://github.com/thecodingmachine/mvc.splash-common",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Négrier",
+            "email": "d.negrier@thecodingmachine.com",
+            "homepage": "http://mouf-php.com"
+        }
+    ],
+    "require": {
+    	"php": ">=5.3.0",
+        "mouf/html.htmlelement": "2.*",
+        "mouf/utils.i18n.fine": "3.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Mouf": "src/"
+        }
+    }
+}

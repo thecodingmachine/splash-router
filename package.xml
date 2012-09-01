@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Splash-Common</displayName>
+	<shortDescription>The Core part of Splash (an MVC framework). It is used by Splash itself, but also by Drusplash (the Splash wrapper for Drupal)</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
+	<logo>icons/logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/common</group>
+			<name>getvars</name>
+			<version>>=1.1</version>
+		</dependency>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>validators</name>
+			<version>&gt;=2.0</version>
+		</dependency>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>>=2.1</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>services/FilterUtils.php</require>
+		<require>services/SplashUtils.php</require>
+		<require>services/SplashRoute.php</require>
+		<require>services/SplashMissingParameterException.php</require>
+		<require>services/SplashValidationException.php</require>
+		<require>services/SplashRequestContext.php</require>
+		<require>services/SplashParameterFetcherInterface.php</require>
+		<require>services/SplashRequestParameterFetcher.php</require>
+		<require>services/SplashUrlParameterFetcher.php</require>
+		<!--  <require>services/SplashUrlManager.php</require> -->
+		<require>services/UrlProviderInterface.php</require>
+		<require>controllers/Controller.php</require>
+		<require>filters/AbstractFilter.php</require>
+		<require>filters/RequireHttpsAnnotation.php</require>
+		<require autoload="never">filters/RedirectToHttpAnnotation.php</require>
+		<require autoload="never">filters/XajaAnnotation.php</require>
+		<require>utils/ApplicationException.php</require>
+		<require>utils/SplashException.php</require>
+		<require>utils/annotations/AnnotationException.php</require>
+		<require>utils/annotations/paramAnnotation.php</require>
+		<require>utils/annotations/URLAnnotation.php</require>
+		<require>utils/annotations/TitleAnnotation.php</require>
+		<require>utils/ParamAnnotationAnalyzer.php</require>
+		<require>utils/ExceptionUtils.php</require>
+	</requires>
+	<adminRequires>
+		<require>SplashCommonAdmin.php</require>
+		<!-- <require>services/SplashRoute.php</require> -->
+		<require>services/SplashUrlManager.php</require>
+		<require>controllers/admin/SplashViewUrlsController.php</require>
+	</adminRequires>
+	<install>
+		<file>splashCommonInstall.php</file>
+	</install>
+</package>
