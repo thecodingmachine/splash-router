@@ -1,9 +1,13 @@
 <?php
 namespace Mouf\Mvc\Splash\Controllers;
 
-require_once dirname(__FILE__)."/../views/404.php";
+use Mouf\Mvc\Splash\Services\UrlProviderInterface;
+
+use Mouf\Html\HtmlElement\Scopable;
+
+/*require_once dirname(__FILE__)."/../views/404.php";
 require_once dirname(__FILE__)."/../views/500.php";
-require_once ROOT_PATH.'mouf/reflection/MoufReflectionClass.php';
+require_once ROOT_PATH.'mouf/reflection/MoufReflectionClass.php';*/
 
 abstract class Controller implements Scopable, UrlProviderInterface {
 	
