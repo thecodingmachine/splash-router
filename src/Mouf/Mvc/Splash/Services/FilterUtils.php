@@ -4,6 +4,12 @@ namespace Mouf\Mvc\Splash\Services;
 /**
  * Utility class for filters.
  */
+use Mouf\MoufManager;
+
+use Mouf\Mvc\Splash\Controllers\Controller;
+
+use Mouf\Reflection\MoufReflectionMethod;
+
 class FilterUtils {
 
 	private static $filtersList = array();
@@ -112,7 +118,7 @@ class FilterUtils {
 		}
 
 		// Sort array by filter priority.
-		usort($filterArray, array("AbstractFilter","compare"));
+		usort($filterArray, array("Mouf\\Mvc\\Splash\\Filters\\AbstractFilter","compare"));
 
 		return $filterArray;
 	}

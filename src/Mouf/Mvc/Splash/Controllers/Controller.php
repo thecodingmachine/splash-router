@@ -1,6 +1,20 @@
 <?php
 namespace Mouf\Mvc\Splash\Controllers;
 
+use Mouf\Reflection\MoufReflectionMethod;
+
+use Mouf\Mvc\Splash\Services\SplashRoute;
+
+use Mouf\Mvc\Splash\Services\FilterUtils;
+
+use Mouf\Mvc\Splash\Services\SplashUtils;
+
+use Mouf\Mvc\Splash\Utils\ApplicationException;
+
+use Mouf\Reflection\MoufReflectionClass;
+
+use Mouf\MoufManager;
+
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
 
 use Mouf\Html\HtmlElement\Scopable;
@@ -70,7 +84,7 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 			if ($refMethod->hasAnnotation('Title')) {
 				$titles = $refMethod->getAnnotations('Title');
 				if (count($titles)>1) {
-					throw new ApplicationException("Only one @Title annotation allowed per method.");
+					throw new Exception("Only one @Title annotation allowed per method.");
 				}
 				/* @var $titleAnnotation TitleAnnotation */
 				$titleAnnotation = $titles[0];
