@@ -34,7 +34,7 @@ class ExceptionUtils {
 				}
 				$str .= ')';
 				$str .= '</td><td style="border-bottom: 1px solid #EEEEEE">';
-				$str .= ((isset($step['file']))?htmlspecialchars($step['file'], ENT_NOQUOTES, "UTF-8"):'');
+				$str .= ((isset($step['file']))?htmlspecialchars(self::displayFile($step['file']), ENT_NOQUOTES, "UTF-8"):'');
 				$str .= '</td><td style="border-bottom: 1px solid #EEEEEE">';
 				$str .= ((isset($step['line']))?$step['line']:'');
 				$str .= '</td></tr>';
@@ -50,7 +50,7 @@ class ExceptionUtils {
 	 *
 	 * @param Exception $exception
 	 */
-	static function getHtmlForException(Exception $exception) {
+	static function getHtmlForException(\Exception $exception) {
 		//global $sys_error_reporting_mail;
 		//global $sys_error_messages;
 		$msg='';
@@ -71,7 +71,7 @@ class ExceptionUtils {
 		$msg .= "<td style='background-color:#AAAAAA; color:white; text-align:center'>Line</td></tr>";
 
 		$msg .= "<tr><td style='background-color:#EEEEEE; color:black'><b>".nl2br($exception->getMessage())."</b></td>";
-		$msg .= "<td style='background-color:#EEEEEE; color:black'>".$exception->getFile()."</td>";
+		$msg .= "<td style='background-color:#EEEEEE; color:black'>".self::displayFile($exception->getFile())."</td>";
 		$msg .= "<td style='background-color:#EEEEEE; color:black'>".$exception->getLine()."</td></tr>";
 		$msg .= self::getHTMLBackTrace($exception->getTrace());
 		$msg .= "</table>";
@@ -173,5 +173,45 @@ class ExceptionUtils {
 		elseif(is_resource($var)) return "Resource ".get_resource_type($var);
 		return "Unknown type variable";
 	}
+	
+	private static function displayFile($file) {
+		$file = realpath($file);
+		$cwd = getcwd().DIRECTORY_SEPARATOR;
+		return self::getRelativePath($cwd, $file);
+	}
+	
+	/**
+	 * Returns a relative path based on 2 absolute paths.
+	 * @param string $from
+	 * @param string $to
+	 * @return string
+	 */
+	private static function getRelativePath($from, $to)
+	{
+		$from     = explode('/', $from);
+		$to       = explode('/', $to);
+		$relPath  = $to;
+	
+		foreach($from as $depth => $dir) {
+			// find first non-matching dir
+			if($dir === $to[$depth]) {
+				// ignore this directory
+				array_shift($relPath);
+			} else {
+				// get number of remaining dirs to $from
+				$remaining = count($from) - $depth;
+				if($remaining > 1) {
+					// add traversals up to first matching dir
+					$padLength = (count($relPath) + $remaining - 1) * -1;
+					$relPath = array_pad($relPath, $padLength, '..');
+					break;
+				} else {
+					$relPath[0] = './' . $relPath[0];
+				}
+			}
+		}
+		return implode('/', $relPath);
+	}
+	
 }
 ?>

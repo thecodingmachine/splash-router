@@ -32,7 +32,7 @@ class SplashViewUrlsController extends Controller {
 		$this->splashUrlsList = SplashUrlManager::getUrlsList($selfedit == "true");
 		
 		$this->template->addContentFile(dirname(__FILE__)."/../../views/admin/splashUrlsList.php", $this);
-		$this->template->draw();
+		$this->template->toHtml();
 	}
 	
 }
