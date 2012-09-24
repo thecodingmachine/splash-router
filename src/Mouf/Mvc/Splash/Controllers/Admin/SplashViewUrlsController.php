@@ -1,7 +1,7 @@
 <?php 
 namespace Mouf\Mvc\Splash\Controllers\Admin;
 
-use Mouf\Mvc\Splash\Controller;
+use Mouf\Mvc\Splash\Controllers\Controller;
 
 /**
  * The controller that will display all the URLs managed by Splash.

@@ -6,7 +6,7 @@ namespace Mouf\Mvc\Splash\Services;
  * 
  * @author David Negrier
  */
-class SplashValidationException extends Exception {
+class SplashValidationException extends \Exception {
 		
 	public function setPrependedMessage($prependedMessage) {
 		$this->message = $prependedMessage.$this->message;

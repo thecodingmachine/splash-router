@@ -86,7 +86,7 @@ class ExceptionUtils {
 	 *
 	 * @param Exception $exception
 	 */
-	static function getTextForException(Exception $exception) {
+	static function getTextForException(\Exception $exception) {
 		// Now, let's compute the same message, but without the HTML markup for the error log.
 		$textTrace = "Message: ".$exception->getMessage()."\n";
 		$textTrace .= "File: ".$exception->getFile()."\n";
@@ -175,9 +175,13 @@ class ExceptionUtils {
 	}
 	
 	private static function displayFile($file) {
-		$file = realpath($file);
+		$realpath = realpath($file);
+		if (!$realpath) {
+			// If the file is a phar::// or something...
+			return $file;
+		}
 		$cwd = getcwd().DIRECTORY_SEPARATOR;
-		return self::getRelativePath($cwd, $file);
+		return self::getRelativePath($cwd, $realpath);
 	}
 	
 	/**
@@ -194,7 +198,7 @@ class ExceptionUtils {
 	
 		foreach($from as $depth => $dir) {
 			// find first non-matching dir
-			if($dir === $to[$depth]) {
+			if(isset($to[$depth]) && $dir === $to[$depth]) {
 				// ignore this directory
 				array_shift($relPath);
 			} else {

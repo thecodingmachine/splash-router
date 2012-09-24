@@ -6,7 +6,7 @@ namespace Mouf\Mvc\Splash\Services;
  * 
  * @author David Negrier
  */
-class SplashMissingParameterException extends Exception {
+class SplashMissingParameterException extends \Exception {
 	
 	public $key;
 	

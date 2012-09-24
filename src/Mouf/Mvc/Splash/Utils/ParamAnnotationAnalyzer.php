@@ -1,6 +1,7 @@
 <?php 
 namespace Mouf\Mvc\Splash\Utils;
 
+use Mouf\Annotations\paramAnnotation;
 
 /**
  * This class is used to deeply analyze the @param annotation.

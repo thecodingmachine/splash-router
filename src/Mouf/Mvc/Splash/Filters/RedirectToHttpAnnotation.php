@@ -1,7 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Filters;
 
-FilterUtils::registerFilter("RedirectToHttp");
+//FIXME: Provide filters another way...
+//FilterUtils::registerFilter("RedirectToHttp");
 
 /**
  * Filter that will bring the user back to HTTP if the user is in HTTPS.

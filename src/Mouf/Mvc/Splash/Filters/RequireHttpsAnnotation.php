@@ -3,6 +3,8 @@ namespace Mouf\Mvc\Splash\Filters;
 
 //FilterUtils::registerFilter("RequireHttps");
 
+use Mouf\Reflection\MoufAnnotationInterface;
+
 /**
  * Filter that requires the use of HTTPS (if enabled in the conf)
  * By passing @RequireHttps("force"), an Exception is thrown if the action is called in HTTP.

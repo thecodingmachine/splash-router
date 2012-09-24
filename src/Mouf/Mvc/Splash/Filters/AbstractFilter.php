@@ -1,6 +1,11 @@
 <?php
 namespace Mouf\Mvc\Splash\Filters;
 
+use Mouf\Reflection\MoufReflectionMethod;
+
+use Mouf\Mvc\Splash\Controllers\Controller;
+
+
 /**
  * Class to be extended to add a filter to an action.
  */

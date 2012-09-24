@@ -1,7 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Filters;
 
-FilterUtils::registerFilter("Admin");
+// FIXME: register filters another way
+//FilterUtils::registerFilter("Admin");
 
 class AdminAnnotation extends AbstractFilter
 {
