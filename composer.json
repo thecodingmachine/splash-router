@@ -3,7 +3,7 @@
     "description": "The Core part of Splash (an MVC framework). It is used by Splash itself, but also by Drusplash (the Splash wrapper for Drupal)",
     "keywords": ["mvc", "framework", "mouf", "splash", "splash-common"],
     "homepage": "https://github.com/thecodingmachine/mvc.splash-common",
-    "type": "library",
+    "type": "mouf-library",
     "license": "MIT",
     "authors": [
         {
