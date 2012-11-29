@@ -4,11 +4,15 @@ namespace Mouf\Mvc\Splash\Services;
 /**
  * Utility class for filters.
  */
+use Mouf\Mvc\Splash\Filters\AbstractFilter;
+
 use Mouf\MoufManager;
 
 use Mouf\Mvc\Splash\Controllers\Controller;
 
 use Mouf\Reflection\MoufReflectionMethod;
+
+
 
 class FilterUtils {
 
