@@ -1,6 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Reflection\MoufReflectionProxy;
+
 /**
  * This class is in charge of retrieving the URLs that can be accessed.
  *  
@@ -22,17 +24,21 @@ class SplashUrlManager {
 		// Let's perform a late loading on the SplashRoute class (because the admin version of Mouf might use a different version of the class than the application
 		// itself, we cannot include this file directly, since it is used inside the admin of mouf).
 		
-		// TODO: the proxy should return JSON instead of objects (because Splash is sued both on the admin and on the app side, with different versions)
-		require_once dirname(__FILE__)."/SplashRoute.php";
+		// TODO: the proxy should return JSON instead of objects (because Splash is used both on the admin and on the app side, with different versions)
+		//require_once dirname(__FILE__)."/SplashRoute.php";
 		
-		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/mvc/splash-common/3.3/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
+		if ($selfEdit) {
+			$url = MoufReflectionProxy::getLocalUrlToProject()."vendor/mouf/mvc.splash-common/src/direct/get_urls_list.php?selfedit=true";
+		} else {
+			$url = MoufReflectionProxy::getLocalUrlToProject()."../../../vendor/mouf/mvc.splash-common/src/direct/get_urls_list.php?selfedit=false";
+		}
 
 		$response = self::performRequest($url);
 
 		$obj = unserialize($response);
 		
 		if ($obj === false) {
-			throw new Exception("Unable to unserialize message:\n".$response."\n<br/>URL in error: <a href='".plainstring_to_htmlprotected($url)."'>".plainstring_to_htmlprotected($url)."</a>");
+			throw new \Exception("Unable to unserialize message:\n".$response."\n<br/>URL in error: <a href='".plainstring_to_htmlprotected($url)."'>".plainstring_to_htmlprotected($url)."</a>");
 		}
 		
 		return $obj;

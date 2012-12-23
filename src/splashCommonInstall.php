@@ -21,7 +21,7 @@ if (!$moufManager->instanceExists("splashTranslateService")) {
 		$splashBrowserLanguageDetection->setName("splashBrowserLanguageDetection");
 	}
 	
-	$splashTranslateService->getProperty("languageDetection")->setValue("splashBrowserLanguageDetection");
+	$splashTranslateService->getProperty("languageDetection")->setValue($splashBrowserLanguageDetection);
 }
 
 // Let's rewrite the MoufComponents.php file to save the component

@@ -1,6 +1,8 @@
 <?php 
 namespace Mouf\Mvc\Splash\Controllers\Admin;
 
+use Mouf\Mvc\Splash\Services\SplashUrlManager;
+
 use Mouf\Mvc\Splash\Controllers\Controller;
 
 /**
@@ -19,6 +21,12 @@ class SplashViewUrlsController extends Controller {
 	 */
 	public $template;
 	
+	/**
+	 *
+	 * @var HtmlBlock
+	 */
+	public $content;
+	
 	protected $splashUrlsList;
 	protected $selfedit;
 	
@@ -31,7 +39,7 @@ class SplashViewUrlsController extends Controller {
 		$this->selfedit = $selfedit;
 		$this->splashUrlsList = SplashUrlManager::getUrlsList($selfedit == "true");
 		
-		$this->template->addContentFile(dirname(__FILE__)."/../../views/admin/splashUrlsList.php", $this);
+		$this->content->addFile(dirname(__FILE__)."/../../../../../views/admin/splashUrlsList.php", $this);
 		$this->template->toHtml();
 	}
 	

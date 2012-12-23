@@ -1,25 +1,25 @@
 <?php
+use Mouf\MoufUtils;
+
+use Mouf\MoufManager;
+
 /**
  * Returns a serialized string representing the array for all urls available along controller and method that it is bound to.
  */
 
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
-	require_once '../../../../../Mouf.php';
+	require_once '../../../../../mouf/Mouf.php';
 } else {
-	require_once '../../../../MoufManager.php';
-	MoufManager::initMoufManager();
-	require_once '../../../../../MoufUniversalParameters.php';
-	require_once '../../../../MoufAdmin.php';
+	require_once '../../mouf/Mouf.php';
 }
-require_once '../../../../../mouf/Moufspector.php';
 
 // Note: checking rights is done after loading the required files because we need to open the session
 // and only after can we check if it was not loaded before loading it ourselves...
-require_once '../../../../../mouf/direct/utils/check_rights.php';
+MoufUtils::checkRights();
 
 
 $moufManager = MoufManager::getMoufManager();
-$instanceNames = $moufManager->findInstances("UrlProviderInterface");
+$instanceNames = $moufManager->findInstances("Mouf\\Mvc\\Splash\\Services\\UrlProviderInterface");
 		
 $urls = array();
 
