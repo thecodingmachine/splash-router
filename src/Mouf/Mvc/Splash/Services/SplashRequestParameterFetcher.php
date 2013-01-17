@@ -1,5 +1,6 @@
 <?php 
 namespace Mouf\Mvc\Splash\Services;
+use Mouf\Utils\Common\Validators\ValidatorInterface;
 
 /**
  * This class fetches the parameter from the request.

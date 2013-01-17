@@ -1,6 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Utils\Common\Validators\NumericValidator;
+
 use Mouf\Reflection\MoufReflectionMethod;
 
 use Mouf\MoufManager;
