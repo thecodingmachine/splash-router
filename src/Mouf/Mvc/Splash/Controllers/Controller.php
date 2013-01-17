@@ -111,10 +111,10 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 					/* @var $urlAnnotation URLAnnotation */
 					$url = $urlAnnotation->getUrl();
 					$url = ltrim($url, "/");
+					$parameters = SplashUtils::mapParameters($refMethod);
+					$filters = FilterUtils::getFilters($refMethod, $this);
+					$urlsList[] = new SplashRoute($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
 				}
-				$parameters = SplashUtils::mapParameters($refMethod);
-				$filters = FilterUtils::getFilters($refMethod, $this);
-				$urlsList[] = new SplashRoute($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
 			}
 			
 		}
