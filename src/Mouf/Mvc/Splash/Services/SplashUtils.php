@@ -1,6 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Mvc\Splash\Utils\SplashException;
+
 use Mouf\Utils\Common\Validators\NumericValidator;
 
 use Mouf\Reflection\MoufReflectionMethod;
@@ -67,7 +69,7 @@ class SplashUtils {
 					$value = new SplashUrlParameterFetcher($parameter->getName(), true);
 				}
 				$values[] = $value;
-				break;
+				continue;
 			}
 			
 			if ($paramAnnotations != null) {
