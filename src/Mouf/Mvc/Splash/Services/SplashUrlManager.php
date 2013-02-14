@@ -38,7 +38,7 @@ class SplashUrlManager {
 		$obj = unserialize($response);
 		
 		if ($obj === false) {
-			throw new \Exception("Unable to unserialize message:\n".$response."\n<br/>URL in error: <a href='".plainstring_to_htmlprotected($url)."'>".plainstring_to_htmlprotected($url)."</a>");
+			throw new \Exception("Unable to unserialize message:\n".$response."\n<br/>URL in error: <a href='".htmlspecialchars($url, ENT_QUOTES)."'>".htmlspecialchars($url, ENT_QUOTES)."</a>");
 		}
 		
 		return $obj;
