@@ -59,5 +59,28 @@ abstract class AbstractFilter
 	public static function compare($filter1, $filter2) {
 		return ($filter1->getPriority() - $filter2->getPriority());
 	}
+        
+        /**
+        * TODO: se demander est-ce que les pointeurs sont nécessaires ou pas. Dans l'idéal, la classe pourrait ne pas contenir de pointeurs.
+        * @return array
+        */
+       public function serialize() {
+           $moufManager = \Mouf\MoufManager::getMoufManager();
+           $instanceName = $moufManager->findInstanceName($this->controller);
+           $methodName = $this->refMethod->getName();
+           return serialize(array(
+               "instanceName"=>$instanceName,
+               "methodName"=>$methodName
+           ));
+       }
+
+       public function unserialize($data) {
+           $moufManager = \Mouf\MoufManager::getMoufManager();
+
+           $array = unserialize($data);
+
+           $this->controller = $moufManager->getInstance($array['instanceName']);
+           $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $array['methodName']);
+       }
 }
 ?>
