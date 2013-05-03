@@ -15,7 +15,8 @@
     "require": {
     	"php": ">=5.3.0",
         "mouf/html.htmlelement": "2.*",
-        "mouf/utils.i18n.fine": "3.*"
+        "mouf/utils.i18n.fine": "3.*",
+        "mouf/utils.common.validators": "3.*"
     },
     "autoload": {
         "psr-0": {
