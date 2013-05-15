@@ -86,7 +86,20 @@ class SplashUtils {
 						} else {
 							$value = new SplashRequestParameterFetcher($parameter->getName(), true);
 						}
-						$type = strtolower($annotation->getType());
+						// FIXME! types is a TypesDescriptor! We should add a depdency on the validators
+						// Currently, there is none in composer.json!!!!!!!!!!!!!!!
+						// Then, we should add a "OrValidator" that validate one of the conditions.
+						// Note: a AndValidator might be cool to.
+						// FIXME
+						// FIXME
+						// FIXME
+						// FIXME
+						// FIXME
+						// FIXME
+						// FIXME
+						// FIXME
+						// FIXME
+						/*$type = strtolower($annotation->getTypes());
 						if ($type == "float" || $type == "double" || $type == "real" || $type == "number") {
 							$numericValidator = new NumericValidator();
 							$value->registerValidator($numericValidator);
@@ -94,7 +107,7 @@ class SplashUtils {
 							$intValidator = new NumericValidator();
 							$intValidator->allowDecimals = false;
 							$value->registerValidator($intValidator);
-						}
+						}*/
 						$values[] = $value;
 						$found = true;
 						break;
