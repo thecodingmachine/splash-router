@@ -49,7 +49,6 @@ class SplashUtils {
 				}
 			}
 		} else {
-			// FIXME: remove this when Druplash will be passing a $urlAnnotation parameter to this method
 			$urlAnnotations = $refMethod->getAnnotations('URL');
 			$urlParamsList = array();
 			if ($urlAnnotations != null) {
