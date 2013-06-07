@@ -1,6 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Annotations\URLAnnotation;
+
 use Mouf\Mvc\Splash\Utils\SplashException;
 
 use Mouf\Utils\Common\Validators\NumericValidator;
@@ -27,24 +29,40 @@ class SplashUtils {
 	 * 
 	 * @return array<SplashParameterFetcherInterface>
 	 */
-	public static function mapParameters(MoufReflectionMethod $refMethod) {
+	public static function mapParameters(MoufReflectionMethod $refMethod, URLAnnotation $urlAnnotation = null) {
 		$parameters = $refMethod->getParameters();
 
 	
 		// Let's try to find parameters in the @URL annotation
 		// Let's build a set of those parameters.
-		$urlAnnotations = $refMethod->getAnnotations('URL');
-		$urlParamsList = array();
-		if ($urlAnnotations != null) {
-			foreach ($urlAnnotations as $urlAnnotation) {
-				/* @var $urlAnnotation URLAnnotation */
-				$url = $urlAnnotation->getUrl();
-				$urlParts = explode("/", $url);
-				foreach ($urlParts as $part) {
-					if (strpos($part, "{") === 0 && strpos($part, "}") === strlen($part)-1) {
-						// Parameterized URL element
-						$varName = substr($part, 1, strlen($part)-2);
-						$urlParamsList[$varName] = $varName;
+		
+		if ($urlAnnotation != null) {
+			$urlParamsList = array();
+			/* @var $urlAnnotation URLAnnotation */
+			$url = $urlAnnotation->getUrl();
+			$urlParts = explode("/", $url);
+			foreach ($urlParts as $part) {
+				if (strpos($part, "{") === 0 && strpos($part, "}") === strlen($part)-1) {
+					// Parameterized URL element
+					$varName = substr($part, 1, strlen($part)-2);
+					$urlParamsList[$varName] = $varName;
+				}
+			}
+		} else {
+			// FIXME: remove this when Druplash will be passing a $urlAnnotation parameter to this method
+			$urlAnnotations = $refMethod->getAnnotations('URL');
+			$urlParamsList = array();
+			if ($urlAnnotations != null) {
+				foreach ($urlAnnotations as $urlAnnotation) {
+					/* @var $urlAnnotation URLAnnotation */
+					$url = $urlAnnotation->getUrl();
+					$urlParts = explode("/", $url);
+					foreach ($urlParts as $part) {
+						if (strpos($part, "{") === 0 && strpos($part, "}") === strlen($part)-1) {
+							// Parameterized URL element
+							$varName = substr($part, 1, strlen($part)-2);
+							$urlParamsList[$varName] = $varName;
+						}
 					}
 				}
 			}
