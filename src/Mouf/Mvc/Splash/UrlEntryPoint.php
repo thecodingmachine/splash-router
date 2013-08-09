@@ -10,6 +10,7 @@ use Mouf\MoufManager;
 use Mouf\Mvc\Splash\Services\SplashRoute;
 
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
+use Mouf\Utils\Common\UrlInterface;
 
 
 /**
@@ -19,7 +20,7 @@ use Mouf\Mvc\Splash\Services\UrlProviderInterface;
  * 
  * @author David Negrier
  */
-class UrlEntryPoint extends Controller implements UrlProviderInterface {
+class UrlEntryPoint extends Controller implements UrlProviderInterface, UrlInterface {
 	
 	private $url;
 	private $actions;
@@ -55,4 +56,12 @@ class UrlEntryPoint extends Controller implements UrlProviderInterface {
 		$route = new SplashRoute($this->url, $instanceName, "action", null, null);
 		return array($route);
 	}
+	
+	/* (non-PHPdoc)
+	 * @see \Mouf\Utils\Common\UrlInterface::getUrl()
+	 */
+	public function getUrl() {
+		return $this->url;
+	}
+
 }
