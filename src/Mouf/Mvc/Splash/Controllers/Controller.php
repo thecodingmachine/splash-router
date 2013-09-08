@@ -57,13 +57,13 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	 * 
 	 * @return LogInterface
 	 */
-	public static function getLogger() {
+	/*public static function getLogger() {
 		if (MoufManager::getMoufManager()->instanceExists("splash")) {
 			return MoufManager::getMoufManager()->getInstance("splash")->log;
 		} else {
 			return null;
 		}
-	}
+	}*/
 	
 	/**
 	 * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
