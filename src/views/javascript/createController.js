@@ -55,8 +55,8 @@ function CreateControllerCtrl($scope, $http) {
 			putMethod: false,
 			deleteMethod: false,
 			view: "twig",
-			twigFile: $scope.sourceDirectory+"views/"+$scope.instanceName+"/index.twig",
-			phpFile: $scope.sourceDirectory+"views/"+$scope.instanceName+"/index.php",
+			twigFile: $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/index.twig",
+			phpFile: $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/index.php",
 			redirect: "" 
 		});
 		
@@ -86,14 +86,14 @@ function CreateControllerCtrl($scope, $http) {
 	$scope.$watch('instanceName', function() {
 		// Let's update the actions path:
 		angular.forEach($scope.actions, function(action) {
-			action.twigFile = $scope.sourceDirectory+"views/"+$scope.instanceName+"/"+action.method+".twig";
-			action.phpFile = $scope.sourceDirectory+"views/"+$scope.instanceName+"/"+action.method+".php";
+			action.twigFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".twig";
+			action.phpFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".php";
 		});
 	});
 	
 	$scope.changeMethod = function(action) {
-		action.twigFile = $scope.sourceDirectory+"views/"+$scope.instanceName+"/"+action.method+".twig";
-		action.phpFile = $scope.sourceDirectory+"views/"+$scope.instanceName+"/"+action.method+".php";
+		action.twigFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".twig";
+		action.phpFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".php";
 	}
 	
 	$scope.submit = function() {
