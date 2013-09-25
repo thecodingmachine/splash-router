@@ -90,6 +90,10 @@ class SplashCreateControllerController extends Controller {
 	public function generate($controllerName, $instanceName, $sourceDirectory, $namespace, $injectLogger = false,
 			$injectTemplate = false, $injectDaoFactory = false,	$actions = array()) {
 
+		$injectLogger = ($injectLogger=='false')?false:$injectLogger;
+		$injectTemplate = ($injectTemplate=='false')?false:$injectTemplate;
+		$injectDaoFactory = ($injectDaoFactory=='false')?false:$injectDaoFactory;
+		
 		$moufManager = MoufManager::getMoufManagerHiddenInstance();
 		
 		$sourceDirectory = trim($sourceDirectory, '/\\');
@@ -116,9 +120,12 @@ class SplashCreateControllerController extends Controller {
 			$errors['instanceError'] = 'This instance already exists.';
 		}
 
+		$injectTwig = false;
+		
 		foreach ($actions as $key => $action) {
 			 // Check if the view file exists
 			if ($injectTemplate && $action['view'] == 'twig') {
+				$injectTwig = true;
 				$twigFile = ltrim($action['twigFile'], '/\\');
 				
 				$viewDirName = ROOT_PATH.'../../../'.dirname($twigFile);
@@ -180,6 +187,10 @@ use Psr\Log\LoggerInterface;
 <?php if ($injectDaoFactory) { ?>
 use <?= $moufManager->getVariable('tdbmDefaultDaoNamespace')."\\".$moufManager->getVariable('tdbmDefaultDaoFactoryName') ?>;
 <?php } ?>
+<?php if ($injectTwig) { ?>
+use \Twig_Environment;
+use Mouf\Html\Renderer\Twig\TwigTemplate;
+<?php } ?>
 
 /**
  * TODO: write controller comment
@@ -216,6 +227,14 @@ class <?= $controllerName ?> extends Controller {
 	private $daoFactory;
 
 <?php } ?>
+<?php if ($injectTwig) { ?>
+	/**
+	 * The Twig environment (used to render Twig templates).
+	 * @var Twig_Environment
+	 */
+	private $twig;
+
+<?php } ?>
 
 	/**
 	 * Controller's constructor.
@@ -229,6 +248,9 @@ if ($injectTemplate) {
 }
 if ($injectDaoFactory) { 
 	echo "	 * @param DaoFactory \$daoFactory The object in charge of retrieving DAOs\n";
+}
+if ($injectTwig) {
+	echo "	 * @param Twig_Environment \$twig The Twig environment (used to render Twig templates)\n";
 }
 ?>
 	 */
@@ -244,6 +266,9 @@ if ($injectTemplate) {
 if ($injectDaoFactory) {
 	$parameters[] = 'DaoFactory $daoFactory';
 }
+if ($injectTwig) {
+	$parameters[] = 'Twig_Environment $twig';
+}
 echo implode(', ', $parameters);
 ?>) {
 <?php if ($injectLogger) {?>
@@ -255,6 +280,9 @@ if ($injectTemplate) {?>
 <?php } 		
 if ($injectDaoFactory) {?>
 		$this->daoFactory = $daoFactory;
+<?php }
+if ($injectTwig) {?>
+		$this->twig = $twig;
 <?php } ?>
 	}
 	
@@ -314,7 +342,9 @@ echo implode(', ', $parametersCode);
 		// TODO: write content of action here
 		
 <?php if ($injectTemplate && $action['view'] == 'twig'): ?>
-		// TODO: WRITE CODE FOR TWIG
+		// Let's add the twig file to the template.
+		$this->content->addHtmlElement(new TwigTemplate($this->twig, <?php var_export($action['twigFile']); ?>, array("message"=>"world")));
+		$this->template->toHtml();
 <?php elseif ($injectTemplate && $action['view'] == 'php'): ?>
 		// Let's add the view to the content.
 		// Note: $this is passed as the scope, so in the view file, you can refer to protected 
@@ -376,6 +406,11 @@ echo implode(', ', $parametersCode);
 						$controllerInstance->getProperty("daoFactory")->setValue($moufManager->getInstanceDescriptor('daoFactory'));
 					}
 				}
+				if ($injectTwig) {
+					if ($moufManager->has('twigEnvironment')) {
+						$controllerInstance->getProperty("twig")->setValue($moufManager->getInstanceDescriptor('twigEnvironment'));
+					}
+				}
 								
 				$moufManager->rewriteMouf();
 				
@@ -399,7 +434,7 @@ echo implode(', ', $parametersCode);
 	}
 	
 	private function generateTwigView() {
-		return "<p>Hello {{world}}</p>";
+		return "<p>Hello {{message}}</p>";
 	}
 
 	private function generatePhpView($controllerFQCN) {
