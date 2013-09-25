@@ -95,7 +95,7 @@ class SplashCreateControllerController extends Controller {
 		$sourceDirectory = trim($sourceDirectory, '/\\');
 		
 		$errors = array();
-		if (!file_exists(ROOT_PATH.$sourceDirectory)) {
+		if (!file_exists(ROOT_PATH.'../../../'.$sourceDirectory)) {
 			$errors['sourceDirectoryError'] = 'This directory does not exist.';
 		}
 		if (!preg_match('/^[a-z_]\w*$/i', $controllerName)) {
