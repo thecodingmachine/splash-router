@@ -151,6 +151,11 @@ class SplashCreateControllerController extends Controller {
 					$errors['actions'][$key]['phpTemplateFileError'] = 'This file already exists.';
 				}
 			}
+			if ($action['view'] == 'redirect') {
+				if (!isset($action['redirect']) || empty($action['redirect'])) {
+					$errors['actions'][$key]['redirectError'] = 'Redirection URL cannot be empty.';
+				}
+			}
 				
 		}
 		
@@ -355,7 +360,7 @@ echo implode(', ', $parametersCode);
 		header("Content-type: application/json");
 		echo json_encode(array("status"=>"ok"));
 <?php elseif ($action['view'] == 'redirect'): ?>
-		header("Location: <?php echo $action['redirect'] ?>");
+		header("Location: <?php echo $action['redirect']; ?>");
 <?php endif; ?>
 	}
 <?php endforeach; ?>

@@ -181,21 +181,21 @@ Unless you are developing your own autoload system, you should configure <code>c
 	<div class="control-group" ng-show="action.view == 'twig'" ng-class="{error:action.twigTemplateFileError}">
 		<label class="control-label">Twig template file:</label>
 		<div class="controls">
-			<input type="text" ng-model="action.twigFile" class="input-xxlarge" /><span class="help-inline" ng-show="action.twigTemplateFileError">{{twigTemplateFileError}}</span>
+			<input type="text" ng-model="action.twigFile" class="input-xxlarge" /><span class="help-inline" ng-show="action.twigTemplateFileError">{{action.twigTemplateFileError}}</span>
 		</div>
 	</div>
 
 	<div class="control-group" ng-show="action.view == 'php'" ng-class="{error:action.phpTemplateFileError}">
 		<label class="control-label">PHP template file:</label>
 		<div class="controls">
-			<input type="text" ng-model="action.phpFile" class="input-xxlarge" /><span class="help-inline" ng-show="action.phpTemplateFileError">{{phpTemplateFileError}}</span>
+			<input type="text" ng-model="action.phpFile" class="input-xxlarge" /><span class="help-inline" ng-show="action.phpTemplateFileError">{{action.phpTemplateFileError}}</span>
 		</div>
 	</div>
 
-	<div class="control-group" ng-show="action.view == 'redirect'">
+	<div class="control-group" ng-show="action.view == 'redirect'" ng-class="{error:action.redirectError}">
 		<label class="control-label">Redirect URL:</label>
 		<div class="controls">
-			<input type="text" ng-model="action.redirect" class="input-xxlarge" />
+			<input type="text" ng-model="action.redirect" class="input-xxlarge" /><span class="help-inline" ng-show="action.redirectError">{{action.redirectError}}</span>
 		</div>
 	</div>
 	
