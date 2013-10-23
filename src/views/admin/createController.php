@@ -5,7 +5,7 @@
 globalData = <?php echo json_encode(array(
 	"sourceDirectory"=>$this->sourceDirectory,
 	"namespace"=>$this->controllerNamespace,
-	"tdbmExists"=>file_exists(__DIR__.'/../../../../database.tdbm')
+	"tdbmExists"=>file_exists(ROOT_PATH.'../database.tdbm')
 )); ?>
 </script>
 
@@ -14,7 +14,7 @@ globalData = <?php echo json_encode(array(
 <input type="hidden" id="selfedit" name="selfedit" value="<?php echo plainstring_to_htmlprotected($this->selfedit) ?>" />
 
 <?php if (!$this->autoloadDetected) { ?>
-<div class="alert">Warning! TDBM could not detect the autoload section of your <code>composer.json</code> file.
+<div class="alert">Warning! Splash could not detect the autoload section of your <code>composer.json</code> file.
 Unless you are developing your own autoload system, you should configure <code>composer.json</code> to <a href="http://getcomposer.org/doc/01-basic-usage.md#autoloading" target="_blank">define a source directory and a root namespace using PSR-0</a>.</div>
 <?php } ?>
 
@@ -59,8 +59,8 @@ Unless you are developing your own autoload system, you should configure <code>c
 	    <label class="checkbox inline">
 	    	<input type="checkbox" ng-model="injectTemplate" /> Template and content block
 	    </label>
-	    <label class="checkbox inline">
-	    	<input type="checkbox" ng-model="injectDaoFactory" ng-show="tdbmExists" /> DAO Factory
+	    <label class="checkbox inline" ng-show="tdbmExists">
+	    	<input type="checkbox" ng-model="injectDaoFactory" /> DAO Factory
 	    </label>
 	</div>
 </div>

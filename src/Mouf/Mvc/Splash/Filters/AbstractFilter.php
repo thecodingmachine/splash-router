@@ -22,8 +22,20 @@ abstract class AbstractFilter
 	 * @var MoufReflectionMethod
 	 */
 	protected $refMethod;
+	
+	/**
+	 * Used in serialization
+	 * @var string
+	 */
+	protected $serializeInstanceName;
 
-    /*public function getAnnotationTarget()
+	/**
+	 * Used in serialization
+	 * @var string
+	 */
+	protected $serializeMethodName;
+
+	/*public function getAnnotationTarget()
     {
         return stubAnnotation::TARGET_METHOD+stubAnnotation::TARGET_CLASS;
     }*/
@@ -64,23 +76,18 @@ abstract class AbstractFilter
         * TODO: se demander est-ce que les pointeurs sont nécessaires ou pas. Dans l'idéal, la classe pourrait ne pas contenir de pointeurs.
         * @return array
         */
-       public function serialize() {
+		public function __sleep() {
            $moufManager = \Mouf\MoufManager::getMoufManager();
-           $instanceName = $moufManager->findInstanceName($this->controller);
-           $methodName = $this->refMethod->getName();
-           return serialize(array(
-               "instanceName"=>$instanceName,
-               "methodName"=>$methodName
-           ));
-       }
+           $this->serializeInstanceName = $moufManager->findInstanceName($this->controller);
+           $this->serializeMethodName = $this->refMethod->getName();
+           return array("serializeInstanceName", "serializeMethodName");
+       	}
 
-       public function unserialize($data) {
+       public function __wakeup() {
            $moufManager = \Mouf\MoufManager::getMoufManager();
 
-           $array = unserialize($data);
-
-           $this->controller = $moufManager->getInstance($array['instanceName']);
-           $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $array['methodName']);
+           $this->controller = $moufManager->getInstance($this->serializeInstanceName);
+           $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $this->serializeMethodName);
        }
 }
 ?>
