@@ -30,7 +30,8 @@
 	},
 	"autoload" : {
 		"psr-0" : {
-			"Mouf" : "src/"
+			"Mouf\\Annotations" : "src/",
+			"Mouf\\Mvc\\Splash" : "src/"
 		}
 	},
 	"extra" : {
