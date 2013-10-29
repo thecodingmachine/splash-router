@@ -77,10 +77,14 @@ abstract class AbstractFilter
         * @return array
         */
 		public function __sleep() {
-           $moufManager = \Mouf\MoufManager::getMoufManager();
-           $this->serializeInstanceName = $moufManager->findInstanceName($this->controller);
-           $this->serializeMethodName = $this->refMethod->getName();
-           return array("serializeInstanceName", "serializeMethodName");
+			$objectVars = get_object_vars($this);
+			unset($objectVars['controller']);
+			unset($objectVars['refMethod']);
+			
+			$moufManager = \Mouf\MoufManager::getMoufManager();
+			$this->serializeInstanceName = $moufManager->findInstanceName($this->controller);
+			$this->serializeMethodName = $this->refMethod->getName();
+			return array_keys($objectVars);
        	}
 
        public function __wakeup() {
