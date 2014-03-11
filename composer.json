@@ -26,7 +26,8 @@
 		"mouf/utils.i18n.fine" : "3.*",
 		"mouf/utils.action.common-action" : "~1.0",
 		"mouf/utils.common.url-interface" : "~1.0",
-		"mouf/html.renderer.twig-extensions": "~1.0"
+		"mouf/html.renderer.twig-extensions": "~1.0",
+        "mouf/mvc.splash-implementation": "~4.3"
 	},
 	"autoload" : {
 		"psr-0" : {
