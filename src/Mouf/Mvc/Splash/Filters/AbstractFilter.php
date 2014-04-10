@@ -90,8 +90,10 @@ abstract class AbstractFilter
        public function __wakeup() {
            $moufManager = \Mouf\MoufManager::getMoufManager();
 
-           $this->controller = $moufManager->getInstance($this->serializeInstanceName);
-           $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $this->serializeMethodName);
+           if($moufManager->has($this->serializeInstanceName)){
+               $this->controller = $moufManager->getInstance($this->serializeInstanceName);
+               $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $this->serializeMethodName);
+           }
        }
 }
 ?>
