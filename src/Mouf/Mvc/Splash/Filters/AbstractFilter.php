@@ -15,13 +15,39 @@ abstract class AbstractFilter
 	 * The controller this filter is applied to
 	 * @var Controller
 	 */
-	protected $controller;
+	private $controller;
 
 	/**
 	 * The method this filter is applied to
 	 * @var MoufReflectionMethod
 	 */
-	protected $refMethod;
+	private $refMethod;
+
+    /**
+     * Returns the controller this filter is applied to
+     * @return Controller
+     */
+    protected function getController() {
+        if (!$this->controller) {
+            $moufManager = \Mouf\MoufManager::getMoufManager();
+            $this->controller = $moufManager->getInstance($this->serializeInstanceName);
+        }
+        return $this->controller;
+    }
+
+    /**
+     * Returns method this filter is applied to
+     * @return MoufReflectionMethod
+     */
+    protected function getRefMethod() {
+        if (!$this->refMethod) {
+            $moufManager = \Mouf\MoufManager::getMoufManager();
+            $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $this->serializeMethodName);
+        }
+        return $this->refMethod;
+    }
+
+
 	
 	/**
 	 * Used in serialization
@@ -88,12 +114,12 @@ abstract class AbstractFilter
        	}
 
        public function __wakeup() {
-           $moufManager = \Mouf\MoufManager::getMoufManager();
+           /*$moufManager = \Mouf\MoufManager::getMoufManager();
 
            if($moufManager->has($this->serializeInstanceName)){
                $this->controller = $moufManager->getInstance($this->serializeInstanceName);
                $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $this->serializeMethodName);
-           }
+           }*/
        }
 }
 ?>
