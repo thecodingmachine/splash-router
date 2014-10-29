@@ -11,6 +11,8 @@ use Mouf\Reflection\MoufReflectionMethod;
 
 use Mouf\MoufManager;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class SplashUtils {
 	
 	/**
@@ -161,6 +163,27 @@ class SplashUtils {
 	
 		return call_user_func_array(array($translationService, "getTranslation"), func_get_args());
 	}
+	
+	public static function buildControllerResponse($callback){
+		ob_start();
+		$result = $callback();
+		$html = ob_get_clean();
+	
+		$headers = headers_list();
+		$code = http_response_code();
+	
+		if ($result instanceof Response){
+			if ($html !== ""){
+				throw new SplashException("You cannot output text AND return Response object in the same action. Output already started :'$html");
+			}
+			if (count($headers) != 0){
+				throw new SplashException("You canot use the 'header()' function when returning Response object. Detected headers are : ".var_export($headers, true));
+			}
+			return $result;
+		}
+		return new Response($html, $code, $headers);
+	}
+	
 	
 }
 
