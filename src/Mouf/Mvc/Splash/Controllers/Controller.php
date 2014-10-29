@@ -1,6 +1,7 @@
 <?php
 namespace Mouf\Mvc\Splash\Controllers;
 
+use Mouf\Annotations\URLAnnotation;
 use Mouf\Reflection\MoufReflectionMethod;
 
 use Mouf\Mvc\Splash\Services\SplashRoute;
@@ -76,6 +77,8 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 		$moufManager = MoufManager::getMoufManager();
 		
 		$refClass = new MoufReflectionClass(get_class($this));
+        $instanceName = $moufManager->findInstanceName($this);
+        $instance = $moufManager->getInstanceDescriptor($instanceName);
 		
 		foreach ($refClass->getMethods() as $refMethod) {
 			/* @var $refMethod MoufReflectionMethod */
@@ -110,10 +113,24 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 				foreach ($urls as $urlAnnotation) {
 					/* @var $urlAnnotation URLAnnotation */
 					$url = $urlAnnotation->getUrl();
+
+                    // Get public properties if they exist in the URL
+                    if (preg_match_all('/([^\{$]*){\$this->([^\/]*)}([^\{$]*)/', $url, $output)) {
+                        $url = $output[1][0];
+                        foreach($output[2] as $key => $param){
+                            $properties[$key] = $instance->getProperty($param)->getValue();
+                        }
+                        foreach($output[3] as $key => $path){
+                            $property = $properties[$key];
+                            $url .= $property.$path;
+                        }
+                    }
+
+                    $newUrlAnnotation = new URLAnnotation($url);
 					$url = ltrim($url, "/");
-					$parameters = SplashUtils::mapParameters($refMethod, $urlAnnotation);
+					$parameters = SplashUtils::mapParameters($refMethod, $newUrlAnnotation);
 					$filters = FilterUtils::getFilters($refMethod, $this);
-					$urlsList[] = new SplashRoute($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
+					$urlsList[] = new SplashRoute($url, $instanceName, $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
 				}
 			}
 			
