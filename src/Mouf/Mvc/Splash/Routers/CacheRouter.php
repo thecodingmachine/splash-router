@@ -65,8 +65,38 @@ class CacheRouter implements HttpKernelInterface {
 			}else{
 				$this->log->debug("Cache MISS on key $key");
 				$response = $this->fallBackRouter->handle($request, $type, $catch);
-				$this->cache->set($key, $response);
-				$this->log->debug("Cache STORED on key $key");
+				
+				$noCache = false;
+				$headers = $response->headers;
+				foreach ($headers as $innerHeader) {
+					foreach ($innerHeader as $value){
+						if ($value == "Mouf-Cache-Control: no-cache"){
+							$noCache = true;
+						}
+					}
+				}
+				
+				if ($noCache){
+					$this->log->debug("Mouf NO CACHE specified, not storing $key");
+				}else{
+					$ttl = null;
+					$maxAge = $response->getMaxAge();
+					$expires = $response->getExpires();
+					if ($maxAge){
+						$this->log->debug("MaxAge specified : $maxAge");
+						$ttl = $maxAge;
+					}elseif ($expires){
+						$this->log->debug("Expires specified : $expires");
+						$ttl = date_diff($expires, new \DateTime())->s;
+					}
+					
+					if ($ttl){
+						$this->log->debug("TTL is  : $ttl");
+					}
+					
+					$this->cache->set($key, $response, $ttl);
+					$this->log->debug("Cache STORED on key $key");
+				}
 				return $response;
 			}
 		}else{
