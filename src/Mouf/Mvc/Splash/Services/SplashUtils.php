@@ -177,7 +177,9 @@ class SplashUtils {
 				throw new SplashException("You cannot output text AND return Response object in the same action. Output already started :'$html");
 			}
 			if (count($headers) != 0){
-				throw new SplashException("You canot use the 'header()' function when returning Response object. Detected headers are : ".var_export($headers, true));
+				if (count($headers) != 1 || strpos($headers[0], 'X-Powered-By') !== 0) { // Let's ignore the "X-Powered-By" header that can be added by PHP itself
+					throw new SplashException("You canot use the 'header()' function when returning Response object. Detected headers are : ".var_export($headers, true));
+				}
 			}
 			return $result;
 		}
