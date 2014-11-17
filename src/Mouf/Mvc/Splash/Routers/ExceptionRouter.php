@@ -100,7 +100,7 @@ class ExceptionRouter implements HttpKernelInterface {
 	
 		$response = SplashUtils::buildControllerResponse(
 			function () use ($e) {
-				$this->errorController->serverError($e);
+				return $this->errorController->serverError($e);
 			}
 		);
 

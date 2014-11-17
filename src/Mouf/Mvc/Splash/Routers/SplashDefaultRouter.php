@@ -156,7 +156,7 @@ class SplashDefaultRouter implements HttpKernelInterface {
 				
 			$response = SplashUtils::buildControllerResponse(
 				function() use ($controller, $action, $args){
-					call_user_func_array(array($controller,$action), $args);
+					return call_user_func_array(array($controller,$action), $args);
 				}
 			);
 				
