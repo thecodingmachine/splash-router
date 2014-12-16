@@ -55,7 +55,7 @@ class CacheRouter implements HttpKernelInterface {
 	 */
 	public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true){
 		$requestMethod = $request->getMethod();
-		$key = $request->getRequestUri() . $request->getQueryString();
+		$key = str_replace(['\\', '/', ':','*','?','"','<','>', "|"], "_", $request->getRequestUri() . $request->getQueryString());
 
 		if ($this->cacheCondition->isOk() && $requestMethod == "GET"){
 			$cacheResponse = $this->cache->get($key);
