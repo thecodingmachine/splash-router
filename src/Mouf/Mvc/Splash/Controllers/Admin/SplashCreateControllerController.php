@@ -121,11 +121,15 @@ class SplashCreateControllerController extends Controller {
 		}
 
 		$injectTwig = false;
+		$importJsonResponse = false;
+		$importHtmlResponse = false;
+		$importRedirectResponse = false;
 		
 		foreach ($actions as $key => $action) {
 			 // Check if the view file exists
 			if ($injectTemplate && $action['view'] == 'twig') {
 				$injectTwig = true;
+				$importHtmlResponse = true;
 				$twigFile = ltrim($action['twigFile'], '/\\');
 				
 				$viewDirName = ROOT_PATH.'../../../'.dirname($twigFile);
@@ -139,6 +143,8 @@ class SplashCreateControllerController extends Controller {
 				}
 			}
 			if ($injectTemplate && $action['view'] == 'php') {
+				$importHtmlResponse = true;
+				
 				$phpFile = ltrim($action['phpFile'], '/\\');
 				
 				$viewDirName = ROOT_PATH.'../../../'.dirname($phpFile);
@@ -155,6 +161,10 @@ class SplashCreateControllerController extends Controller {
 				if (!isset($action['redirect']) || empty($action['redirect'])) {
 					$errors['actions'][$key]['redirectError'] = 'Redirection URL cannot be empty.';
 				}
+				$importRedirectResponse = true;
+			}
+			if ($action['view'] == 'json') {
+				$importJsonResponse = true;
 			}
 				
 		}
@@ -196,6 +206,15 @@ use <?= $moufManager->getVariable('tdbmDefaultDaoNamespace')."\\".$moufManager->
 use \Twig_Environment;
 use Mouf\Html\Renderer\Twig\TwigTemplate;
 <?php } ?>
+<?php if ($importJsonResponse) { ?>
+use Symfony\Component\HttpFoundation\JsonResponse;
+<?php } ?>
+<?php if ($importRedirectResponse) { ?>
+use Symfony\Component\HttpFoundation\RedirectResponse;
+<?php } ?>
+<?php if ($importHtmlResponse) { ?>
+use Mouf\Mvc\Splash\HtmlResponse;
+<?php } ?>
 
 /**
  * TODO: write controller comment
@@ -203,94 +222,94 @@ use Mouf\Html\Renderer\Twig\TwigTemplate;
 class <?= $controllerName ?> extends Controller {
 
 <?php if ($injectLogger) { ?>
-	/**
-	 * The logger used by this controller.
-	 * @var LoggerInterface
-	 */
-	private $logger;
-	
+    /**
+     * The logger used by this controller.
+     * @var LoggerInterface
+     */
+    private $logger;
+    
 <?php } ?>
 <?php if ($injectTemplate) { ?>
-	/**
-	 * The template used by this controller.
-	 * @var TemplateInterface
-	 */
-	private $template;
-	
-	/**
-	 * The main content block of the page.
-	 * @var HtmlBlock
-	 */
-	private $content;
-	
+    /**
+     * The template used by this controller.
+     * @var TemplateInterface
+     */
+    private $template;
+    
+    /**
+     * The main content block of the page.
+     * @var HtmlBlock
+     */
+    private $content;
+    
 <?php } ?>
 <?php if ($injectDaoFactory) { ?>
-	/**
-	 * The DAO factory object.
-	 * @var DaoFactory
-	 */
-	private $daoFactory;
+    /**
+     * The DAO factory object.
+     * @var DaoFactory
+     */
+    private $daoFactory;
 
 <?php } ?>
 <?php if ($injectTwig) { ?>
-	/**
-	 * The Twig environment (used to render Twig templates).
-	 * @var Twig_Environment
-	 */
-	private $twig;
+    /**
+     * The Twig environment (used to render Twig templates).
+     * @var Twig_Environment
+     */
+    private $twig;
 
 <?php } ?>
 
-	/**
-	 * Controller's constructor.
+    /**
+     * Controller's constructor.
 <?php 
 if ($injectLogger) {
-	echo "	 * @param LoggerInterface \$logger The logger\n";
+	echo "     * @param LoggerInterface \$logger The logger\n";
 }
 if ($injectTemplate) { 
-	echo "	 * @param TemplateInterface \$template The template used by this controller\n";
-	echo "	 * @param HtmlBlock \$content The main content block of the page\n";
+	echo "     * @param TemplateInterface \$template The template used by this controller\n";
+	echo "     * @param HtmlBlock \$content The main content block of the page\n";
 }
 if ($injectDaoFactory) { 
-	echo "	 * @param DaoFactory \$daoFactory The object in charge of retrieving DAOs\n";
+	echo "     * @param DaoFactory \$daoFactory The object in charge of retrieving DAOs\n";
 }
 if ($injectTwig) {
-	echo "	 * @param Twig_Environment \$twig The Twig environment (used to render Twig templates)\n";
+	echo "     * @param Twig_Environment \$twig The Twig environment (used to render Twig templates)\n";
 }
 ?>
-	 */
-	public function __construct(<?php 
+     */
+    public function __construct(<?php 
 $parameters = array();
 if ($injectLogger) {
-	$parameters[] = 'LoggerInterface $logger';
+    $parameters[] = 'LoggerInterface $logger';
 }
 if ($injectTemplate) {
-	$parameters[] = 'TemplateInterface $template';
-	$parameters[] = 'HtmlBlock $content';
+    $parameters[] = 'TemplateInterface $template';
+    $parameters[] = 'HtmlBlock $content';
 }
 if ($injectDaoFactory) {
-	$parameters[] = 'DaoFactory $daoFactory';
+    $parameters[] = 'DaoFactory $daoFactory';
 }
 if ($injectTwig) {
-	$parameters[] = 'Twig_Environment $twig';
+    $parameters[] = 'Twig_Environment $twig';
 }
 echo implode(', ', $parameters);
 ?>) {
 <?php if ($injectLogger) {?>
-		$this->logger = $logger;
+        $this->logger = $logger;
 <?php }
 if ($injectTemplate) {?>
-		$this->template = $template;
-		$this->content = $content;
+        $this->template = $template;
+        $this->content = $content;
 <?php } 		
 if ($injectDaoFactory) {?>
-		$this->daoFactory = $daoFactory;
+        $this->daoFactory = $daoFactory;
 <?php }
 if ($injectTwig) {?>
-		$this->twig = $twig;
+        $this->twig = $twig;
 <?php } ?>
-	}
-	
+    }
+    
 <?php foreach ($actions as $action):
 	// First step, let's detect the {parameters} in the URL and add them if necessarry
 	// TODO
@@ -299,34 +318,34 @@ if ($injectTwig) {?>
 	// TODO
 
 ?>
-	/**
-	 * @URL <?= $action['url'] ?>
+    /**
+     * @URL <?= $action['url'] ?>
 	 
 <?php if ($action['anyMethod'] == 'false') {
 	if ($action['getMethod'] == 'true') {
-		echo "	 * @Get\n";
+		echo "     * @Get\n";
 	}
 	if ($action['postMethod'] == 'true') {
-		echo "	 * @Post\n";
+		echo "     * @Post\n";
 	}
 	if ($action['putMethod'] == 'true') {
-		echo "	 * @Put\n";
+		echo "     * @Put\n";
 	}
 	if ($action['deleteMethod'] == 'true') {
-		echo "	 * @Delete\n";
+		echo "     * @Delete\n";
 	}
 }
 if (isset($action['parameters'])) {
 	$parameters = $action['parameters'];
 	foreach ($parameters as $parameter) {
-		echo '	 * @param '.$parameter["type"].' $'.$parameter['name']."\n";
+		echo '     * @param '.$parameter["type"].' $'.$parameter['name']."\n";
 	}
 } else {
 	$parameters = array();
 }
 ?>
-	 */
-	public function <?= $action['method'] ?>(<?php 
+     */
+    public function <?= $action['method'] ?>(<?php 
 $parametersCode = array();
 foreach ($parameters as $parameter) {
 	$parameterCode = '$'.$parameter['name'];
@@ -344,25 +363,24 @@ foreach ($parameters as $parameter) {
 }
 echo implode(', ', $parametersCode);
 ?>) {
-		// TODO: write content of action here
-		
+        // TODO: write content of action here
+        
 <?php if ($injectTemplate && $action['view'] == 'twig'): ?>
-		// Let's add the twig file to the template.
-		$this->content->addHtmlElement(new TwigTemplate($this->twig, <?php var_export($action['twigFile']); ?>, array("message"=>"world")));
-		$this->template->toHtml();
+        // Let's add the twig file to the template.
+        $this->content->addHtmlElement(new TwigTemplate($this->twig, <?php var_export($action['twigFile']); ?>, array("message"=>"world")));
+        return new HtmlResponse($this->template);
 <?php elseif ($injectTemplate && $action['view'] == 'php'): ?>
-		// Let's add the view to the content.
-		// Note: $this is passed as the scope, so in the view file, you can refer to protected 
-		// and public variables and methods of this constructor using "$this".
-		$this->content->addFile(ROOT_PATH.<?php var_export($action['phpFile']) ?>, $this);
-		$this->template->toHtml();
+        // Let's add the view to the content.
+        // Note: $this is passed as the scope, so in the view file, you can refer to protected 
+        // and public variables and methods of this constructor using "$this".
+        $this->content->addFile(ROOT_PATH.<?php var_export($action['phpFile']) ?>, $this);
+        return new HtmlResponse($this->template);
 <?php elseif ($action['view'] == 'json'): ?>
-		header("Content-type: application/json");
-		echo json_encode(array("status"=>"ok"));
+        return new JsonResponse([ "status"=>"ok" ]);
 <?php elseif ($action['view'] == 'redirect'): ?>
-		header("Location: <?php echo $action['redirect']; ?>");
+        return new RedirectResponse(<?php var_export($action['redirect']); ?>);
 <?php endif; ?>
-	}
+    }
 <?php endforeach; ?>
 }
 <?php		

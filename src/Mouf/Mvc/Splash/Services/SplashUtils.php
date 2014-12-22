@@ -12,6 +12,10 @@ use Mouf\Reflection\MoufReflectionMethod;
 use Mouf\MoufManager;
 
 use Symfony\Component\HttpFoundation\Response;
+use Mouf\Annotations\paramAnnotation;
+use Mouf\Reflection\TypesDescriptor;
+use Mouf\Reflection\MoufReflectionParameter;
+use Symfony\Component\HttpFoundation\Request;
 
 class SplashUtils {
 	
@@ -74,8 +78,15 @@ class SplashUtils {
 			
 		$values = array();
 		foreach ($parameters as $parameter) {
+			/* @var $parameter MoufReflectionParameter */ 
+			
 			// First step: let's see if there is an @param annotation for that parameter.
 			$found = false;
+			
+			if ($parameter->getType() == 'Symfony\Component\HttpFoundation\Request') {
+				$values[] = new SplashSymfonyRequestFetcher($parameter->getName());
+				continue;
+			}
 			
 			// Let's first see if our parameter is part of the URL
 			if (isset($urlParamsList[$parameter->getName()])) {
@@ -93,12 +104,11 @@ class SplashUtils {
 			
 			if ($paramAnnotations != null) {
 				foreach ($paramAnnotations as $annotation) {
-					/* @var paramAnnotation $annotation */
+					/* @var $annotation paramAnnotation */
 						
 					if (substr($annotation->getParameterName(), 1) == $parameter->getName()) {
 						//$paramAnnotationAnalyzer = new ParamAnnotationAnalyzer($annotation);
 						//$value = $paramAnnotationAnalyzer->getValue();
-
 						
 						if ($parameter->isDefaultValueAvailable()) {
 							$value = new SplashRequestParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());

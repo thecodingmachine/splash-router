@@ -5,6 +5,7 @@ use Mouf\MoufUtils;
 // Force loading this version of the class to bypass autoload
 require_once "Mouf/Mvc/Splash/Services/SplashUrlManager.php";
 require_once "Mouf/Mvc/Splash/Controllers/Admin/SplashViewUrlsController.php";
+require_once "Mouf/Mvc/Splash/Controllers/Admin/SplashCreateControllerController.php";
 
 MoufUtils::registerMainMenu('mvcMainMenu', 'MVC', null, 'mainMenu', 100);
 MoufUtils::registerMenuItem('mvcSplashSubMenu', 'Splash', null, 'mvcMainMenu', 10);
