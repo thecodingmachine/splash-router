@@ -127,7 +127,7 @@ function CreateControllerCtrl($scope, $http) {
 				if (typeof(data)=='string') {
 					addMessage(data);
 				} else {
-					$scope = $.extend($scope, data);
+					$scope = $.extend(true, $scope, data);
 					/*angular.forEach(data, function(value, key) {
 						$scope[key] = value;
 					});*/
