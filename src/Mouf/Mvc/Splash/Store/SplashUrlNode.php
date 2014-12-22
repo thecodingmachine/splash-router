@@ -10,6 +10,7 @@ use Mouf\Mvc\Splash\Utils\SplashException;
  * @author David Negrier
  */
 use Mouf\Mvc\Splash\Services\SplashRoute;
+use Symfony\Component\HttpFoundation\Request;
 
 class SplashUrlNode {
 	/**
@@ -118,24 +119,25 @@ class SplashUrlNode {
 	 * Walks through the nodes to find the callback associated to the URL
 	 * 
 	 * @param string $url
-	 * @param string $httpMethod
+	 * @param Request $request
 	 * @return SplashRoute
 	 */
-	public function walk($url, $httpMethod) {
-		return $this->walkArray(explode("/", $url), $httpMethod, array());
+	public function walk($url, Request $request) {
+		return $this->walkArray(explode("/", $url), $request, array());
 	}
 	
 	/**
 	 * Walks through the nodes to find the callback associated to the URL
 	 * 
 	 * @param array $urlParts
-	 * @param string $httpMethod
+	 * @param Request $request
 	 * @param array $parameters
 	 * @param SplashRoute $closestWildcardRoute The last wildcard (*) route encountered while navigating the tree.
 	 * @throws SplashException
 	 * @return SplashRoute
 	 */
-	private function walkArray(array $urlParts, $httpMethod, array $parameters, $closestWildcardRoute = null) {
+	private function walkArray(array $urlParts, Request $request, array $parameters, $closestWildcardRoute = null) {
+		$httpMethod = $request->getMethod();
 		
 		if (isset($this->wildcardCallbacks[$httpMethod])) {
 			$closestWildcardRoute = $this->wildcardCallbacks[$httpMethod];
@@ -148,7 +150,7 @@ class SplashUrlNode {
 		if (!empty($urlParts)) {
 			$key = array_shift($urlParts);
 			if (isset($this->children[$key])) {
-				return $this->children[$key]->walkArray($urlParts, $httpMethod, $parameters,$closestWildcardRoute);
+				return $this->children[$key]->walkArray($urlParts, $request, $parameters,$closestWildcardRoute);
 			} else {
 				foreach ($this->parameterizedChildren as $varName=>$splashUrlNode) {
 					if (isset($parameters[$varName])) {
@@ -156,7 +158,7 @@ class SplashUrlNode {
 					}
 					$newParams = $parameters;
 					$newParams[$varName] = $key;
-					$result = $this->parameterizedChildren[$varName]->walkArray($urlParts, $httpMethod, $newParams, $closestWildcardRoute);
+					$result = $this->parameterizedChildren[$varName]->walkArray($urlParts, $request, $newParams, $closestWildcardRoute);
 					if ($result != null) {
 						return $result;
 					}

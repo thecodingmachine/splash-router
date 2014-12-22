@@ -80,16 +80,16 @@ class SplashDefaultRouter implements HttpKernelInterface {
 			}
 		}
 			
-		// TODO: add support for %instance% for injecting the instancename of the controller
+		// TODO: add support for [properties] for injecting any property of the controller in the URL
 			
-		$request_array = parse_url($_SERVER['REQUEST_URI']);
+		
+		$request_array = parse_url($request->server->get('REQUEST_URI'));
 			
 		if ($request_array === false) {
-			throw new SplashException("Malformed URL: ".$_SERVER['REQUEST_URI']);
+			throw new SplashException("Malformed URL: ".$request->server->get('REQUEST_URI'));
 		}
 			
 		$request_path = $request_array['path'];
-		$httpMethod = $_SERVER['REQUEST_METHOD'];
 	
 		$pos = strpos($request_path, $splashUrlPrefix);
 		if ($pos === FALSE) {
@@ -98,8 +98,8 @@ class SplashDefaultRouter implements HttpKernelInterface {
 	
 		$tailing_url = substr($request_path, $pos+strlen($splashUrlPrefix));
 	
-		$context = new SplashRequestContext();
-		$splashRoute = $urlNodes->walk($tailing_url, $httpMethod);
+		$context = new SplashRequestContext($request);
+		$splashRoute = $urlNodes->walk($tailing_url, $request);
 	
 		if ($splashRoute === null){
 			return $this->fallBackRouter->handle($request, $type, $catch);
@@ -113,7 +113,7 @@ class SplashDefaultRouter implements HttpKernelInterface {
 	
 		if ($this->log != null) {
 			$this->log->info("Routing user with URL {url} to controller {controller} and action {action}", array(
-				'url' => $_SERVER['REDIRECT_URL'],
+				'url' => $request->server->get('REQUEST_URI'),
 				'controller' => get_class($controller),
 				'action' => $action
 			));
@@ -143,8 +143,8 @@ class SplashDefaultRouter implements HttpKernelInterface {
 			}
 	
 			// Handle action__GET or action__POST method (for legacy code).
-			if(method_exists($controller, $action.'__'.$_SERVER['REQUEST_METHOD'])) {
-				$action = $action.'__'.$_SERVER['REQUEST_METHOD'];
+			if(method_exists($controller, $action.'__'.$request->getMethod())) {
+				$action = $action.'__'.$request->getMethod();
 			}
 	
 			$filters = $splashRoute->filters;
