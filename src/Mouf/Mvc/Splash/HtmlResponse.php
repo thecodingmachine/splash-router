@@ -50,6 +50,14 @@ class HtmlResponse extends Response
     }
     
     /**
+     * Returns the HtmlElement to be rendered.
+     * @return \Mouf\Html\HtmlElement\HtmlElementInterface
+     */
+    public function getHtmlElement() {
+    	return $this->htmlElement;
+    }
+    
+    /**
      * Sends content for the current web response.
      *
      * @return Response

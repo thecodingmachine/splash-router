@@ -176,7 +176,13 @@ class SplashUtils {
 	
 	public static function buildControllerResponse($callback){
 		ob_start();
-		$result = $callback();
+		try {
+			$result = $callback();
+		} catch (Exception $e) {
+			ob_end_clean();
+			// Rethrow and keep stack trace.
+			throw $e;
+		}
 		$html = ob_get_clean();
 	
 		$headers = headers_list();
