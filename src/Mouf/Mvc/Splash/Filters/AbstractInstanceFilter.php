@@ -7,12 +7,11 @@ namespace Mouf\Mvc\Splash\Filters;
  */
 abstract class AbstractInstanceFilter extends AbstractFilter
 {
-	/**
+    /**
 	 * Sets the parameters stored in this annotation.
 	 * This function is automatically called just after the annotation is created.
-	 * 
+	 *
 	 * @param string $value
 	 */
-	abstract function setValue($value);	
+    abstract public function setValue($value);
 }
-?>

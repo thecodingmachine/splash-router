@@ -1,31 +1,31 @@
 <?php
 namespace Mouf\Mvc\Splash\Utils;
 
-class ExceptionUtils {
+class ExceptionUtils
+{
 	/**
 	 * Returns the Exception Backtrace as a nice HTML view.
 	 *
 	 * @param unknown_type $backtrace
 	 * @return unknown
 	 */
-	private static function getHTMLBackTrace($backtrace) {
+	private static function getHTMLBackTrace($backtrace)
+	{
 		$str = '';
 
 		foreach ($backtrace as $step) {
-			if ($step['function']!='getHTMLBackTrace' && $step['function']!='handle_error')
-			{
+			if ($step['function']!='getHTMLBackTrace' && $step['function']!='handle_error') {
 				$str .= '<tr><td style="border-bottom: 1px solid #EEEEEE">';
-				$str .= ((isset($step['class']))?htmlspecialchars($step['class'], ENT_NOQUOTES, "UTF-8"):'').
-				((isset($step['type']))?htmlspecialchars($step['type'], ENT_NOQUOTES, "UTF-8"):'').htmlspecialchars($step['function'], ENT_NOQUOTES, "UTF-8").'(';
+				$str .= ((isset($step['class'])) ? htmlspecialchars($step['class'], ENT_NOQUOTES, "UTF-8") : '').
+				((isset($step['type'])) ? htmlspecialchars($step['type'], ENT_NOQUOTES, "UTF-8") : '').htmlspecialchars($step['function'], ENT_NOQUOTES, "UTF-8").'(';
 
 				if (is_array($step['args'])) {
 					$drawn = false;
 					$params = '';
-					foreach ( $step['args'] as $param)
-					{
+					foreach ($step['args'] as $param) {
 						$params .= self::getPhpVariableAsText($param);
 						//$params .= var_export($param, true);
-						$params .= ', ';
+                        $params .= ', ';
 						$drawn = true;
 					}
 					$str .= htmlspecialchars($params, ENT_NOQUOTES, "UTF-8");
@@ -34,9 +34,9 @@ class ExceptionUtils {
 				}
 				$str .= ')';
 				$str .= '</td><td style="border-bottom: 1px solid #EEEEEE">';
-				$str .= ((isset($step['file']))?htmlspecialchars(self::displayFile($step['file']), ENT_NOQUOTES, "UTF-8"):'');
+				$str .= ((isset($step['file'])) ? htmlspecialchars(self::displayFile($step['file']), ENT_NOQUOTES, "UTF-8") : '');
 				$str .= '</td><td style="border-bottom: 1px solid #EEEEEE">';
-				$str .= ((isset($step['line']))?$step['line']:'');
+				$str .= ((isset($step['line'])) ? $step['line'] : '');
 				$str .= '</td></tr>';
 			}
 		}
@@ -50,13 +50,13 @@ class ExceptionUtils {
 	 *
 	 * @param Exception $exception
 	 */
-	static function getHtmlForException(\Exception $exception) {
+	public static function getHtmlForException(\Exception $exception)
+	{
 		//global $sys_error_reporting_mail;
-		//global $sys_error_messages;
-		$msg='';
+        //global $sys_error_messages;
+        $msg='';
 
 		$msg = '<table>';
-
 
 		$display_errors = ini_get('display_errors');
 		$color = "#FF0000";
@@ -86,9 +86,10 @@ class ExceptionUtils {
 	 *
 	 * @param Exception $exception
 	 */
-	static function getTextForException(\Exception $exception) {
+	public static function getTextForException(\Exception $exception)
+	{
 		// Now, let's compute the same message, but without the HTML markup for the error log.
-		$textTrace = "Message: ".$exception->getMessage()."\n";
+        $textTrace = "Message: ".$exception->getMessage()."\n";
 		$textTrace .= "File: ".$exception->getFile()."\n";
 		$textTrace .= "Line: ".$exception->getLine()."\n";
 		$textTrace .= "Stacktrace:\n";
@@ -101,27 +102,26 @@ class ExceptionUtils {
 	 * @param unknown_type $backtrace
 	 * @return unknown
 	 */
-	static private function getTextBackTrace($backtrace) {
+	private static function getTextBackTrace($backtrace)
+	{
 		$str = '';
 
 		foreach ($backtrace as $step) {
-			if ($step['function']!='getTextBackTrace' && $step['function']!='handle_error')
-			{
+			if ($step['function']!='getTextBackTrace' && $step['function']!='handle_error') {
 				if (isset($step['file']) && isset($step['line'])) {
 					$str .= "In ".$step['file'] . " at line ".$step['line'].": ";
 				}
-				if (isset($step['class']) && isset($step['type']) && isset($step['function'])) {			
+				if (isset($step['class']) && isset($step['type']) && isset($step['function'])) {
 					$str .= $step['class'].$step['type'].$step['function'].'(';
 				}
 
 				if (is_array($step['args'])) {
 					$drawn = false;
 					$params = '';
-					foreach ( $step['args'] as $param)
-					{
+					foreach ($step['args'] as $param) {
 						$params .= self::getPhpVariableAsText($param);
 						//$params .= var_export($param, true);
-						$params .= ', ';
+                        $params .= ', ';
 						$drawn = true;
 					}
 					$str .= $params;
@@ -142,48 +142,43 @@ class ExceptionUtils {
 	 * @param unknown_type $var
 	 * @return unknown
 	 */
-	private static function getPhpVariableAsText($var) {
+	private static function getPhpVariableAsText($var)
+	{
 		if( is_string( $var ) )
 		return( '"'.str_replace( array("\x00", "\x0a", "\x0d", "\x1a", "\x09"), array('\0', '\n', '\r', '\Z', '\t'), $var ).'"' );
-		else if( is_int( $var ) || is_float( $var ) )
-		{
+		elseif ( is_int( $var ) || is_float( $var ) ) {
 			return( $var );
-		}
-		else if( is_bool( $var ) )
-		{
+		} elseif ( is_bool( $var ) ) {
 			if( $var )
 			return( 'true' );
 			else
 			return( 'false' );
-		}
-		else if( is_array( $var ) )
-		{
+		} elseif ( is_array( $var ) ) {
 			$result = 'array( ';
 			$comma = '';
-			foreach( $var as $key => $val )
-			{
+			foreach ($var as $key => $val) {
 				$result .= $comma.self::getPhpVariableAsText( $key ).' => '.self::getPhpVariableAsText( $val );
 				$comma = ', ';
 			}
 			$result .= ' )';
 			return( $result );
-		}
-
-		elseif (is_object($var)) return "Object ".get_class($var);
+		} elseif (is_object($var)) return "Object ".get_class($var);
 		elseif(is_resource($var)) return "Resource ".get_resource_type($var);
 		return "Unknown type variable";
 	}
-	
-	private static function displayFile($file) {
+
+	private static function displayFile($file)
+	{
 		$realpath = realpath($file);
 		if (!$realpath) {
 			// If the file is a phar::// or something...
-			return $file;
+
+            return $file;
 		}
 		$cwd = getcwd().DIRECTORY_SEPARATOR;
 		return self::getRelativePath($cwd, $realpath);
 	}
-	
+
 	/**
 	 * Returns a relative path based on 2 absolute paths.
 	 * @param string $from
@@ -195,18 +190,18 @@ class ExceptionUtils {
 		$from     = explode('/', $from);
 		$to       = explode('/', $to);
 		$relPath  = $to;
-	
-		foreach($from as $depth => $dir) {
+
+		foreach ($from as $depth => $dir) {
 			// find first non-matching dir
-			if(isset($to[$depth]) && $dir === $to[$depth]) {
+            if (isset($to[$depth]) && $dir === $to[$depth]) {
 				// ignore this directory
-				array_shift($relPath);
+                array_shift($relPath);
 			} else {
 				// get number of remaining dirs to $from
-				$remaining = count($from) - $depth;
-				if($remaining > 1) {
+                $remaining = count($from) - $depth;
+				if ($remaining > 1) {
 					// add traversals up to first matching dir
-					$padLength = (count($relPath) + $remaining - 1) * -1;
+                    $padLength = (count($relPath) + $remaining - 1) * -1;
 					$relPath = array_pad($relPath, $padLength, '..');
 					break;
 				} else {
@@ -216,6 +211,5 @@ class ExceptionUtils {
 		}
 		return implode('/', $relPath);
 	}
-	
+
 }
-?>

@@ -7,26 +7,26 @@ use Mouf\Mvc\Splash\Utils\SplashException;
 
 /**
  * This class is a Symfony 2 response that takes in parameter a HtmlElementInterface element and will render it.
- * 
+ *
  * @author David Négrier <david@mouf-php.com>
  */
 class HtmlResponse extends Response
 {
-	/**
+    /**
 	 * @var HtmlElementInterface
 	 */
-	protected $htmlElement;
-	
+    protected $htmlElement;
+
     /**
      * Constructor.
      *
-     * @param HtmlElementInterface $htmlElement    An HtmlElement to render.
-     * @param int   $status  The response status code
-     * @param array $headers An array of response headers
+     * @param HtmlElementInterface $htmlElement An HtmlElement to render.
+     * @param int                  $status      The response status code
+     * @param array                $headers     An array of response headers
      */
     public function __construct(HtmlElementInterface $htmlElement = null, $status = 200, $headers = array())
     {
-    	parent::__construct("", $status, $headers);
+        parent::__construct("", $status, $headers);
         $this->htmlElement = $htmlElement;
     }
 
@@ -35,28 +35,31 @@ class HtmlResponse extends Response
      */
     public static function create($htmlElement = '', $status = 200, $headers = array())
     {
-    	if (!$htmlElement instanceof HtmlElementInterface) {
-    		throw new SplashException("HtmlResponse::create expects first argument to implement HtmlElementInterface");
-    	}
+        if (!$htmlElement instanceof HtmlElementInterface) {
+            throw new SplashException("HtmlResponse::create expects first argument to implement HtmlElementInterface");
+        }
+
         return new static($htmlElement, $status, $headers);
     }
-    
+
     /**
      * Sets the HtmlElement to be rendered.
      * @param HtmlElementInterface $htmlElement
      */
-    public function setHtmlElement(HtmlElementInterface $htmlElement) {
-    	$this->htmlElement = $htmlElement;
+    public function setHtmlElement(HtmlElementInterface $htmlElement)
+    {
+        $this->htmlElement = $htmlElement;
     }
-    
+
     /**
      * Returns the HtmlElement to be rendered.
      * @return \Mouf\Html\HtmlElement\HtmlElementInterface
      */
-    public function getHtmlElement() {
-    	return $this->htmlElement;
+    public function getHtmlElement()
+    {
+        return $this->htmlElement;
     }
-    
+
     /**
      * Sends content for the current web response.
      *
@@ -64,10 +67,10 @@ class HtmlResponse extends Response
      */
     public function sendContent()
     {
-    	if ($this->htmlElement) {
-    		echo $this->htmlElement->toHtml();
-    	}
-    
-    	return $this;
+        if ($this->htmlElement) {
+            echo $this->htmlElement->toHtml();
+        }
+
+        return $this;
     }
 }
