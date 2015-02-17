@@ -31,8 +31,6 @@ $msg['404.wrong.url']="L'URL semble contenir une erreur.";
 
 $msg['controller.404.no.action'] = "Note pour les développeurs: le controlleur '{0}' a été trouvé, et la fonction '{1}' existe. Cependant, la fonction '{1}' ne possède pas d'annotation @Action. Elle ne peut donc pas être accédée par URL.";
 $msg['controller.incorrect.parameter.title'] = "Les paramètres passés dans l'URL sont incorrects.";
-$msg['controller.incorrect.parameter.text'] = "Les paramètres passés dans l'URL sont incorrects: L'URL correspond à l'action '{0}->{1}'. Cette action nécessite que le paramètre '{2}' soit spécifié."; 
+$msg['controller.incorrect.parameter.text'] = "Les paramètres passés dans l'URL sont incorrects: L'URL correspond à l'action '{0}->{1}'. Cette action nécessite que le paramètre '{2}' soit spécifié.";
 $msg['controller.annotation.var.validation.error'] = "Les paramètres passés dans l'URL sont incorrects: Le paramètre {1} devrait passer le validateur {0}, mais ce n'est pas le cas. Valeur passée: '{2}'.";
 $msg['controller.annotation.var.validation.error.title'] = "Les paramètres passés dans l'URL sont incorrects";
-
-?>

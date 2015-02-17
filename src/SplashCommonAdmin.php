@@ -20,5 +20,3 @@ $moufManager->bindComponents('splashViewUrls', 'content', 'block.content');
 $moufManager->declareComponent('splashCreateController', 'Mouf\\Mvc\\Splash\\Controllers\\Admin\\SplashCreateControllerController', true);
 $moufManager->bindComponent('splashCreateController', 'template', 'moufTemplate');
 $moufManager->bindComponents('splashCreateController', 'content', 'block.content');
-
-?>

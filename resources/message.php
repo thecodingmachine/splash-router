@@ -26,15 +26,12 @@ $msg['404.wrong.file']="The URL seems to contain an error. ";
 $msg['404.wrong.method']="The URL seems to contain an error. ";
 $msg['404.wrong.url']="The URL seems to contain an error.";
 
-
-
 $msg['controller.404.no.action'] = "Note for developers: the controller '{0}' has been found, and the function '{1}' exists. However, the function '{1}' does not have a @Action annotation. Therefore, it cannot be accessed.";
 $msg['controller.incorrect.parameter.title'] = "Incorrect parameters passed in URL.";
-$msg['controller.incorrect.parameter.text'] = "Incorrect parameters passed in URL: The URL maps to action '{0}->{1}'. This action expects parameter '{2}' to be specified."; 
+$msg['controller.incorrect.parameter.text'] = "Incorrect parameters passed in URL: The URL maps to action '{0}->{1}'. This action expects parameter '{2}' to be specified.";
 $msg['controller.annotation.var.validation.error'] = "Incorrect parameters passed in URL: The parameter {1} should map validator {0}, but it doesn't. Value passed: '{2}'.";
 $msg['controller.annotation.var.validation.error.title'] = "Incorrect parameters passed in URL";
 
 $msg['subscribe.tab.first'] = "Acc&egrave;s";
 $msg['subscribe.tab.second'] = "Infos perso";
 $msg['subscribe.tab.third'] = "Le petit plus";
-?>

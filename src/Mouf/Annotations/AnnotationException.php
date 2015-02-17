@@ -6,7 +6,6 @@ namespace Mouf\Annotations;
  */
 use Mouf\MoufException;
 
-class AnnotationException extends MoufException {
-
+class AnnotationException extends MoufException
+{
 }
-?>

@@ -14,45 +14,46 @@ use Mouf\Mvc\Splash\Services\SplashUtils;
  * @author Kevin Nguyen
  * @author David Négrier
  */
-class ExceptionRouter implements HttpKernelInterface {
-	
-	/**
+class ExceptionRouter implements HttpKernelInterface
+{
+    /**
 	 * The logger
 	 *
 	 * @var LoggerInterface
 	 */
-	private $log;
-	
-	/**
+    private $log;
+
+    /**
 	 * @var HttpKernelInterface
 	 */
-	private $router;
-	
-	/**
+    private $router;
+
+    /**
 	 * The controller that will display 500 errors
 	 * @var Http500HandlerInterface
 	 */
-	private $errorController;
-	
-	/**
+    private $errorController;
+
+    /**
 	 * The "500" message
 	 * @var string|ValueInterface
 	 */
-	private $message = "Page not found";
-	
-	/**
+    private $message = "Page not found";
+
+    /**
 	 * @Important
 	 * @param HttpKernelInterface $router The default router (the router we will catch exceptions from).
 	 * @param LoggerInterface $log Logger to log errors.
 	 * @param bool $debugMode Whether we should print debug backtrace or not
 	 */
-	public function __construct(HttpKernelInterface $router, Http500HandlerInterface $errorController, LoggerInterface $log = null){
-		$this->router = $router;
-		$this->errorController = $errorController;
-		$this->log = $log;
-	}
-	
-	/**
+    public function __construct(HttpKernelInterface $router, Http500HandlerInterface $errorController, LoggerInterface $log = null)
+    {
+        $this->router = $router;
+        $this->errorController = $errorController;
+        $this->log = $log;
+    }
+
+    /**
 	 * Handles a Request to convert it to a Response.
 	 *
 	 * When $catch is true, the implementation must catch all exceptions
@@ -67,52 +68,55 @@ class ExceptionRouter implements HttpKernelInterface {
 	 *
 	 * @throws \Exception When an Exception occurs during processing (and $catch is set to false)
 	 */
-	public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true){
-		if ($catch){
-			try {
-				return $this->router->handle($request, $type, false);
-			} catch (\Exception $e) {
-				return $this->handleException($e);
-			}
-		}else{
-			return $this->router->handle($request, $type);
-		}
-	}
-	
-	/**
+    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
+    {
+        if ($catch) {
+            try {
+                return $this->router->handle($request, $type, false);
+            } catch (\Exception $e) {
+                return $this->handleException($e);
+            }
+        } else {
+            return $this->router->handle($request, $type);
+        }
+    }
+
+    /**
 	 * Actually handle the exception depending
 	 * @param \Exception $e
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	private function handleException(\Exception $e) {
-		if ($this->log != null) {
-			if ($this->log instanceof LogInterface) {
-				$this->log->error($e);
-			} else {
-				$this->log->error("Exception thrown inside a controller.", array(
-						'exception' => $e
-				));
-			}
-		} else {
-			// If no logger is set, let's log in PHP error_log
-			error_log($e->getMessage()." - ".$e->getTraceAsString());
-		}
-	
-		$response = SplashUtils::buildControllerResponse(
-			function () use ($e) {
-				return $this->errorController->serverError($e);
-			}
-		);
+    private function handleException(\Exception $e)
+    {
+        if ($this->log != null) {
+            if ($this->log instanceof LogInterface) {
+                $this->log->error($e);
+            } else {
+                $this->log->error("Exception thrown inside a controller.", array(
+                        'exception' => $e
+                ));
+            }
+        } else {
+            // If no logger is set, let's log in PHP error_log
+            error_log($e->getMessage()." - ".$e->getTraceAsString());
+        }
 
-		return $response;
-	}
-	
-	/**
+        $response = SplashUtils::buildControllerResponse(
+            function () use ($e) {
+                return $this->errorController->serverError($e);
+            }
+        );
+
+        return $response;
+    }
+
+    /**
 	 * The "500" message
 	 * @param string|ValueInterface $message
 	 */
-	public function setMessage($message){
-		$this->message = $message;
-	}
-	
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
 }
