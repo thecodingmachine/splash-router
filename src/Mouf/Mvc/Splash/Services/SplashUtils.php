@@ -173,34 +173,35 @@ class SplashUtils {
 	
 		return call_user_func_array(array($translationService, "getTranslation"), func_get_args());
 	}
-	
-	public static function buildControllerResponse($callback){
-		ob_start();
-		try {
-			$result = $callback();
-		} catch (Exception $e) {
-			ob_end_clean();
-			// Rethrow and keep stack trace.
-			throw $e;
-		}
-		$html = ob_get_clean();
-	
-		$headers = headers_list();
-		$code = http_response_code();
-	
-		if ($result instanceof Response){
-			if ($html !== ""){
-				throw new SplashException("You cannot output text AND return Response object in the same action. Output already started :'$html");
-			}
-			if (count($headers) != 0){
-				if (count($headers) != 1 || strpos($headers[0], 'X-Powered-By') !== 0) { // Let's ignore the "X-Powered-By" header that can be added by PHP itself
-					throw new SplashException("You canot use the 'header()' function when returning Response object. Detected headers are : ".var_export($headers, true));
-				}
-			}
-			return $result;
-		}
-		return new Response($html, $code, $headers);
-	}
+
+    public static function buildControllerResponse($callback){
+        ob_start();
+        try {
+            $result = $callback();
+        } catch (Exception $e) {
+            ob_end_clean();
+            // Rethrow and keep stack trace.
+            throw $e;
+        }
+        $html = ob_get_clean();
+
+        if ($result instanceof Response){
+            if ($html !== ""){
+                throw new SplashException("You cannot output text AND return Response object in the same action. Output already started :'$html");
+            }
+
+            if (headers_sent()) {
+                $headers = headers_list();
+                throw new SplashException("Headers already sent. Detected headers are : ".var_export($headers, true));
+            }
+            return $result;
+        }
+
+        $code = http_response_code();
+        $headers = headers_list();
+        
+        return new Response($html, $code, $headers);
+    }
 	
 	
 }
