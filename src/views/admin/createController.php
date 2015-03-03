@@ -3,7 +3,6 @@
 
 <script type="text/javascript">
 globalData = <?php echo json_encode(array(
-    "sourceDirectory"=>$this->sourceDirectory,
     "namespace"=>$this->controllerNamespace,
     "tdbmExists"=>file_exists(ROOT_PATH.'../database.tdbm')
 )); ?>
@@ -21,23 +20,15 @@ Unless you are developing your own autoload system, you should configure <code>c
 <div class="control-group" ng-class="{error:controllerNameError}">
 	<label class="control-label" for="controllerclass">Controller class name:</label>
 	<div class="controls">
-		<input type="text" id="controllerclass" name="controllerclass" ng-model="controllerName" ui-event="{keyup: 'changeInstanceName($event)'}"></input><span class="help-inline" ng-show="controllerNameError">{{controllerNameError}}</span>
+		<input type="text" id="controllerclass" name="controllerclass" ng-model="controllerName" ui-event="{keyup: 'changeInstanceName($event)'}" /><span class="help-inline" ng-show="controllerNameError">{{controllerNameError}}</span>
 		<span class="help-block">The controller class name, <strong>without the namespace</strong>. It is good practice to start it with an upper-case letter and end it with the word "Controller".</span>
-	</div>
-</div>
-
-<div class="control-group" ng-class="{error:sourceDirectoryError}">
-	<label class="control-label" for="sourcedirectory">Source directory:</label>
-	<div class="controls">
-		<input type="text" id="sourcedirectory" name="sourcedirectory" ng-model="sourceDirectory"></input><span class="help-inline" ng-show="sourceDirectoryError">{{sourceDirectoryError}}</span>
-		<span class="help-block">This is the directory containing your source code (it should be configured in the "autoload" section of your <em>composer.json</em> file.)</span>
 	</div>
 </div>
 
 <div class="control-group" ng-class="{error:namespaceError}">
 	<label class="control-label" for="namespace">Namespace:</label>
 	<div class="controls">
-		<input type="text" id="namespace" name="namespace" ng-model="namespace"></input><span class="help-inline" ng-show="namespaceError">{{namespaceError}}</span>
+		<input type="text" id="namespace" name="namespace" ng-model="namespace" /><span class="help-inline" ng-show="namespaceError">{{namespaceError}}</span>
 		<span class="help-block">The namespace of the controller. The vendor name (the first part of the namespace) should be referred in the "autoload" section of your <em>composer.json</em> file.</span>
 	</div>
 </div>
@@ -45,7 +36,7 @@ Unless you are developing your own autoload system, you should configure <code>c
 <div class="control-group" ng-class="{error:instanceError}">
 	<label class="control-label" for="instancename">Instance name:</label>
 	<div class="controls">
-		<input type="text" id="instancename" name="instancename" ng-model="instanceName"></input><span class="help-inline" ng-show="instanceError">{{instanceError}}</span>
+		<input type="text" id="instancename" name="instancename" ng-model="instanceName" /><span class="help-inline" ng-show="instanceError">{{instanceError}}</span>
 		<span class="help-block">The name of the instance for this controller. Usually the class name, but camel-cased.</span>
 	</div>
 </div>
@@ -71,7 +62,7 @@ Unless you are developing your own autoload system, you should configure <code>c
 	<div class="control-group">
 		<label class="control-label">URL:</label>
 		<div class="controls">
-			<input type="text" name="url[]" ng-model="action.url"></input>
+			<input type="text" name="url[]" ng-model="action.url" />
 			<span class="help-block"><ul>
 				<li>URL is relative to the root of you application (<code>ROOT_URL</code>)</li>
 				<li>Pay attention to the trailing /. For instance: <code>user/</code> and <code>user</code> are two different URLs</li>
@@ -104,7 +95,7 @@ Unless you are developing your own autoload system, you should configure <code>c
 	<div class="control-group">
 		<label class="control-label">Method name:</label>
 		<div class="controls">
-			<input type="text" name="method[]" ng-model="action.method" ui-event="{keyup: 'changeMethod(action)'}"></input>
+			<input type="text" name="method[]" ng-model="action.method" ui-event="{keyup: 'changeMethod(action)'}" />
 			<span class="help-block">The name of the method for this action.</span>
 		</div>
 	</div>

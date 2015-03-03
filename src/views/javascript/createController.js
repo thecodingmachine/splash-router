@@ -4,7 +4,6 @@ angular.module('myApp', ['ui.utils']);
 function CreateControllerCtrl($scope, $http) {
 	$scope.controllerName = "SampleController";
 	$scope.instanceName = "sampleController";
-	$scope.sourceDirectory = globalData.sourceDirectory;
 	$scope.namespace = globalData.namespace;
 	$scope.tdbmExists = globalData.tdbmExists;
 	$scope.injectLogger = true;
@@ -55,8 +54,8 @@ function CreateControllerCtrl($scope, $http) {
 			putMethod: false,
 			deleteMethod: false,
 			view: "twig",
-			twigFile: $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/index.twig",
-			phpFile: $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/index.php",
+			twigFile: "views/"+$scope.instanceName.replace("Controller", "")+"/index.twig",
+			phpFile: "views/"+$scope.instanceName.replace("Controller", "")+"/index.php",
 			redirect: "" 
 		});
 		
@@ -86,19 +85,18 @@ function CreateControllerCtrl($scope, $http) {
 	$scope.$watch('instanceName', function() {
 		// Let's update the actions path:
 		angular.forEach($scope.actions, function(action) {
-			action.twigFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".twig";
-			action.phpFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".php";
+			action.twigFile = "views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".twig";
+			action.phpFile = "views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".php";
 		});
 	});
 	
 	$scope.changeMethod = function(action) {
-		action.twigFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".twig";
-		action.phpFile = $scope.sourceDirectory+"views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".php";
+		action.twigFile = "views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".twig";
+		action.phpFile = "views/"+$scope.instanceName.replace("Controller", "")+"/"+action.method+".php";
 	}
 	
 	$scope.submit = function() {
 		$scope.controllerNameError = false;
-		$scope.sourceDirectoryError = false;
 		$scope.namespaceError = false;
 		$scope.instanceError = false;
 		angular.forEach($scope.actions, function(value, key) {
@@ -111,7 +109,6 @@ function CreateControllerCtrl($scope, $http) {
 			data : $.param({
 				controllerName: $scope.controllerName,
 				instanceName: $scope.instanceName,
-				sourceDirectory: $scope.sourceDirectory,
 				namespace: $scope.namespace,
 				injectLogger: $scope.injectLogger,
 				injectTemplate: $scope.injectTemplate,

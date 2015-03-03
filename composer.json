@@ -20,6 +20,7 @@
 		"MIT"
 	],
 	"require" : {
+		"mouf/mouf" : ">=2.0.2, <3.0",
 		"php" : ">=5.3.0",
 		"mouf/utils.cache.apc-cache" : "~2.1",
 		"mouf/utils.cache.file-cache" : "~2.1",
