@@ -95,7 +95,7 @@ class SplashDefaultRouter implements HttpKernelInterface
 
         $pos = strpos($request_path, $splashUrlPrefix);
         if ($pos === FALSE) {
-            throw new \Exception('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file.');
+            throw new \Exception('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file.Requested URL : "'.$request_path.'"');
         }
 
         $tailing_url = substr($request_path, $pos+strlen($splashUrlPrefix));
