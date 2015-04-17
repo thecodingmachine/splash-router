@@ -116,14 +116,12 @@ abstract class Controller implements Scopable, UrlProviderInterface
 					$url = $urlAnnotation->getUrl();
 
                     // Get public properties if they exist in the URL
-                    if (preg_match_all('/([^\{$]*){\$this->([^\/]*)}([^\{$]*)/', $url, $output)) {
-                        $url = $output[1][0];
+                    if (preg_match_all('/([^\{]*){\$this->([^\/]*)}([^\{]*)/', $url, $output)) {
                         foreach ($output[2] as $key => $param) {
                             $properties[$key] = $instance->getProperty($param)->getValue();
                         }
-                        foreach ($output[3] as $key => $path) {
-                            $property = $properties[$key];
-                            $url .= $property.$path;
+                        foreach ($properties as $key => $value){
+                            $url = str_replace($output[0][$key], $value . "/", $url);
                         }
                     }
 
