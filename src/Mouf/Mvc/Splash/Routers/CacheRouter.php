@@ -97,8 +97,19 @@ class CacheRouter implements HttpKernelInterface
                         $this->log->debug("TTL is  : $ttl");
                     }
 
-                    $this->cache->set($key, $response, $ttl);
+                    // Make sure the response is serializable
+                    $serializableResponse = new Response();
+                    $serializableResponse->headers = $response->headers;
+
+                    ob_start();
+                    $response->sendContent();
+                    $content = ob_get_clean();
+
+                    $serializableResponse->setContent($content);
+
+                    $this->cache->set($key, $serializableResponse, $ttl);
                     $this->log->debug("Cache STORED on key $key");
+                    $response = $serializableResponse;
                 }
 
                 return $response;
