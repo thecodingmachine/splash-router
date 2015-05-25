@@ -180,7 +180,7 @@ class SplashUtils
         ob_start();
         try {
             $result = $callback();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             ob_end_clean();
             // Rethrow and keep stack trace.
             throw $e;
@@ -201,9 +201,31 @@ class SplashUtils
         }
 
         $code = http_response_code();
-        $headers = headers_list();
+        $headers = SplashUtils::greatResponseHeaders();
+
+        // Suppress actual headers (re-add by Symfony Response)
+        // If you don't remove old headers, it's duplicated in HTTP Headers
+        foreach ($headers as $key => $head) {
+            header_remove($key);
+        }
 
         return new Response($html, $code, $headers);
+    }
+
+    /**
+     * Same as apache_response_headers (for any server)
+     * @return array
+     */
+    private static function greatResponseHeaders() {
+        $arh = array();
+
+        // headers_list don't return associative array
+        $headers = headers_list();
+        foreach ($headers as $header) {
+            $header = explode(":", $header);
+            $arh[array_shift($header)] = trim(implode(":", $header));
+        }
+        return $arh;
     }
 
 }
