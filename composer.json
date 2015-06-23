@@ -30,7 +30,7 @@
 		"mouf/utils.action.common-action" : "~1.0",
 		"mouf/utils.common.url-interface" : "~1.0",
 		"mouf/html.renderer.twig-extensions": "~1.0",
-        "mouf/mvc.splash-implementation": "~5.0",
+		"mouf/mvc.splash-implementation": "~7.0",
 		"symfony/http-kernel" : "~2.0",
 		"mouf/utils.common.conditioninterface": "~2.0",
 		"mouf/utils.cache.cache-interface": "~2.0"
