@@ -33,7 +33,8 @@
 		"mouf/mvc.splash-implementation": "~7.0",
 		"mouf/utils.common.conditioninterface": "~2.0",
 		"mouf/utils.cache.cache-interface": "~2.0",
-        "zendframework/zend-stratigility": "~1.0"
+        "zendframework/zend-stratigility": "~1.0",
+        "zendframework/zend-diactoros": "~1.0"
 	},
 	"autoload" : {
 		"psr-0" : {
