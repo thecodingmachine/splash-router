@@ -10,6 +10,7 @@ use Mouf\Mvc\Splash\Utils\SplashException;
  * @author David Negrier
  */
 use Mouf\Mvc\Splash\Services\SplashRoute;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class SplashUrlNode
@@ -122,7 +123,7 @@ class SplashUrlNode
 	 * @param Request $request
 	 * @return SplashRoute
 	 */
-    public function walk($url, Request $request)
+    public function walk($url, ServerRequestInterface $request)
     {
         return $this->walkArray(explode("/", $url), $request, array());
     }
