@@ -1,9 +1,9 @@
 <?php
 namespace Mouf\Mvc\Splash\Routers;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Mouf\Mvc\Splash\Utils\SplashException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Mouf\Utils\Cache\CacheInterface;
 use Mouf\MoufManager;
 use Mouf\Mvc\Splash\Store\SplashUrlNode;
@@ -11,8 +11,9 @@ use Psr\Log\LoggerInterface;
 use Mouf\Mvc\Splash\Controllers\WebServiceInterface;
 use Mouf\Mvc\Splash\Services\SplashRequestContext;
 use Mouf\Mvc\Splash\Services\SplashUtils;
+use Zend\Stratigility\MiddlewareInterface;
 
-class SplashDefaultRouter implements HttpKernelInterface
+class SplashDefaultRouter implements MiddlewareInterface
 {
     /**
 	 * The logger used by Splash
@@ -29,41 +30,42 @@ class SplashDefaultRouter implements HttpKernelInterface
     private $cacheService;
 
     /**
-	 * The router that will handle the request if this one fails to find a matching route
-	 *
-	 * @var HttpKernelInterface
-	 */
-    private $fallBackRouter;
-
-    /**
 	 * @Important
-	 * @param HttpKernelInterface $fallBackRouter Router used if no page is found for this controller.
 	 * @param CacheInterface $cacheService Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
 	 * @param LoggerInterface $log The logger used by Splash
 	 */
-    public function __construct(HttpKernelInterface $fallBackRouter, CacheInterface $cacheService = null, LoggerInterface $log = null)
+    public function __construct(CacheInterface $cacheService = null, LoggerInterface $log = null)
     {
-        $this->fallBackRouter = $fallBackRouter;
         $this->cacheService = $cacheService;
         $this->log = $log;
     }
 
     /**
-	 * Handles a Request to convert it to a Response.
-	 *
-	 * When $catch is true, the implementation must catch all exceptions
-	 * and do its best to convert them to a Response instance.
-	 *
-	 * @param Request $request A Request instance
-	 * @param int     $type    The type of the request
-	 *                          (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
-	 * @param bool    $catch Whether to catch exceptions or not
-	 *
-	 * @return Response A Response instance
-	 *
-	 * @throws \Exception When an Exception occurs during processing
-	 */
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
+     * Process an incoming request and/or response.
+     *
+     * Accepts a server-side request and a response instance, and does
+     * something with them.
+     *
+     * If the response is not complete and/or further processing would not
+     * interfere with the work done in the middleware, or if the middleware
+     * wants to delegate to another process, it can use the `$out` callable
+     * if present.
+     *
+     * If the middleware does not return a value, execution of the current
+     * request is considered complete, and the response instance provided will
+     * be considered the response to return.
+     *
+     * Alternately, the middleware may return a response instance.
+     *
+     * Often, middleware will `return $out();`, with the assumption that a
+     * later middleware will return a response.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param null|callable $out
+     * @return null|ResponseInterface
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
         // FIXME: find a better way?
         $splashUrlPrefix = ROOT_URL;
@@ -84,18 +86,11 @@ class SplashDefaultRouter implements HttpKernelInterface
 
         // TODO: add support for [properties] for injecting any property of the controller in the URL
 
-
-        $request_array = parse_url($request->server->get('REQUEST_URI'));
-
-        if ($request_array === false) {
-            throw new SplashException("Malformed URL: ".$request->server->get('REQUEST_URI'));
-        }
-
-        $request_path = $request_array['path'];
+        $request_path = $request->getUri()->getPath();
 
         $pos = strpos($request_path, $splashUrlPrefix);
         if ($pos === FALSE) {
-            throw new \Exception('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file.Requested URL : "'.$request_path.'"');
+            throw new SplashException('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file. Requested URL : "'.$request_path.'"');
         }
 
         $tailing_url = substr($request_path, $pos+strlen($splashUrlPrefix));
@@ -104,7 +99,8 @@ class SplashDefaultRouter implements HttpKernelInterface
         $splashRoute = $urlNodes->walk($tailing_url, $request);
 
         if ($splashRoute === null) {
-            return $this->fallBackRouter->handle($request, $type, $catch);
+            // No route found, let's pass control to the next middleware.
+            return $out($request, $response);
         }
 
         $controller = MoufManager::getMoufManager()->getInstance($splashRoute->controllerInstanceName);
@@ -114,7 +110,7 @@ class SplashDefaultRouter implements HttpKernelInterface
 
         if ($this->log != null) {
             $this->log->info("Routing user with URL {url} to controller {controller} and action {action}", array(
-                'url' => $request->server->get('REQUEST_URI'),
+                'url' => $request_path,
                 'controller' => get_class($controller),
                 'action' => $action
             ));
@@ -168,6 +164,7 @@ class SplashDefaultRouter implements HttpKernelInterface
 
             return $response;
         }
+
     }
 
     /**
@@ -226,11 +223,10 @@ class SplashDefaultRouter implements HttpKernelInterface
 
     /**
 	 * Purges the urls cache.
-	 * @throws Exception
+	 * @throws \Exception
 	 */
     public function purgeUrlsCache()
     {
         $this->cacheService->purge("splashUrlNodes");
     }
-
 }
