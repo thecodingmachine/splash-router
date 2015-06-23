@@ -7,6 +7,7 @@
  */
 namespace Mouf\Mvc\Splash\Routers;
 
+use Zend\Stratigility\ErrorMiddlewareInterface;
 use Zend\Stratigility\MiddlewareInterface;
 
 
@@ -23,7 +24,7 @@ interface RouterInterface
 
     /**
      * The PSR-7 middleware to call
-     * @return MiddlewareInterface
+     * @return MiddlewareInterface|ErrorMiddlewareInterface
      */
     public function getMiddleware();
 }
