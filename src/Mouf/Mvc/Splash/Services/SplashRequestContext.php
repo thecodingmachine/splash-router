@@ -1,7 +1,7 @@
 <?php
 namespace Mouf\Mvc\Splash\Services;
+use Psr\Http\Message\ServerRequestInterface;
 
-use Symfony\Component\HttpFoundation\Request;
 /**
  * This class represents the context of a request so far (so basically, it contains the
  * HTTP request and any additional parameters from the URL analysis).
@@ -13,7 +13,7 @@ class SplashRequestContext
     private $urlParameters = array();
     private $request;
 
-    public function __construct(Request $request)
+    public function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
     }
@@ -51,7 +51,7 @@ class SplashRequestContext
 
     /**
 	 * Returns the request
-	 * @return Request
+	 * @return ServerRequestInterface
 	 */
     public function getRequest()
     {
