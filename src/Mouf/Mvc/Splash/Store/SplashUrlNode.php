@@ -120,7 +120,7 @@ class SplashUrlNode
 	 * Walks through the nodes to find the callback associated to the URL
 	 *
 	 * @param string $url
-	 * @param Request $request
+	 * @param ServerRequestInterface $request
 	 * @return SplashRoute
 	 */
     public function walk($url, ServerRequestInterface $request)
@@ -129,16 +129,16 @@ class SplashUrlNode
     }
 
     /**
-	 * Walks through the nodes to find the callback associated to the URL
-	 *
-	 * @param array $urlParts
-	 * @param Request $request
-	 * @param array $parameters
-	 * @param SplashRoute $closestWildcardRoute The last wildcard (*) route encountered while navigating the tree.
-	 * @throws SplashException
-	 * @return SplashRoute
-	 */
-    private function walkArray(array $urlParts, Request $request, array $parameters, $closestWildcardRoute = null)
+     * Walks through the nodes to find the callback associated to the URL
+     *
+     * @param array $urlParts
+     * @param ServerRequestInterface $request
+     * @param array $parameters
+     * @param SplashRoute $closestWildcardRoute The last wildcard (*) route encountered while navigating the tree.
+     * @return SplashRoute
+     * @throws SplashException
+     */
+    private function walkArray(array $urlParts, ServerRequestInterface  $request, array $parameters, $closestWildcardRoute = null)
     {
         $httpMethod = $request->getMethod();
 
