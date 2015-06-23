@@ -1,6 +1,12 @@
 Welcome to the Splash MVC framework common library
 ==================================================
 
+WORK IN PROGRESS
+================
+
+Splash 7 will be the first release to support PSR-7. It is currently in development. Meanwhile, the latest stable release
+ you should use is Splash 5.1.
+
 What is Splash?
 ---------------
 
