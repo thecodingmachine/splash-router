@@ -1,12 +1,13 @@
 <?php
 namespace Mouf\Mvc\Splash\Routers;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Mouf\Mvc\Splash\Controllers\Http500HandlerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Mouf\Mvc\Splash\Services\SplashUtils;
+use Zend\Stratigility\ErrorMiddlewareInterface;
 
 /**
  * This router returns transforms exceptions into HTTP 500 pages, based on the configured error controller.
@@ -14,7 +15,7 @@ use Mouf\Mvc\Splash\Services\SplashUtils;
  * @author Kevin Nguyen
  * @author David Négrier
  */
-class ExceptionRouter implements HttpKernelInterface
+class ExceptionRouter implements ErrorMiddlewareInterface
 {
     /**
 	 * The logger
@@ -24,78 +25,33 @@ class ExceptionRouter implements HttpKernelInterface
     private $log;
 
     /**
-	 * @var HttpKernelInterface
-	 */
-    private $router;
-
-    /**
 	 * The controller that will display 500 errors
 	 * @var Http500HandlerInterface
 	 */
     private $errorController;
 
     /**
-	 * The "500" message
-	 * @var string|ValueInterface
-	 */
-    private $message = "Page not found";
-
-    /**
 	 * @Important
 	 * @param HttpKernelInterface $router The default router (the router we will catch exceptions from).
 	 * @param LoggerInterface $log Logger to log errors.
-	 * @param bool $debugMode Whether we should print debug backtrace or not
 	 */
-    public function __construct(HttpKernelInterface $router, Http500HandlerInterface $errorController, LoggerInterface $log = null)
+    public function __construct(Http500HandlerInterface $errorController, LoggerInterface $log = null)
     {
-        $this->router = $router;
         $this->errorController = $errorController;
         $this->log = $log;
     }
 
     /**
-	 * Handles a Request to convert it to a Response.
-	 *
-	 * When $catch is true, the implementation must catch all exceptions
-	 * and do its best to convert them to a Response instance.
-	 *
-	 * @param Request $request A Request instance
-	 * @param int     $type    The type of the request
-	 *                          (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
-	 * @param bool    $catch Whether to catch exceptions or not
-	 *
-	 * @return Response A Response instance
-	 *
-	 * @throws \Exception When an Exception occurs during processing (and $catch is set to false)
-	 */
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
-    {
-        if ($catch) {
-            try {
-                return $this->router->handle($request, $type, false);
-            } catch (\Exception $e) {
-                return $this->handleException($e);
-            }
-        } else {
-            return $this->router->handle($request, $type);
-        }
-    }
-
-    /**
 	 * Actually handle the exception depending
 	 * @param \Exception $e
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return ResponseInterface
 	 */
     private function handleException(\Exception $e)
     {
         if ($this->log != null) {
-            if ($this->log instanceof LogInterface) {
-                $this->log->error($e);
-            } else {
-                $this->log->error("Exception thrown inside a controller.", array(
-                        'exception' => $e
-                ));
-            }
+            $this->log->error("Exception thrown inside a controller.", array(
+                    'exception' => $e
+            ));
         } else {
             // If no logger is set, let's log in PHP error_log
             error_log($e->getMessage()." - ".$e->getTraceAsString());
@@ -111,12 +67,21 @@ class ExceptionRouter implements HttpKernelInterface
     }
 
     /**
-	 * The "500" message
-	 * @param string|ValueInterface $message
-	 */
-    public function setMessage($message)
+     * Process an incoming error, along with associated request and response.
+     *
+     * Accepts an error, a server-side request, and a response instance, and
+     * does something with them; if further processing can be done, it can
+     * delegate to `$out`.
+     *
+     * @see MiddlewareInterface
+     * @param mixed $error
+     * @param Request $request
+     * @param Response $response
+     * @param null|callable $out
+     * @return null|Response
+     */
+    public function __invoke($error, Request $request, Response $response, callable $out = null)
     {
-        $this->message = $message;
+        return $this->handleException($error);
     }
-
 }

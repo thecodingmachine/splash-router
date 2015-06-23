@@ -1,10 +1,11 @@
 <?php
 namespace Mouf\Mvc\Splash\Routers;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+use Mouf\Mvc\Splash\Utils\SplashException;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
+use Zend\Stratigility\MiddlewareInterface;
 
 /**
  * This router :
@@ -14,7 +15,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author Kevin Nguyen
  */
-class PhpVarsCheckRouter implements HttpKernelInterface
+class PhpVarsCheckRouter implements MiddlewareInterface
 {
     /**
 	 * The logger used by Splash
@@ -22,13 +23,6 @@ class PhpVarsCheckRouter implements HttpKernelInterface
 	 * @var LoggerInterface
 	 */
     private $log;
-
-    /**
-	 * The router that will handle the request if this one has not thrown any Exception
-	 *
-	 * @var HttpKernelInterface
-	 */
-    private $fallBackRouter;
 
     /**
 	 * A simple counter to check requests' length (GET, POST, REQUEST)
@@ -39,91 +33,11 @@ class PhpVarsCheckRouter implements HttpKernelInterface
 
     /**
 	 * @Important
-	 * @param HttpKernelInterface $fallBackRouter Router used if no page is found for this controller.
 	 * @param LoggerInterface $log The logger used by Splash
 	 */
-    public function __construct(HttpKernelInterface $fallBackRouter, LoggerInterface $log = null)
+    public function __construct(LoggerInterface $log = null)
     {
-        $this->fallBackRouter = $fallBackRouter;
         $this->log = $log;
-    }
-
-    /**
-	 * Handles a Request to convert it to a Response.
-	 *
-	 * When $catch is true, the implementation must catch all exceptions
-	 * and do its best to convert them to a Response instance.
-	 *
-	 * @param Request $request A Request instance
-	 * @param int     $type    The type of the request
-	 *                          (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
-	 * @param bool    $catch Whether to catch exceptions or not
-	 *
-	 * @return Response A Response instance
-	 *
-	 * @throws \Exception When an Exception occurs during processing
-	 */
-
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
-    {
-        // Check if there is a limit of input number in php
-        // Throw exception if the limit is reached
-        if (ini_get('max_input_vars') || ini_get('suhosin.get.max_vars')) {
-            $maxGet = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.get.max_vars'));
-            if ($maxGet !== null) {
-                $this->count = 0;
-                array_walk_recursive($_GET, array($this, 'countRecursive'));
-                if ($this->count == $maxGet) {
-                    if ($this->log != null) {
-                        $this->log->error('Max input vars reaches for get parameters ({maxGet}). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.', ["maxGet" => $maxGet]);
-                    }
-                    throw new SplashException('Max input vars reaches for get parameters ('.$maxGet.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.');
-                }
-            }
-        }
-        if (ini_get('max_input_vars') || ini_get('suhosin.post.max_vars')) {
-            $maxPost = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.post.max_vars'));
-            if ($maxPost !== null) {
-                $this->count = 0;
-                array_walk_recursive($_POST, array($this, 'countRecursive'));
-                if ($this->count == $maxPost) {
-                    if ($this->log != null) {
-                        $this->log->error('Max input vars reaches for post parameters ({maxPost}). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.', ["maxPost" => $maxPost]);
-                    }
-                    throw new SplashException('Max input vars reaches for post parameters ('.$maxPost.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.');
-                }
-            }
-        }
-        if (ini_get('max_input_vars') || ini_get('suhosin.request.max_vars')) {
-            $maxRequest = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.request.max_vars'));
-            if ($maxRequest !== null) {
-                $this->count = 0;
-                array_walk_recursive($_REQUEST, array($this, 'countRecursive'));
-                if ($this->count == $maxRequest) {
-                    if ($this->log != null) {
-                        $this->log->error('Max input vars reaches for request parameters ({maxRequest}). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.', ["maxRequest" => $maxRequest]);
-                    }
-                    throw new SplashException('Max input vars reaches for request parameters ('.$maxRequest.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.');
-                }
-            }
-        }
-        if (isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post' && empty($_POST) && empty($_FILES)) {
-            $maxPostSize = self::iniGetBytes('post_max_size');
-            if ($_SERVER['CONTENT_LENGTH'] > $maxPostSize) {
-                if ($this->log != null) {
-                    $this->log->error('Max post size exceeded! Got {length} bytes, but limit is {maxPostSize} bytes. Edit post_max_size setting in your php.ini.', ["length" => $_SERVER['CONTENT_LENGTH'], "maxPostSize" => $maxPostSize]);
-                }
-                throw new SplashException(
-                        sprintf('Max post size exceeded! Got %s bytes, but limit is %s bytes. Edit post_max_size setting in your php.ini.',
-                                $_SERVER['CONTENT_LENGTH'],
-                                $maxPostSize
-                        )
-                );
-            }
-        }
-
-        //If no Exception has been thrown, call next router
-        return $this->fallBackRouter->handle($request, $type, $catch);
     }
 
     /**
@@ -183,5 +97,93 @@ class PhpVarsCheckRouter implements HttpKernelInterface
     private function countRecursive($item, $key)
     {
         $this->count ++;
+    }
+
+    /**
+     * Process an incoming request and/or response.
+     *
+     * Accepts a server-side request and a response instance, and does
+     * something with them.
+     *
+     * If the response is not complete and/or further processing would not
+     * interfere with the work done in the middleware, or if the middleware
+     * wants to delegate to another process, it can use the `$out` callable
+     * if present.
+     *
+     * If the middleware does not return a value, execution of the current
+     * request is considered complete, and the response instance provided will
+     * be considered the response to return.
+     *
+     * Alternately, the middleware may return a response instance.
+     *
+     * Often, middleware will `return $out();`, with the assumption that a
+     * later middleware will return a response.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param null|callable $out
+     * @return null|Response
+     * @throws SplashException
+     */
+    public function __invoke(Request $request, Response $response, callable $out = null)
+    {
+        // Check if there is a limit of input number in php
+        // Throw exception if the limit is reached
+        if (ini_get('max_input_vars') || ini_get('suhosin.get.max_vars')) {
+            $maxGet = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.get.max_vars'));
+            if ($maxGet !== null) {
+                $this->count = 0;
+                array_walk_recursive($_GET, array($this, 'countRecursive'));
+                if ($this->count == $maxGet) {
+                    if ($this->log != null) {
+                        $this->log->error('Max input vars reaches for get parameters ({maxGet}). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.', ["maxGet" => $maxGet]);
+                    }
+                    throw new SplashException('Max input vars reaches for get parameters ('.$maxGet.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.');
+                }
+            }
+        }
+        if (ini_get('max_input_vars') || ini_get('suhosin.post.max_vars')) {
+            $maxPost = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.post.max_vars'));
+            if ($maxPost !== null) {
+                $this->count = 0;
+                array_walk_recursive($_POST, array($this, 'countRecursive'));
+                if ($this->count == $maxPost) {
+                    if ($this->log != null) {
+                        $this->log->error('Max input vars reaches for post parameters ({maxPost}). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.', ["maxPost" => $maxPost]);
+                    }
+                    throw new SplashException('Max input vars reaches for post parameters ('.$maxPost.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.');
+                }
+            }
+        }
+        if (ini_get('max_input_vars') || ini_get('suhosin.request.max_vars')) {
+            $maxRequest = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.request.max_vars'));
+            if ($maxRequest !== null) {
+                $this->count = 0;
+                array_walk_recursive($_REQUEST, array($this, 'countRecursive'));
+                if ($this->count == $maxRequest) {
+                    if ($this->log != null) {
+                        $this->log->error('Max input vars reaches for request parameters ({maxRequest}). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.', ["maxRequest" => $maxRequest]);
+                    }
+                    throw new SplashException('Max input vars reaches for request parameters ('.$maxRequest.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.');
+                }
+            }
+        }
+        if (isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post' && empty($_POST) && empty($_FILES)) {
+            $maxPostSize = self::iniGetBytes('post_max_size');
+            if ($_SERVER['CONTENT_LENGTH'] > $maxPostSize) {
+                if ($this->log != null) {
+                    $this->log->error('Max post size exceeded! Got {length} bytes, but limit is {maxPostSize} bytes. Edit post_max_size setting in your php.ini.', ["length" => $_SERVER['CONTENT_LENGTH'], "maxPostSize" => $maxPostSize]);
+                }
+                throw new SplashException(
+                    sprintf('Max post size exceeded! Got %s bytes, but limit is %s bytes. Edit post_max_size setting in your php.ini.',
+                        $_SERVER['CONTENT_LENGTH'],
+                        $maxPostSize
+                    )
+                );
+            }
+        }
+
+        //If no Exception has been thrown, call next router
+        return $out($request, $response) ;
     }
 }

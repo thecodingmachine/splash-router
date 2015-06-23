@@ -11,6 +11,7 @@ use Mouf\Reflection\MoufReflectionMethod;
 
 use Mouf\MoufManager;
 
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Mouf\Annotations\paramAnnotation;
 use Mouf\Reflection\TypesDescriptor;
@@ -187,29 +188,40 @@ class SplashUtils
         }
         $html = ob_get_clean();
 
-        if ($result instanceof Response) {
-            if ($html !== "") {
-                throw new SplashException("You cannot output text AND return Response object in the same action. Output already started :'$html");
-            }
-
-            if (headers_sent()) {
-                $headers = headers_list();
-                throw new SplashException("Headers already sent. Detected headers are : ".var_export($headers, true));
-            }
-
-            return $result;
+        if (!empty($html)) {
+            throw new SplashException("Output started in Controller : " . $html);
         }
 
-        $code = http_response_code();
-        $headers = SplashUtils::greatResponseHeaders();
-
-        // Suppress actual headers (re-add by Symfony Response)
-        // If you don't remove old headers, it's duplicated in HTTP Headers
-        foreach ($headers as $key => $head) {
-            header_remove($key);
+        if (!$result instanceof ResponseInterface) {
+            throw new SplashException("Return value should be an instance of ReponseInterface.");
         }
 
-        return new Response($html, $code, $headers);
+        return $result;
+
+        // TODO: If Symfony Response convert to psr-7
+//        if ($result instanceof Response) {
+//            if ($html !== "") {
+//                throw new SplashException("You cannot output text AND return Response object in the same action. Output already started :'$html");
+//            }
+//
+//            if (headers_sent()) {
+//                $headers = headers_list();
+//                throw new SplashException("Headers already sent. Detected headers are : ".var_export($headers, true));
+//            }
+//
+//            return $result;
+//        }
+//
+//        $code = http_response_code();
+//        $headers = SplashUtils::greatResponseHeaders();
+//
+//        // Suppress actual headers (re-add by Symfony Response)
+//        // If you don't remove old headers, it's duplicated in HTTP Headers
+//        foreach ($headers as $key => $head) {
+//            header_remove($key);
+//        }
+//
+//        return new Response($html, $code, $headers);
     }
 
     /**
