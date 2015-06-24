@@ -193,7 +193,12 @@ class SplashUtils
         }
 
         if (!$result instanceof ResponseInterface) {
-            throw new SplashException("Return value should be an instance of ReponseInterface.");
+            if ($result === null) {
+                throw new SplashException("Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Your controller did not return any value.");
+            } else {
+                $class = (gettype($result) == 'object')?get_class($result):gettype($result);
+                throw new SplashException("Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Type of value returned: ".$class);
+            }
         }
 
         return $result;
