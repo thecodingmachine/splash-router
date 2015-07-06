@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Services;
 
 /**
@@ -12,8 +13,7 @@ class SplashMissingParameterException extends \Exception
 
     public function __construct($key)
     {
-        parent::__construct("Missing parameter: ".$key);
+        parent::__construct('Missing parameter: '.$key);
         $this->key = $key;
     }
-
 }

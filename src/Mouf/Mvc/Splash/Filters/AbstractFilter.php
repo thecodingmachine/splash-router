@@ -1,8 +1,8 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Filters;
 
 use Mouf\Reflection\MoufReflectionMethod;
-
 use Mouf\Mvc\Splash\Controllers\Controller;
 
 /**
@@ -11,19 +11,22 @@ use Mouf\Mvc\Splash\Controllers\Controller;
 abstract class AbstractFilter
 {
     /**
-	 * The controller this filter is applied to
-	 * @var Controller
-	 */
+     * The controller this filter is applied to.
+     *
+     * @var Controller
+     */
     private $controller;
 
     /**
-	 * The method this filter is applied to
-	 * @var MoufReflectionMethod
-	 */
+     * The method this filter is applied to.
+     *
+     * @var MoufReflectionMethod
+     */
     private $refMethod;
 
     /**
-     * Returns the controller this filter is applied to
+     * Returns the controller this filter is applied to.
+     *
      * @return Controller
      */
     protected function getController()
@@ -37,7 +40,8 @@ abstract class AbstractFilter
     }
 
     /**
-     * Returns method this filter is applied to
+     * Returns method this filter is applied to.
+     *
      * @return MoufReflectionMethod
      */
     protected function getRefMethod()
@@ -51,15 +55,17 @@ abstract class AbstractFilter
     }
 
     /**
-	 * Used in serialization
-	 * @var string
-	 */
+     * Used in serialization.
+     *
+     * @var string
+     */
     protected $serializeInstanceName;
 
     /**
-	 * Used in serialization
-	 * @var string
-	 */
+     * Used in serialization.
+     *
+     * @var string
+     */
     protected $serializeMethodName;
 
     /*public function getAnnotationTarget()
@@ -68,28 +74,29 @@ abstract class AbstractFilter
     }*/
 
     /**
-	 * Returns the priority. The higher the priority, the earlier the beforeAction will be executed and the later the afterAction will be executed.
-	 * Default priority is 50.
-	 * @return int The priority.
-	 */
+     * Returns the priority. The higher the priority, the earlier the beforeAction will be executed and the later the afterAction will be executed.
+     * Default priority is 50.
+     *
+     * @return int The priority.
+     */
     protected function getPriority()
     {
         return 50;
     }
 
     /**
-	 * Function to be called before the action.
-	 */
+     * Function to be called before the action.
+     */
     abstract public function beforeAction();
 
     /**
-	 * Function to be called after the action.
-	 */
+     * Function to be called after the action.
+     */
     abstract public function afterAction();
 
     /**
-	 * Sets the metadata for this annotation.
-	 */
+     * Sets the metadata for this annotation.
+     */
     public function setMetaData(Controller $controller, MoufReflectionMethod $refMethod)
     {
         $this->controller = $controller;
@@ -102,9 +109,10 @@ abstract class AbstractFilter
     }
 
         /**
-        * TODO: se demander est-ce que les pointeurs sont nécessaires ou pas. Dans l'idéal, la classe pourrait ne pas contenir de pointeurs.
-        * @return array
-        */
+         * TODO: se demander est-ce que les pointeurs sont nécessaires ou pas. Dans l'idéal, la classe pourrait ne pas contenir de pointeurs.
+         *
+         * @return array
+         */
         public function __sleep()
         {
             $objectVars = get_object_vars($this);
@@ -116,15 +124,15 @@ abstract class AbstractFilter
             $this->serializeMethodName = $this->refMethod->getName();
 
             return array_keys($objectVars);
-           }
+        }
 
-       public function __wakeup()
-       {
-           /*$moufManager = \Mouf\MoufManager::getMoufManager();
+    public function __wakeup()
+    {
+        /*$moufManager = \Mouf\MoufManager::getMoufManager();
 
            if ($moufManager->has($this->serializeInstanceName)) {
                $this->controller = $moufManager->getInstance($this->serializeInstanceName);
                $this->refMethod = new MoufReflectionMethod(new \Mouf\Reflection\MoufReflectionClass(get_class($this->controller)), $this->serializeMethodName);
            }*/
-       }
+    }
 }

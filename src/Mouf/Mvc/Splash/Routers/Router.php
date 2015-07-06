@@ -1,15 +1,14 @@
 <?php
-namespace Mouf\Mvc\Splash\Routers;
 
+namespace Mouf\Mvc\Splash\Routers;
 
 use Zend\Stratigility\MiddlewareInterface;
 
 /**
- * The Router class wraps a PSR-7 middleware with the associated path
+ * The Router class wraps a PSR-7 middleware with the associated path.
  */
 class Router implements RouterInterface
 {
-
     /**
      * @var string
      */
@@ -22,8 +21,9 @@ class Router implements RouterInterface
 
     /**
      * @Important
+     *
      * @param MiddlewareInterface $middleware The PSR-7 middleware to call
-     * @param string $path The path to that middleware (defaults to /).
+     * @param string              $path       The path to that middleware (defaults to /).
      */
     public function __construct(MiddlewareInterface $middleware, $path = '/')
     {
@@ -33,6 +33,7 @@ class Router implements RouterInterface
 
     /**
      * The path to that middleware (defaults to /).
+     *
      * @return string
      */
     public function getPath()
@@ -41,13 +42,12 @@ class Router implements RouterInterface
     }
 
     /**
-     * The PSR-7 middleware to call
+     * The PSR-7 middleware to call.
+     *
      * @return MiddlewareInterface
      */
     public function getMiddleware()
     {
         return $this->middleware;
     }
-
-
 }

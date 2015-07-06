@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Routers;
 
 use Mouf\Mvc\Splash\Utils\SplashException;
@@ -16,24 +17,25 @@ use Zend\Stratigility\MiddlewareInterface;
 class SplashDefaultRouter implements MiddlewareInterface
 {
     /**
-	 * The logger used by Splash
-	 *
-	 * @var LoggerInterface
-	 */
+     * The logger used by Splash.
+     *
+     * @var LoggerInterface
+     */
     private $log;
 
     /**
-	 * Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
-	 *
-	 * @var CacheInterface
-	 */
+     * Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action).
+     *
+     * @var CacheInterface
+     */
     private $cacheService;
 
     /**
-	 * @Important
-	 * @param CacheInterface $cacheService Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
-	 * @param LoggerInterface $log The logger used by Splash
-	 */
+     * @Important
+     *
+     * @param CacheInterface  $cacheService Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
+     * @param LoggerInterface $log          The logger used by Splash
+     */
     public function __construct(CacheInterface $cacheService = null, LoggerInterface $log = null)
     {
         $this->cacheService = $cacheService;
@@ -61,8 +63,9 @@ class SplashDefaultRouter implements MiddlewareInterface
      * later middleware will return a response.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param null|callable $out
+     * @param ResponseInterface      $response
+     * @param null|callable          $out
+     *
      * @return null|ResponseInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
@@ -75,12 +78,12 @@ class SplashDefaultRouter implements MiddlewareInterface
             $urlsList = $this->getSplashActionsList();
             $urlNodes = $this->generateUrlNode($urlsList);
         } else {
-            $urlNodes = $this->cacheService->get("splashUrlNodes");
+            $urlNodes = $this->cacheService->get('splashUrlNodes');
             if ($urlNodes == null) {
                 // No value in cache, let's get the URL nodes
                 $urlsList = $this->getSplashActionsList();
                 $urlNodes = $this->generateUrlNode($urlsList);
-                $this->cacheService->set("splashUrlNodes", $urlNodes);
+                $this->cacheService->set('splashUrlNodes', $urlNodes);
             }
         }
 
@@ -89,11 +92,11 @@ class SplashDefaultRouter implements MiddlewareInterface
         $request_path = $request->getUri()->getPath();
 
         $pos = strpos($request_path, $splashUrlPrefix);
-        if ($pos === FALSE) {
+        if ($pos === false) {
             throw new SplashException('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file. Requested URL : "'.$request_path.'"');
         }
 
-        $tailing_url = substr($request_path, $pos+strlen($splashUrlPrefix));
+        $tailing_url = substr($request_path, $pos + strlen($splashUrlPrefix));
 
         $context = new SplashRequestContext($request);
         $splashRoute = $urlNodes->walk($tailing_url, $request);
@@ -109,10 +112,10 @@ class SplashDefaultRouter implements MiddlewareInterface
         $context->setUrlParameters($splashRoute->filledParameters);
 
         if ($this->log != null) {
-            $this->log->info("Routing user with URL {url} to controller {controller} and action {action}", array(
+            $this->log->info('Routing user with URL {url} to controller {controller} and action {action}', array(
                 'url' => $request_path,
                 'controller' => get_class($controller),
-                'action' => $action
+                'action' => $action,
             ));
         }
 
@@ -147,13 +150,13 @@ class SplashDefaultRouter implements MiddlewareInterface
             $filters = $splashRoute->filters;
 
             // Apply filters
-            for ($i=count($filters)-1; $i>=0; $i--) {
+            for ($i = count($filters) - 1; $i >= 0; --$i) {
                 $filters[$i]->beforeAction();
             }
 
             $response = SplashUtils::buildControllerResponse(
                 function () use ($controller, $action, $args) {
-                    return call_user_func_array(array($controller,$action), $args);
+                    return call_user_func_array(array($controller, $action), $args);
                 }
             );
 
@@ -163,14 +166,13 @@ class SplashDefaultRouter implements MiddlewareInterface
 
             return $response;
         }
-
     }
 
     /**
-	 * Handles the call to the webservice
-	 *
-	 * @param WebServiceInterface $webserviceInstance
-	 */
+     * Handles the call to the webservice.
+     *
+     * @param WebServiceInterface $webserviceInstance
+     */
     private function handleWebservice(WebServiceInterface $webserviceInstance)
     {
         $url = $webserviceInstance->getWebserviceUri();
@@ -181,15 +183,15 @@ class SplashDefaultRouter implements MiddlewareInterface
     }
 
     /**
-	 * Returns the list of all SplashActions.
-	 * This call is LONG and should be cached
-	 *
-	 * @return array<SplashAction>
-	 */
+     * Returns the list of all SplashActions.
+     * This call is LONG and should be cached.
+     *
+     * @return array<SplashAction>
+     */
     private function getSplashActionsList()
     {
         $moufManager = MoufManager::getMoufManager();
-        $instanceNames = $moufManager->findInstances("Mouf\\Mvc\\Splash\\Services\\UrlProviderInterface");
+        $instanceNames = $moufManager->findInstances('Mouf\\Mvc\\Splash\\Services\\UrlProviderInterface');
 
         $urls = array();
 
@@ -204,12 +206,13 @@ class SplashDefaultRouter implements MiddlewareInterface
     }
 
     /**
-	 * Generates the URLNodes from the list of URLS.
-	 * URLNodes are a very efficient way to know whether we can access our page or not.
-	 *
-	 * @param array<SplashAction> $urlsList
-	 * @return SplashUrlNode
-	 */
+     * Generates the URLNodes from the list of URLS.
+     * URLNodes are a very efficient way to know whether we can access our page or not.
+     *
+     * @param array<SplashAction> $urlsList
+     *
+     * @return SplashUrlNode
+     */
     private function generateUrlNode($urlsList)
     {
         $urlNode = new SplashUrlNode();
@@ -221,11 +224,12 @@ class SplashDefaultRouter implements MiddlewareInterface
     }
 
     /**
-	 * Purges the urls cache.
-	 * @throws \Exception
-	 */
+     * Purges the urls cache.
+     *
+     * @throws \Exception
+     */
     public function purgeUrlsCache()
     {
-        $this->cacheService->purge("splashUrlNodes");
+        $this->cacheService->purge('splashUrlNodes');
     }
 }

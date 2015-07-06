@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Services;
 
 /**
@@ -9,30 +10,32 @@ namespace Mouf\Mvc\Splash\Services;
 class SplashSymfonyRequestFetcher implements SplashParameterFetcherInterface
 {
     /**
-	 * Constructor
-	 * @param string $key The name of the parameter to fetch.
-	 */
+     * Constructor.
+     *
+     * @param string $key The name of the parameter to fetch.
+     */
     public function __construct($key)
     {
         $this->key = $key;
     }
 
     /**
-	 * Get the name of the parameter (only for error handling purposes).
-	 *
-	 * @return string
-	 */
+     * Get the name of the parameter (only for error handling purposes).
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->key;
     }
 
     /**
-	 * We pass the context of the request, the object returns the value to fill.
-	 *
-	 * @param SplashRequestContext $context
-	 * @return mixed
-	 */
+     * We pass the context of the request, the object returns the value to fill.
+     *
+     * @param SplashRequestContext $context
+     *
+     * @return mixed
+     */
     public function fetchValue(SplashRequestContext $context)
     {
         return $context->getRequest();

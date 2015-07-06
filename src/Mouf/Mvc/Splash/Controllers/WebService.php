@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Controllers;
 
 /**
@@ -11,15 +12,15 @@ namespace Mouf\Mvc\Splash\Controllers;
  */
 abstract class WebService implements WebServiceInterface
 {
-
     /**
      * The URI for the webservice.
      *
      * @Property
      * @Compulsory
+     *
      * @var string
      */
-    public $webserviceUri = "urn://www.example.com/example";
+    public $webserviceUri = 'urn://www.example.com/example';
 
     public function getWebserviceUri()
     {
@@ -48,16 +49,16 @@ abstract class WebService implements WebServiceInterface
         }
 
         $server = new SoapServer(null, array('uri' => $this->webserviceUri));
-        $server->addFunction("hello");
+        $server->addFunction('hello');
         $server->handle();
 
         if (method_exists($this, $method)) {
             $refMethod = $refClass->getMethod($method);    // $refMethod is an instance of stubReflectionMethod
             //$this->getLogger()->trace("REF METHOD : ".$refMethod." // has annotation Action ? ".$refMethod->hasAnnotation('Action'));
             if ($refMethod->hasAnnotation('Action') == false) {
-                $debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
+                $debug = MoufManager::getMoufManager()->getInstance('splash')->debugMode;
                 // This is not an action. Let's go in error.
-                self::FourOFour(iMsg("controller.404.no.action", get_class($this), $method), $debug);
+                self::FourOFour(iMsg('controller.404.no.action', get_class($this), $method), $debug);
                 exit;
             }
 
@@ -77,8 +78,8 @@ abstract class WebService implements WebServiceInterface
             }
         } else {
             // "Method Not Found";
-            $debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
-            self::FourOFour("404.wrong.method", $debug);
+            $debug = MoufManager::getMoufManager()->getInstance('splash')->debugMode;
+            self::FourOFour('404.wrong.method', $debug);
             exit;
         }
     }

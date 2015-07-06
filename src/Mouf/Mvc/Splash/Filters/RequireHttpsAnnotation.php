@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Filters;
 
 //FilterUtils::registerFilter("RequireHttps");
@@ -15,76 +16,76 @@ use Mouf\Reflection\MoufAnnotationInterface;
  */
 class RequireHttpsAnnotation extends AbstractFilter implements MoufAnnotationInterface
 {
-
     /**
-	 * Set this property to false if your web server does not have HTTPS support.
-	 * When this property is set to false, all RequireHttps annotations are disabled.
-	 *
-	 * @Property
-	 * @var string
-	 */
+     * Set this property to false if your web server does not have HTTPS support.
+     * When this property is set to false, all RequireHttps annotations are disabled.
+     *
+     * @Property
+     *
+     * @var string
+     */
     public $supportsHttps = true;
 
     public function setValue($value)
     {
-        if (strpos($value, "force") !== false) {
-            $this->value = "force";
-        } elseif (strpos($value, "no") !== false) {
-            $this->value = "no";
-        } elseif (strpos($value, "redirect") !== false) {
-            $this->value = "redirect";
+        if (strpos($value, 'force') !== false) {
+            $this->value = 'force';
+        } elseif (strpos($value, 'no') !== false) {
+            $this->value = 'no';
+        } elseif (strpos($value, 'redirect') !== false) {
+            $this->value = 'redirect';
         }
 
         if ($this->value == null) {
-            throw new ApplicationException("annotation.requirehttps.error", "annotation.requirehttps.novalue");
+            throw new ApplicationException('annotation.requirehttps.error', 'annotation.requirehttps.novalue');
         }
-        if ($this->value != "force" && $this->value != "no" && $this->value != "redirect") {
-            throw new ApplicationException("annotation.requirehttps.error", "annotation.requirehttps.invalidvalue");
+        if ($this->value != 'force' && $this->value != 'no' && $this->value != 'redirect') {
+            throw new ApplicationException('annotation.requirehttps.error', 'annotation.requirehttps.invalidvalue');
         }
     }
 
     /**
-	 * The value passed to the filter.
-	 */
+     * The value passed to the filter.
+     */
     protected $value;
 
     /*public function setValue($value) {
-		$this->value = $value;
-	}*/
+        $this->value = $value;
+    }*/
 
     /**
-	 * Function to be called before the action.
-	 */
+     * Function to be called before the action.
+     */
     public function beforeAction()
     {
         $use_https = $this->supportsHttps;
         if ($use_https) {
-            if ($this->value == "force") {
+            if ($this->value == 'force') {
                 if (!isset($_SERVER['HTTPS'])) {
-                    throw new ApplicationException("annotation.requirehttps.requiresssl.title", "annotation.requirehttps.requiresssl.text");
+                    throw new ApplicationException('annotation.requirehttps.requiresssl.title', 'annotation.requirehttps.requiresssl.text');
                 }
-            } elseif (!isset($_SERVER['HTTPS']) && $this->value == "redirect") {
+            } elseif (!isset($_SERVER['HTTPS']) && $this->value == 'redirect') {
                 if ($_SERVER['REQUEST_METHOD'] != 'GET') {
-                    throw new ApplicationException("annotation.requirehttps.redirect.getonly.title", "annotation.requirehttps.redirect.getonly.text");
+                    throw new ApplicationException('annotation.requirehttps.redirect.getonly.title', 'annotation.requirehttps.redirect.getonly.text');
                 }
-                header("Location: ".$this->selfURL());
+                header('Location: '.$this->selfURL());
                 exit;
             }
         }
     }
 
     /**
-	 * Function to be called after the action.
-	 */
+     * Function to be called after the action.
+     */
     public function afterAction()
     {
     }
 
     private function selfURL()
     {
-        $protocol = "https";
+        $protocol = 'https';
 
-        return $protocol."://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+        return $protocol.'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
     }
     public function strleft($s1, $s2)
     {

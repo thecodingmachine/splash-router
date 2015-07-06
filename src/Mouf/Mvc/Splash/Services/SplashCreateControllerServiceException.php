@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Services;
 
 use Mouf\Mvc\Splash\Utils\SplashException;
@@ -22,5 +23,4 @@ class SplashCreateControllerServiceException extends SplashException
     {
         $this->errors = $errors;
     }
-
 }

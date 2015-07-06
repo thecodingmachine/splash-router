@@ -10,16 +10,19 @@
 		<th>Action</th>
 	</tr>
 	<?php
-	$i=0;
-	foreach ($this->splashUrlsList as $splashUrl) {
-		$i++;
-	/* @var $splashUrl SplashRoute */
-	?>
-	<tr class="<?php echo (($i%2) ? "odd" : "even") ?>">
-		<td title="<?php echo plainstring_to_htmlprotected($splashUrl->comment); ?>"><?php echo "/".$splashUrl->url ?></td>
-		<td><?php echo '<a href="'.ROOT_URL.'ajaxinstance/?name='.plainstring_to_htmlprotected($splashUrl->controllerInstanceName).'&selfedit='.$this->selfedit.'">'.$splashUrl->controllerInstanceName.'</a>'; ?></td>
+    $i = 0;
+    foreach ($this->splashUrlsList as $splashUrl) {
+        ++$i;
+    /* @var $splashUrl SplashRoute */
+    ?>
+	<tr class="<?php echo(($i % 2) ? 'odd' : 'even') ?>">
+		<td title="<?php echo plainstring_to_htmlprotected($splashUrl->comment);
+        ?>"><?php echo '/'.$splashUrl->url ?></td>
+		<td><?php echo '<a href="'.ROOT_URL.'ajaxinstance/?name='.plainstring_to_htmlprotected($splashUrl->controllerInstanceName).'&selfedit='.$this->selfedit.'">'.$splashUrl->controllerInstanceName.'</a>';
+        ?></td>
 		<td><?php echo plainstring_to_htmlprotected($splashUrl->title) ?></td>
 		<td><?php echo $splashUrl->methodName ?></td>
 	</tr>
-<?php } ?>
+<?php 
+    } ?>
 </table>

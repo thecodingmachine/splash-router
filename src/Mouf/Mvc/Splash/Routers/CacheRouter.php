@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Routers;
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -11,24 +12,25 @@ use Mouf\Utils\Common\ConditionInterface\ConditionInterface;
 class CacheRouter implements HttpKernelInterface
 {
     /**
-	 * The router that will handle the request if cache miss
-	 * @var HttpKernelInterface
-	 */
+     * The router that will handle the request if cache miss.
+     *
+     * @var HttpKernelInterface
+     */
     private $fallBackRouter;
 
     /**
-	 * @CacheInterface
-	 */
+     * @CacheInterface
+     */
     private $cache;
 
     /**
-	 * @var ConditionInterface
-	 */
+     * @var ConditionInterface
+     */
     private $cacheCondition;
 
     /**
-	 * @var LoggerInterface
-	 */
+     * @var LoggerInterface
+     */
     private $log;
 
     public function __construct(HttpKernelInterface $fallBackRouter, CacheInterface $cache, LoggerInterface $log, ConditionInterface $cacheCondition)
@@ -40,26 +42,26 @@ class CacheRouter implements HttpKernelInterface
     }
 
     /**
-	 * Handles a Request to convert it to a Response.
-	 *
-	 * When $catch is true, the implementation must catch all exceptions
-	 * and do its best to convert them to a Response instance.
-	 *
-	 * @param Request $request A Request instance
-	 * @param int     $type    The type of the request
-	 *                          (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
-	 * @param bool    $catch Whether to catch exceptions or not
-	 *
-	 * @return Response A Response instance
-	 *
-	 * @throws \Exception When an Exception occurs during processing
-	 */
+     * Handles a Request to convert it to a Response.
+     *
+     * When $catch is true, the implementation must catch all exceptions
+     * and do its best to convert them to a Response instance.
+     *
+     * @param Request $request A Request instance
+     * @param int     $type    The type of the request
+     *                         (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
+     * @param bool    $catch   Whether to catch exceptions or not
+     *
+     * @return Response A Response instance
+     *
+     * @throws \Exception When an Exception occurs during processing
+     */
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
     {
         $requestMethod = $request->getMethod();
-        $key = str_replace(['\\', '/', ':','*','?','"','<','>', "|"], "_", $request->getRequestUri() . $request->getQueryString());
+        $key = str_replace(['\\', '/', ':', '*', '?', '"', '<', '>', '|'], '_', $request->getRequestUri().$request->getQueryString());
 
-        if ($this->cacheCondition->isOk() && $requestMethod == "GET") {
+        if ($this->cacheCondition->isOk() && $requestMethod == 'GET') {
             $cacheResponse = $this->cache->get($key);
             if ($cacheResponse) {
                 $this->log->debug("Cache HIT on $key");
@@ -73,7 +75,7 @@ class CacheRouter implements HttpKernelInterface
                 $headers = $response->headers;
                 foreach ($headers as $innerHeader) {
                     foreach ($innerHeader as $value) {
-                        if ($value == "Mouf-Cache-Control: no-cache") {
+                        if ($value == 'Mouf-Cache-Control: no-cache') {
                             $noCache = true;
                         }
                     }
@@ -120,5 +122,4 @@ class CacheRouter implements HttpKernelInterface
             return $this->fallBackRouter->handle($request, $type, $catch);
         }
     }
-
 }

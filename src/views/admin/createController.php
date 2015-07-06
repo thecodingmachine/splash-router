@@ -3,8 +3,8 @@
 
 <script type="text/javascript">
 globalData = <?php echo json_encode(array(
-    "namespace"=>$this->controllerNamespace,
-    "tdbmExists"=>file_exists(ROOT_PATH.'../database.tdbm')
+    'namespace' => $this->controllerNamespace,
+    'tdbmExists' => file_exists(ROOT_PATH.'../database.tdbm'),
 )); ?>
 </script>
 
@@ -12,10 +12,12 @@ globalData = <?php echo json_encode(array(
 <form ng-submit="submit()" class="form-horizontal" ng-controller="CreateControllerCtrl">
 <input type="hidden" id="selfedit" name="selfedit" value="<?php echo plainstring_to_htmlprotected($this->selfedit) ?>" />
 
-<?php if (!$this->autoloadDetected) { ?>
+<?php if (!$this->autoloadDetected) {
+    ?>
 <div class="alert">Warning! Splash could not detect the autoload section of your <code>composer.json</code> file.
 Unless you are developing your own autoload system, you should configure <code>composer.json</code> to <a href="http://getcomposer.org/doc/01-basic-usage.md#autoloading" target="_blank">define a source directory and a root namespace using PSR-0</a>.</div>
-<?php } ?>
+<?php 
+} ?>
 
 <div class="control-group" ng-class="{error:controllerNameError}">
 	<label class="control-label" for="controllerclass">Controller class name:</label>

@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Services;
 
 /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Routers;
 
 use Mouf\Mvc\Splash\Controllers\Http404HandlerInterface;
@@ -19,21 +20,22 @@ use Zend\Stratigility\MiddlewareInterface;
 class NotFoundRouter implements MiddlewareInterface
 {
     /**
-	 * The logger
-	 *
-	 * @var LoggerInterface
-	 */
+     * The logger.
+     *
+     * @var LoggerInterface
+     */
     private $log;
 
     /**
-	 * The "404" message
-	 * @var string|ValueInterface
-	 */
-    private $message = "Page not found";
+     * The "404" message.
+     *
+     * @var string|ValueInterface
+     */
+    private $message = 'Page not found';
 
     /**
-	 * @var Http404HandlerInterface
-	 */
+     * @var Http404HandlerInterface
+     */
     private $pageNotFoundController;
 
     public function __construct(Http404HandlerInterface $pageNotFoundController, LoggerInterface $log = null)
@@ -62,15 +64,16 @@ class NotFoundRouter implements MiddlewareInterface
      * Often, middleware will `return $out();`, with the assumption that a
      * later middleware will return a response.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param Request       $request
+     * @param Response      $response
      * @param null|callable $out
+     *
      * @return null|Response
      */
     public function __invoke(Request $request, Response $response, callable $out = null)
     {
         if ($this->log) {
-            $this->log->info("404 - Page not found on URL: " . $request->getUri()->getPath());
+            $this->log->info('404 - Page not found on URL: '.$request->getUri()->getPath());
         }
         $message = ValueUtils::val($this->message);
 

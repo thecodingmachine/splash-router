@@ -1,16 +1,11 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Services;
 
 use Mouf\Annotations\URLAnnotation;
-
 use Mouf\Mvc\Splash\Utils\SplashException;
-
 use Mouf\Utils\Common\Validators\NumericValidator;
-
 use Mouf\Reflection\MoufReflectionMethod;
-
-use Mouf\MoufManager;
-
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Mouf\Annotations\paramAnnotation;
@@ -21,9 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 class SplashUtils
 {
     /**
-	 *
-	 * @return SplashUrlManager
-	 */
+     * @return SplashUrlManager
+     */
     public static function getSplashUrlManager()
     {
         // Performs some late loading to avoid problems with the Mouf admin
@@ -33,10 +27,10 @@ class SplashUtils
     }
 
     /**
-	 * Analyses the method, the @param annotation parameters, and returns an array of SplashRequestParameterFetcher.
-	 *
-	 * @return array<SplashParameterFetcherInterface>
-	 */
+     * Analyses the method, the @param annotation parameters, and returns an array of SplashRequestParameterFetcher.
+     *
+     * @return array<SplashParameterFetcherInterface>
+     */
     public static function mapParameters(MoufReflectionMethod $refMethod, URLAnnotation $urlAnnotation = null)
     {
         $parameters = $refMethod->getParameters();
@@ -48,11 +42,11 @@ class SplashUtils
             $urlParamsList = array();
             /* @var $urlAnnotation URLAnnotation */
             $url = $urlAnnotation->getUrl();
-            $urlParts = explode("/", $url);
+            $urlParts = explode('/', $url);
             foreach ($urlParts as $part) {
-                if (strpos($part, "{") === 0 && strpos($part, "}") === strlen($part)-1) {
+                if (strpos($part, '{') === 0 && strpos($part, '}') === strlen($part) - 1) {
                     // Parameterized URL element
-                    $varName = substr($part, 1, strlen($part)-2);
+                    $varName = substr($part, 1, strlen($part) - 2);
                     $urlParamsList[$varName] = $varName;
                 }
             }
@@ -63,11 +57,11 @@ class SplashUtils
                 foreach ($urlAnnotations as $urlAnnotation) {
                     /* @var $urlAnnotation URLAnnotation */
                     $url = $urlAnnotation->getUrl();
-                    $urlParts = explode("/", $url);
+                    $urlParts = explode('/', $url);
                     foreach ($urlParts as $part) {
-                        if (strpos($part, "{") === 0 && strpos($part, "}") === strlen($part)-1) {
+                        if (strpos($part, '{') === 0 && strpos($part, '}') === strlen($part) - 1) {
                             // Parameterized URL element
-                            $varName = substr($part, 1, strlen($part)-2);
+                            $varName = substr($part, 1, strlen($part) - 2);
                             $urlParamsList[$varName] = $varName;
                         }
                     }
@@ -95,7 +89,7 @@ class SplashUtils
                 unset($urlParamsList[$parameter->getName()]);
 
                 if ($parameter->isDefaultValueAvailable()) {
-                    $value= new SplashUrlParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
+                    $value = new SplashUrlParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
                 } else {
                     $value = new SplashUrlParameterFetcher($parameter->getName(), true);
                 }
@@ -130,14 +124,14 @@ class SplashUtils
                         // FIXME
                         // FIXME
                         /*$type = strtolower($annotation->getTypes());
-						if ($type == "float" || $type == "double" || $type == "real" || $type == "number") {
-							$numericValidator = new NumericValidator();
-							$value->registerValidator($numericValidator);
-						} elseif ($type == "int" || $type == "integer") {
-							$intValidator = new NumericValidator();
-							$intValidator->allowDecimals = false;
-							$value->registerValidator($intValidator);
-						}*/
+                        if ($type == "float" || $type == "double" || $type == "real" || $type == "number") {
+                            $numericValidator = new NumericValidator();
+                            $value->registerValidator($numericValidator);
+                        } elseif ($type == "int" || $type == "integer") {
+                            $intValidator = new NumericValidator();
+                            $intValidator->allowDecimals = false;
+                            $value->registerValidator($intValidator);
+                        }*/
                         $values[] = $value;
                         $found = true;
                         break;
@@ -177,15 +171,15 @@ class SplashUtils
         $html = ob_get_clean();
 
         if (!empty($html)) {
-            throw new SplashException("Output started in Controller : " . $html);
+            throw new SplashException('Output started in Controller : '.$html);
         }
 
         if (!$result instanceof ResponseInterface) {
             if ($result === null) {
-                throw new SplashException("Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Your controller did not return any value.");
+                throw new SplashException('Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Your controller did not return any value.');
             } else {
-                $class = (gettype($result) == 'object')?get_class($result):gettype($result);
-                throw new SplashException("Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Type of value returned: ".$class);
+                $class = (gettype($result) == 'object') ? get_class($result) : gettype($result);
+                throw new SplashException('Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Type of value returned: '.$class);
             }
         }
 
@@ -217,7 +211,7 @@ class SplashUtils
 //        return new Response($html, $code, $headers);
     }
 
-    /**
+    /*
      * Same as apache_response_headers (for any server)
      * @return array
      */
@@ -232,5 +226,4 @@ class SplashUtils
         }
         return $arh;
     }*/
-
 }

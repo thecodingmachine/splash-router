@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Filters;
 
 //FIXME: Provide filters another way...
@@ -12,8 +13,8 @@ namespace Mouf\Mvc\Splash\Filters;
 class RedirectToHttpAnnotation extends AbstractFilter
 {
     /**
-	 * The value passed to the filter.
-	 */
+     * The value passed to the filter.
+     */
     protected $port;
 
     public function setValue($value)
@@ -22,32 +23,32 @@ class RedirectToHttpAnnotation extends AbstractFilter
     }
 
     /**
-	 * Function to be called before the action.
-	 */
+     * Function to be called before the action.
+     */
     public function beforeAction()
     {
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) {
             if ($_SERVER['REQUEST_METHOD'] != 'GET') {
-                throw new ApplicationException("annotation.redirecttohttp.getonly.title", "annotation.redirecttohttp.getonly.getonly.text");
+                throw new ApplicationException('annotation.redirecttohttp.getonly.title', 'annotation.redirecttohttp.getonly.getonly.text');
             }
-            header("Location: ".$this->selfURL());
+            header('Location: '.$this->selfURL());
             exit;
         }
     }
 
     /**
-	 * Function to be called after the action.
-	 */
+     * Function to be called after the action.
+     */
     public function afterAction()
     {
     }
 
     private function selfURL()
     {
-        $protocol = "http";
-        $port = (empty($this->port)) ? "" : (":".$this->port);
+        $protocol = 'http';
+        $port = (empty($this->port)) ? '' : (':'.$this->port);
 
-        return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
+        return $protocol.'://'.$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
     }
     public function strleft($s1, $s2)
     {

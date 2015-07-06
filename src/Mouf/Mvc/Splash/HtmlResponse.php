@@ -1,8 +1,8 @@
 <?php
+
 namespace Mouf\Mvc\Splash;
 
 use Mouf\Html\HtmlElement\HtmlElementInterface;
-use Mouf\Mvc\Splash\Utils\SplashException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -14,8 +14,8 @@ use Zend\Diactoros\Stream;
 class HtmlResponse extends Response
 {
     /**
-	 * @var HtmlElementInterface
-	 */
+     * @var HtmlElementInterface
+     */
     protected $htmlElement;
 
     /**
@@ -27,7 +27,7 @@ class HtmlResponse extends Response
      */
     public function __construct(HtmlElementInterface $htmlElement, $status = 200, $headers = array())
     {
-        parent::__construct("php://temp", $status, $headers);
+        parent::__construct('php://temp', $status, $headers);
 
         $this->htmlElement = $htmlElement;
     }
@@ -42,6 +42,7 @@ class HtmlResponse extends Response
 
     /**
      * Sets the HtmlElement to be rendered.
+     *
      * @param HtmlElementInterface $htmlElement
      */
     public function setHtmlElement(HtmlElementInterface $htmlElement)
@@ -51,6 +52,7 @@ class HtmlResponse extends Response
 
     /**
      * Returns the HtmlElement to be rendered.
+     *
      * @return \Mouf\Html\HtmlElement\HtmlElementInterface
      */
     public function getHtmlElement()
@@ -68,8 +70,9 @@ class HtmlResponse extends Response
         ob_start();
         $this->htmlElement->toHtml();
         $content = ob_get_clean();
-        $stream = new Stream("php://memory", 'wb+');
+        $stream = new Stream('php://memory', 'wb+');
         $stream->write($content);
+
         return $stream;
     }
 }
