@@ -134,8 +134,7 @@ class SplashDefaultRouter implements MiddlewareInterface
                 try {
                     $args[] = $paramFetcher->fetchValue($context);
                 } catch (SplashValidationException $e) {
-
-                    $e->setPrependedMessage(SplashUtils::translate("validate.error.while.validating.parameter", $paramFetcher->getName()));
+                    $e->setPrependedMessage("Error while validating parameter '".$paramFetcher->getName()."'");
                     throw $e;
                 }
             }

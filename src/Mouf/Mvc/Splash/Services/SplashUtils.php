@@ -164,18 +164,6 @@ class SplashUtils
         return $values;
     }
 
-    /**
-	 * Thranslates a string using the Splash dictionnary
-	 * @param string $msg
-	 */
-    public static function translate($msg)
-    {
-        $translationService = MoufManager::getMoufManager()->getInstance("splashTranslateService");
-        /* @var $translationService FinePHPArrayTranslationService */
-
-        return call_user_func_array(array($translationService, "getTranslation"), func_get_args());
-    }
-
     public static function buildControllerResponse($callback)
     {
         ob_start();
@@ -233,7 +221,7 @@ class SplashUtils
      * Same as apache_response_headers (for any server)
      * @return array
      */
-    private static function greatResponseHeaders() {
+    /*private static function greatResponseHeaders() {
         $arh = array();
 
         // headers_list don't return associative array
@@ -243,6 +231,6 @@ class SplashUtils
             $arh[array_shift($header)] = trim(implode(":", $header));
         }
         return $arh;
-    }
+    }*/
 
 }

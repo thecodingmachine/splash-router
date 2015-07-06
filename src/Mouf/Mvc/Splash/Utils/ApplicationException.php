@@ -63,28 +63,4 @@ class ApplicationException extends \Exception
 		$this->message = array_shift($args);
 		$this->message_array = $args;
 	}
-
-	/**
-	 * @return string Returns the title, internationalized
-	 */
-	public function getI18Title()
-	{
-		$translationService = MoufManager::getMoufManager()->getInstance("splashTranslateService");
-		/* @var $translationService FinePHPArrayTranslationService */
-		return call_user_func_array(array($translationService, "getTranslation"), array_merge(array($this->title), $this->title_array));
-		//return $this->title."-".implode('/', $this->title_array);
-        //return call_user_func_array("iMsg", array_merge(array($this->title), $this->title_array));
-    }
-
-	/**
-	 * @return string Returns the message, internationalized
-	 */
-	public function getI18Message()
-	{
-		$translationService = MoufManager::getMoufManager()->getInstance("splashTranslateService");
-		/* @var $translationService FinePHPArrayTranslationService */
-		return call_user_func_array(array($translationService, "getTranslation"), array_merge(array($this->getMessage()), $this->message_array));
-		//return $this->getMessage()."-".implode('/', $this->message_array);;
-        //return call_user_func_array("iMsg", array_merge(array($this->getMessage()), $this->message_array));
-    }
 }
