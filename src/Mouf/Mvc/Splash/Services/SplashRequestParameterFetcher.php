@@ -74,7 +74,15 @@ class SplashRequestParameterFetcher implements SplashParameterFetcherInterface
     public function fetchValue(SplashRequestContext $context)
     {
         $request = $context->getRequest();
-        $value = $request->get($this->key);
+        $postVals = $request->getParsedBody();
+        $getVals = $request->getQueryParams();
+        $value = null;
+        if (isset($postVals[$this->key])) {
+        	$value = $postVals[$this->key];
+        }
+        else if (isset($getVals[$this->key])) {
+        	$value = $getVals[$this->key];
+        }
         if ($value !== null) {
             foreach ($this->validators as $validator) {
                 /* @var $validator ValidatorInterface */
