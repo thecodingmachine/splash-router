@@ -58,6 +58,7 @@ abstract class WebService implements WebServiceInterface
             if ($refMethod->hasAnnotation('Action') == false) {
                 $debug = MoufManager::getMoufManager()->getInstance('splash')->debugMode;
                 // This is not an action. Let's go in error.
+                // FIXME
                 self::FourOFour(iMsg('controller.404.no.action', get_class($this), $method), $debug);
                 exit;
             }

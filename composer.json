@@ -43,11 +43,6 @@
 	},
 	"extra" : {
 		"mouf" : {
-			"install" : [{
-					"file" : "src/splashCommonInstall.php",
-					"type" : "file"
-				}
-			],
 			"require-admin" : [
 				"src/SplashCommonAdmin.php"
 			]
