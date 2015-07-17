@@ -1,6 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\MoufManager;
+
 /**
  * This class scans the Mouf container in order to find all UrlProviderInterface instances.
  * Use it to discover instances.
