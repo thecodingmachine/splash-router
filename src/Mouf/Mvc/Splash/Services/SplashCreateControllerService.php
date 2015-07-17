@@ -154,13 +154,13 @@ use Mouf\Html\Renderer\Twig\TwigTemplate;
                 ?>
 <?php if ($importJsonResponse) {
     ?>
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Zend\Diactoros\Response\JsonResponse;
 <?php 
 }
                 ?>
 <?php if ($importRedirectResponse) {
     ?>
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 <?php 
 }
                 ?>

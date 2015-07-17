@@ -2,6 +2,7 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Mouf\Mvc\Splash\Services\UrlProviderInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,6 +17,14 @@ use Zend\Stratigility\MiddlewareInterface;
 
 class SplashDefaultRouter implements MiddlewareInterface
 {
+
+    /**
+     * List of objects that provide routes.
+     *
+     * @var UrlProviderInterface[]
+     */
+    private $routeProviders = [];
+
     /**
      * The logger used by Splash.
      *
@@ -33,11 +42,13 @@ class SplashDefaultRouter implements MiddlewareInterface
     /**
      * @Important
      *
-     * @param CacheInterface  $cacheService Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
-     * @param LoggerInterface $log          The logger used by Splash
+     * @param UrlProviderInterface[] $routeProviders
+     * @param CacheInterface $cacheService Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
+     * @param LoggerInterface $log The logger used by Splash
      */
-    public function __construct(CacheInterface $cacheService = null, LoggerInterface $log = null)
+    public function __construct(array $routeProviders, CacheInterface $cacheService = null, LoggerInterface $log = null)
     {
+        $this->routeProviders = $routeProviders;
         $this->cacheService = $cacheService;
         $this->log = $log;
     }
@@ -190,15 +201,11 @@ class SplashDefaultRouter implements MiddlewareInterface
      */
     private function getSplashActionsList()
     {
-        $moufManager = MoufManager::getMoufManager();
-        $instanceNames = $moufManager->findInstances('Mouf\\Mvc\\Splash\\Services\\UrlProviderInterface');
-
         $urls = array();
 
-        foreach ($instanceNames as $instanceName) {
-            $urlProvider = $moufManager->getInstance($instanceName);
-            /* @var $urlProvider UrlProviderInterface */
-            $tmpUrlList = $urlProvider->getUrlsList();
+        foreach ($this->routeProviders as $routeProvider) {
+            /* @var $routeProvider UrlProviderInterface */
+            $tmpUrlList = $routeProvider->getUrlsList();
             $urls = array_merge($urls, $tmpUrlList);
         }
 
