@@ -2,22 +2,18 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Mouf\Utils\Cache\CacheInterface;
 use Psr\Log\LoggerInterface;
 use Mouf\Utils\Common\ConditionInterface\ConditionInterface;
+use Zend\Stratigility\MiddlewareInterface;
 
-class CacheRouter implements HttpKernelInterface
+class CacheRouter implements MiddlewareInterface
 {
-    /**
-     * The router that will handle the request if cache miss.
-     *
-     * @var HttpKernelInterface
-     */
-    private $fallBackRouter;
-
     /**
      * @CacheInterface
      */
@@ -33,33 +29,42 @@ class CacheRouter implements HttpKernelInterface
      */
     private $log;
 
-    public function __construct(HttpKernelInterface $fallBackRouter, CacheInterface $cache, LoggerInterface $log, ConditionInterface $cacheCondition)
+    public function __construct(CacheInterface $cache, LoggerInterface $log, ConditionInterface $cacheCondition)
     {
-        $this->fallBackRouter = $fallBackRouter;
         $this->cache = $cache;
         $this->cacheCondition = $cacheCondition;
         $this->log = $log;
     }
 
     /**
-     * Handles a Request to convert it to a Response.
+     * Process an incoming request and/or response.
      *
-     * When $catch is true, the implementation must catch all exceptions
-     * and do its best to convert them to a Response instance.
+     * Accepts a server-side request and a response instance, and does
+     * something with them.
      *
-     * @param Request $request A Request instance
-     * @param int     $type    The type of the request
-     *                         (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
-     * @param bool    $catch   Whether to catch exceptions or not
+     * If the response is not complete and/or further processing would not
+     * interfere with the work done in the middleware, or if the middleware
+     * wants to delegate to another process, it can use the `$out` callable
+     * if present.
      *
-     * @return Response A Response instance
+     * If the middleware does not return a value, execution of the current
+     * request is considered complete, and the response instance provided will
+     * be considered the response to return.
      *
-     * @throws \Exception When an Exception occurs during processing
+     * Alternately, the middleware may return a response instance.
+     *
+     * Often, middleware will `return $out();`, with the assumption that a
+     * later middleware will return a response.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param null|callable $out
+     * @return null|ResponseInterface
      */
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
         $requestMethod = $request->getMethod();
-        $key = str_replace(['\\', '/', ':', '*', '?', '"', '<', '>', '|'], '_', $request->getRequestUri().$request->getQueryString());
+        $key = str_replace(['\\', '/', ':', '*', '?', '"', '<', '>', '|'], '_', $request->getUri()->getPath().'?'.$request->getUri()->getQuery());
 
         if ($this->cacheCondition->isOk() && $requestMethod == 'GET') {
             $cacheResponse = $this->cache->get($key);
@@ -69,22 +74,23 @@ class CacheRouter implements HttpKernelInterface
                 return $cacheResponse;
             } else {
                 $this->log->debug("Cache MISS on key $key");
-                $response = $this->fallBackRouter->handle($request, $type, $catch);
+                $response = $out($request, $response);
 
                 $noCache = false;
-                $headers = $response->headers;
-                foreach ($headers as $innerHeader) {
-                    foreach ($innerHeader as $value) {
-                        if ($value == 'Mouf-Cache-Control: no-cache') {
-                            $noCache = true;
-                        }
-                    }
+                if ($response->hasHeader('Mouf-Cache-Control') && $response->getHeader('Mouf-Cache-Control')[0] == 'no-cache') {
+                    $noCache = true;
                 }
 
                 if ($noCache) {
-                    $this->log->debug("Mouf NO CACHE specified, not storing $key");
+                    $this->log->debug("Mouf NO CACHE header found, not storing '$key'");
                 } else {
                     $ttl = null;
+
+                    // TODO: continue here!
+                    // Use PSR-7 response to analyze maxage and expires...
+                    // ...or... use a completely different HTTP cache implementation!!!
+                    // There must be one around for PSR-7!
+
                     $maxAge = $response->getMaxAge();
                     $expires = $response->getExpires();
                     if ($maxAge) {
@@ -117,7 +123,7 @@ class CacheRouter implements HttpKernelInterface
                 return $response;
             }
         } else {
-            $this->log->debug("NO Cache for $key");
+            $this->log->debug("No cache for $key");
 
             return $this->fallBackRouter->handle($request, $type, $catch);
         }
