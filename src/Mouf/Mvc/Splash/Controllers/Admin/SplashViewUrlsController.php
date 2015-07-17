@@ -2,7 +2,7 @@
 
 namespace Mouf\Mvc\Splash\Controllers\Admin;
 
-use Mouf\Mvc\Splash\Services\SplashUrlManager;
+use Mouf\InstanceProxy;
 use Mouf\Mvc\Splash\Controllers\Controller;
 
 /**
@@ -38,7 +38,10 @@ class SplashViewUrlsController extends Controller
     public function defaultAction($selfedit = 'false')
     {
         $this->selfedit = $selfedit;
-        $this->splashUrlsList = SplashUrlManager::getUrlsList($selfedit == 'true');
+
+        $instance = new InstanceProxy('splashDefaultRouter');
+
+        $this->splashUrlsList = $instance->getSplashActionsList();
 
         $this->content->addFile(dirname(__FILE__).'/../../../../../views/admin/splashUrlsList.php', $this);
         $this->template->toHtml();

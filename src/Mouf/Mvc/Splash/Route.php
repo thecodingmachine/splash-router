@@ -42,12 +42,11 @@ class Route implements UrlProviderInterface
     /**
      * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
      *
-     * @return array<SplashRoute>
+     * @param string $instanceName The identifier for this object in the container.
+     * @return array <SplashRoute>
      */
-    public function getUrlsList()
+    public function getUrlsList($instanceName)
     {
-        $instanceName = MoufManager::getMoufManager()->findInstanceName($this);
-
         $route = new SplashRoute($this->url, $instanceName, 'action', null, null);
 
         return array($route);

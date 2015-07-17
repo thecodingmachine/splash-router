@@ -64,16 +64,16 @@ abstract class Controller implements Scopable, UrlProviderInterface
     /**
      * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
      *
-     * @return array<SplashRoute>
+     * @param string $instanceName The identifier for this object in the container.
+     * @return array <SplashRoute>
      */
-    public function getUrlsList()
+    public function getUrlsList($instanceName)
     {
         // Let's analyze the controller and get all the @Action annotations:
         $urlsList = array();
         $moufManager = MoufManager::getMoufManager();
 
         $refClass = new MoufReflectionClass(get_class($this));
-        $instanceName = $moufManager->findInstanceName($this);
         $instance = $moufManager->getInstanceDescriptor($instanceName);
 
         foreach ($refClass->getMethods() as $refMethod) {

@@ -199,13 +199,13 @@ class SplashDefaultRouter implements MiddlewareInterface
      *
      * @return array<SplashAction>
      */
-    private function getSplashActionsList()
+    public function getSplashActionsList()
     {
         $urls = array();
 
         foreach ($this->routeProviders as $routeProvider) {
             /* @var $routeProvider UrlProviderInterface */
-            $tmpUrlList = $routeProvider->getUrlsList();
+            $tmpUrlList = $routeProvider->getUrlsList(null);
             $urls = array_merge($urls, $tmpUrlList);
         }
 

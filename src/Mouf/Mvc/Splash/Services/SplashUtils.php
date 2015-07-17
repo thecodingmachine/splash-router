@@ -16,17 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 class SplashUtils
 {
     /**
-     * @return SplashUrlManager
-     */
-    public static function getSplashUrlManager()
-    {
-        // Performs some late loading to avoid problems with the Mouf admin
-        require_once 'SplashUrlManager.php';
-
-        return new SplashUrlManager();
-    }
-
-    /**
      * Analyses the method, the @param annotation parameters, and returns an array of SplashRequestParameterFetcher.
      *
      * @return array<SplashParameterFetcherInterface>
