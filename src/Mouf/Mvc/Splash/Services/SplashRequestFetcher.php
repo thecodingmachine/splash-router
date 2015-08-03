@@ -3,11 +3,11 @@
 namespace Mouf\Mvc\Splash\Services;
 
 /**
- * This class is used to inject the Symfony HttpFoundation Request object into the controller's action arguments.
+ * This class is used to inject parameters into an object witch respect the RequestInterface of the PSR-7
  *
- * @author David Negrier
+ * @author David Negrier and Benoit Ngo
  */
-class SplashSymfonyRequestFetcher implements SplashParameterFetcherInterface
+class SplashRequestFetcher implements SplashParameterFetcherInterface
 {
     /**
      * Constructor.
