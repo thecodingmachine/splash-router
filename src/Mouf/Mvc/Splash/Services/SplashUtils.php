@@ -79,8 +79,8 @@ class SplashUtils
             // First step: let's see if there is an @param annotation for that parameter.
             $found = false;
 
-            if ($parameter->getType() == 'Symfony\Component\HttpFoundation\Request') {
-                $values[] = new SplashSymfonyRequestFetcher($parameter->getName());
+            if ($parameter->getType() == 'Psr\\Http\\Message\\RequestInterface') {
+                $values[] = new SplashRequestFetcher($parameter->getName());
                 continue;
             }
 
