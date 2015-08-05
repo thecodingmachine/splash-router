@@ -67,8 +67,8 @@ class SplashUtils
 
             // First step: let's see if there is an @param annotation for that parameter.
             $found = false;
-
-            if ($parameter->getType() == 'Psr\\Http\\Message\\RequestInterface') {
+			// Check type of requested parameter; Only interface are allowed in an action of a controller.
+            if ($parameter->getType() == 'Psr\\Http\\Message\\RequestInterface' || $parameter->getType() == 'Psr\\Http\\Message\\ServerRequestInterface') {
                 $values[] = new SplashRequestFetcher($parameter->getName());
                 continue;
             }
