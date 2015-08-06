@@ -109,12 +109,12 @@ class SplashCreateControllerService
 
 
         if (!$errors) {
-            $result = $this->createDirectory($controllerPhpDirectory);
+            $result = $this->createDirectory(ROOT_PATH.'../../../'.$controllerPhpDirectory);
             if (!$result) {
                 $errors['namespaceError'] = 'Unable to create directory: "'.$controllerPhpDirectory.'"';
-            } elseif (file_exists($controllerPhpDirectory.$controllerName.'.php')) {
+            } elseif (file_exists(ROOT_PATH.'../../../'.$controllerPhpDirectory.$controllerName.'.php')) {
                 $errors['namespaceError'] = 'The file "'.$controllerPhpDirectory.$controllerName.'.php already exists."';
-            } elseif (!is_writable($controllerPhpDirectory)) {
+            } elseif (!is_writable(ROOT_PATH.'../../../'.$controllerPhpDirectory)) {
                 $errors['namespaceError'] = 'Unable to write file in directory: "'.$controllerPhpDirectory.'"';
             }
 
