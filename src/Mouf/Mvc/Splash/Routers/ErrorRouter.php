@@ -22,10 +22,10 @@ class ErrorRouter implements RouterInterface
     /**
      * @Important
      *
-     * @param ErrorMiddlewareInterface $middleware The PSR-7 middleware to call
+     * @param ErrorMiddlewareInterface|callable $middleware The PSR-7 middleware to call
      * @param string                   $path       The path to that middleware (defaults to /).
      */
-    public function __construct(ErrorMiddlewareInterface $middleware, $path = '/')
+    public function __construct($middleware, $path = '/')
     {
         $this->path = $path;
         $this->middleware = $middleware;
