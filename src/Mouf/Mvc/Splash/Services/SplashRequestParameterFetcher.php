@@ -14,11 +14,6 @@ class SplashRequestParameterFetcher implements SplashParameterFetcherInterface
     private $key;
 
     /**
-     * @var array<ValidatorInterface>
-     */
-    private $validators = array();
-
-    /**
      * Whether the parameter is compulsory or not.
      *
      * @var bool
@@ -55,16 +50,6 @@ class SplashRequestParameterFetcher implements SplashParameterFetcherInterface
     }
 
     /**
-     * Adds a validator to the parameter fetcher.
-     *
-     * @param ValidatorInterface $validator
-     */
-    public function registerValidator(ValidatorInterface $validator)
-    {
-        $this->validators[] = $validator;
-    }
-
-    /**
      * We pass the context of the request, the object returns the value to fill.
      *
      * @param SplashRequestContext $context
@@ -84,14 +69,6 @@ class SplashRequestParameterFetcher implements SplashParameterFetcherInterface
         	$value = $getVals[$this->key];
         }
         if ($value !== null) {
-            foreach ($this->validators as $validator) {
-                /* @var $validator ValidatorInterface */
-                $result = $validator->doValidate($value);
-                if (!$result) {
-                    throw new SplashValidationException($validator->getErrorMessage());
-                }
-            }
-
             return $value;
         } elseif (!$this->compulsory) {
             return $this->default;

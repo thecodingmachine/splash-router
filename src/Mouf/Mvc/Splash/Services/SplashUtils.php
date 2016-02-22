@@ -104,23 +104,6 @@ class SplashUtils
                         // Then, we should add a "OrValidator" that validate one of the conditions.
                         // Note: a AndValidator might be cool to.
                         // FIXME
-                        // FIXME
-                        // FIXME
-                        // FIXME
-                        // FIXME
-                        // FIXME
-                        // FIXME
-                        // FIXME
-                        // FIXME
-                        /*$type = strtolower($annotation->getTypes());
-                        if ($type == "float" || $type == "double" || $type == "real" || $type == "number") {
-                            $numericValidator = new NumericValidator();
-                            $value->registerValidator($numericValidator);
-                        } elseif ($type == "int" || $type == "integer") {
-                            $intValidator = new NumericValidator();
-                            $intValidator->allowDecimals = false;
-                            $value->registerValidator($intValidator);
-                        }*/
                         $values[] = $value;
                         $found = true;
                         break;
