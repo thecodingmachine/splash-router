@@ -60,13 +60,21 @@ class SplashRequestParameterFetcher implements SplashParameterFetcherInterface
     {
         $request = $context->getRequest();
         $postVals = $request->getParsedBody();
-        $getVals = $request->getQueryParams();
         $value = null;
         if (isset($postVals[$this->key])) {
         	$value = $postVals[$this->key];
         }
-        else if (isset($getVals[$this->key])) {
-        	$value = $getVals[$this->key];
+        else
+        {
+            $getVals = $request->getQueryParams();
+            if (isset($getVals[$this->key])) {
+                $value = $getVals[$this->key];
+            } else {
+                $uploadedFiles = $request->getUploadedFiles();
+                if (isset($uploadedFiles[$this->key])) {
+                    $value = $uploadedFiles[$this->key];
+                }
+            }
         }
         if ($value !== null) {
             return $value;
