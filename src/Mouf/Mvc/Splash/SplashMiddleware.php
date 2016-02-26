@@ -30,7 +30,9 @@ class SplashMiddleware extends MiddlewarePipe
     {
         parent::__construct();
         foreach ($routers as $router) {
-            $this->pipe($router->getPath(), $router->getMiddleware());
+            if ($router->isActive()) {
+                $this->pipe($router->getPath(), $router->getMiddleware());
+            }
         }
     }
 }

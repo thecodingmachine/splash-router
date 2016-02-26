@@ -9,6 +9,7 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Mouf\Utils\Common\ConditionInterface\ConditionInterface;
 use Zend\Stratigility\ErrorMiddlewareInterface;
 use Zend\Stratigility\MiddlewareInterface;
 
@@ -30,4 +31,11 @@ interface RouterInterface
      * @return MiddlewareInterface|ErrorMiddlewareInterface
      */
     public function getMiddleware();
+
+    /**
+     * If this returns false, the router is skipped.
+     *
+     * @return bool
+     */
+    public function isActive();
 }

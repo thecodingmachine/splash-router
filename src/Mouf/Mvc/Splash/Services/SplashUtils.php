@@ -12,9 +12,13 @@ use Mouf\Annotations\paramAnnotation;
 use Mouf\Reflection\TypesDescriptor;
 use Mouf\Reflection\MoufReflectionParameter;
 use Symfony\Component\HttpFoundation\Request;
+use Zend\Diactoros\Response\HtmlResponse;
 
 class SplashUtils
 {
+    const MODE_WEAK = 'weak';
+    const MODE_STRICT = 'strict';
+
     /**
      * Analyses the method, the @param annotation parameters, and returns an array of SplashRequestParameterFetcher.
      *
@@ -130,7 +134,7 @@ class SplashUtils
         return $values;
     }
 
-    public static function buildControllerResponse($callback)
+    public static function buildControllerResponse($callback, $mode = self::MODE_STRICT, $debug = false)
     {
         ob_start();
         try {
@@ -143,15 +147,39 @@ class SplashUtils
         $html = ob_get_clean();
 
         if (!empty($html)) {
-            throw new SplashException('Output started in Controller : '.$html);
+            if ($mode === self::MODE_WEAK) {
+                $code = http_response_code();
+                $headers = self::getResponseHeaders();
+
+                // Suppress actual headers (re-add by PSR-7 Response)
+                // If you don't remove old headers, it's duplicated in HTTP Headers
+                foreach ($headers as $key => $head) {
+                    header_remove($key);
+                }
+
+                if ($result !== null) {
+                    // We might be in weak mode, it is not normal to have both an output and a response!
+                    $html = '<h1>Output started in controller. It is not normal to have an output in the controller, and a response returned by the controller. Output detected:</h1>'.$html;
+                    $code = 500;
+                }
+
+                return new HtmlResponse($html, $code, $headers);
+            } else {
+                if ($debug) {
+                    $html = '<h1>Output started in controller. A controller should return an object implementing the ResponseInterface rather than outputting directly content. Output detected:</h1>'.$html;
+                    return new HtmlResponse($html, 500);
+                } else {
+                    throw new SplashException('Output started in Controller : '.$html);
+                }
+            }
         }
 
         if (!$result instanceof ResponseInterface) {
             if ($result === null) {
-                throw new SplashException('Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Your controller did not return any value.');
+                throw new SplashException('Your controller should return an instance of Psr\\Http\\Message\\ResponseInterface. Your controller did not return any value.');
             } else {
                 $class = (gettype($result) == 'object') ? get_class($result) : gettype($result);
-                throw new SplashException('Your controller should return an instance of Psr\\Http\\Message\\ReponseInterface. Type of value returned: '.$class);
+                throw new SplashException('Your controller should return an instance of Psr\\Http\\Message\\ResponseInterface. Type of value returned: '.$class);
             }
         }
 
@@ -183,11 +211,11 @@ class SplashUtils
 //        return new Response($html, $code, $headers);
     }
 
-    /*
+    /**
      * Same as apache_response_headers (for any server)
      * @return array
      */
-    /*private static function greatResponseHeaders() {
+    private static function getResponseHeaders() {
         $arh = array();
 
         // headers_list don't return associative array
@@ -197,5 +225,5 @@ class SplashUtils
             $arh[array_shift($header)] = trim(implode(":", $header));
         }
         return $arh;
-    }*/
+    }
 }

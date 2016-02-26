@@ -40,17 +40,36 @@ class SplashDefaultRouter implements MiddlewareInterface
     private $cacheService;
 
     /**
+     * The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers
+     * are requested to return a ResponseInterface object).
+     *
+     * @var string
+     */
+    private $mode;
+
+    /**
+     * In debug mode, Splash will display more accurate messages if output starts (in strict mode)
+     *
+     * @var bool
+     */
+    private $debug;
+
+    /**
      * @Important
      *
      * @param UrlProviderInterface[] $routeProviders
      * @param CacheInterface $cacheService Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
      * @param LoggerInterface $log The logger used by Splash
+     * @param string $mode The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers are requested to return a ResponseInterface object).
+     * @param bool $debug In debug mode, Splash will display more accurate messages if output starts (in strict mode)
      */
-    public function __construct(array $routeProviders, CacheInterface $cacheService = null, LoggerInterface $log = null)
+    public function __construct(array $routeProviders, CacheInterface $cacheService = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true)
     {
         $this->routeProviders = $routeProviders;
         $this->cacheService = $cacheService;
         $this->log = $log;
+        $this->mode = $mode;
+        $this->debug = $debug;
     }
 
     /**
@@ -136,7 +155,9 @@ class SplashDefaultRouter implements MiddlewareInterface
             $response = SplashUtils::buildControllerResponse(
                 function () use ($controller) {
                     $this->handleWebservice($controller);
-                }
+                },
+                $this->mode,
+                $this->debug
             );
 
             return $response;
@@ -168,7 +189,9 @@ class SplashDefaultRouter implements MiddlewareInterface
             $response = SplashUtils::buildControllerResponse(
                 function () use ($controller, $action, $args) {
                     return call_user_func_array(array($controller, $action), $args);
-                }
+                },
+                $this->mode,
+                $this->debug
             );
 
             foreach ($filters as $filter) {
