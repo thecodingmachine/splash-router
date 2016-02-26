@@ -94,13 +94,13 @@ abstract class Controller implements Scopable, UrlProviderInterface
             if ($refMethod->hasAnnotation('Action')) {
                 $methodName = $refMethod->getName();
                 if ($methodName == 'index' || $methodName == 'defaultAction') {
-                    $url = $moufManager->findInstanceName($this).'/';
+                    $url = $instanceName.'/';
                 } else {
-                    $url = $moufManager->findInstanceName($this).'/'.$methodName;
+                    $url = $instanceName.'/'.$methodName;
                 }
                 $parameters = SplashUtils::mapParameters($refMethod);
                 $filters = FilterUtils::getFilters($refMethod, $this);
-                $urlsList[] = new SplashRoute($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
+                $urlsList[] = new SplashRoute($url, $instanceName, $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
             }
 
             // Now, let's check the "URL" annotation (note: we support multiple URL annotations for the same method)

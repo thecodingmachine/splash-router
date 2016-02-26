@@ -146,7 +146,7 @@ class SplashUtils
         }
         $html = ob_get_clean();
 
-        if (!empty($html)) {
+        if (!empty($html) || $mode === self::MODE_WEAK) {
             if ($mode === self::MODE_WEAK) {
                 $code = http_response_code();
                 $headers = self::getResponseHeaders();
