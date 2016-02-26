@@ -19,6 +19,11 @@ class HtmlResponse extends Response
     protected $htmlElement;
 
     /**
+     * @var Stream
+     */
+    protected $stream;
+
+    /**
      * Constructor.
      *
      * @param HtmlElementInterface $htmlElement An HtmlElement to render.
@@ -67,12 +72,15 @@ class HtmlResponse extends Response
      */
     public function getBody()
     {
-        ob_start();
-        $this->htmlElement->toHtml();
-        $content = ob_get_clean();
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($content);
+        if ($this->stream === null) {
+            ob_start();
+            $this->htmlElement->toHtml();
+            $content = ob_get_clean();
+            $this->stream = new Stream('php://memory', 'wb+');
+            $this->stream->write($content);
 
-        return $stream;
+        }
+
+        return $this->stream;
     }
 }
