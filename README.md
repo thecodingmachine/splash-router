@@ -1,12 +1,6 @@
 Welcome to the Splash MVC framework common library
 ==================================================
 
-WORK IN PROGRESS
-================
-
-Splash 7 will be the first release to support PSR-7. It is currently in development. Meanwhile, the latest stable release
- you should use is Splash 5.1.
-
 What is Splash?
 ---------------
 
@@ -20,8 +14,10 @@ This package contains the common functions used by all libraries respecting the 
 All libraries you said? Yes, all libraries. Indeed, there are many packages respecting the Splash syntax.
 
 Of course, there is [Splash (a full-featured MVC framework)](http://mouf-php.com/packages/mouf/mvc.splash).
-But there is also [Druplash (a module for Drupal that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.drupal.druplash),.
-and [Moufpress (a plugin for Wordpress that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress).
+But there is also [Druplash (a module for Drupal that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.drupal.druplash),
+[Moufpress (a plugin for Wordpress that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
+[Moufla (a plugin for Joomla that adds a Splash-compatible MVC framework)](https://github.com/thecodingmachine/integration.joomla.moufla),
+[moufgento (a plugin for Magento that adds a Splash-compatible MVC framework)](https://github.com/thecodingmachine/integration.magento.moufgento).
 
 
 Documentation
