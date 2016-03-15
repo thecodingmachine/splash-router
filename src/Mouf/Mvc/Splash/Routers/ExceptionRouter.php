@@ -51,7 +51,7 @@ class ExceptionRouter implements ErrorMiddlewareInterface
      *
      * @return ResponseInterface
      */
-    private function handleException(\Exception $e)
+    private function handleException(\Exception $e, Request $request)
     {
         if ($this->log != null) {
             $this->log->error('Exception thrown inside a controller.', array(
@@ -63,8 +63,8 @@ class ExceptionRouter implements ErrorMiddlewareInterface
         }
 
         $response = SplashUtils::buildControllerResponse(
-            function () use ($e) {
-                return $this->errorController->serverError($e);
+            function () use ($e, $request) {
+                return $this->errorController->serverError($e, $request);
             }
         );
 
@@ -89,6 +89,6 @@ class ExceptionRouter implements ErrorMiddlewareInterface
      */
     public function __invoke($error, Request $request, Response $response, callable $out = null)
     {
-        return $this->handleException($error);
+        return $this->handleException($error, $request);
     }
 }
