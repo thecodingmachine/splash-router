@@ -1,14 +1,13 @@
 <?php
-
 namespace Mouf\Mvc\Splash\Services;
+
+use Mouf\Annotations\URLAnnotation;
 use Mouf\Reflection\MoufReflectionParameter;
 
 /**
- * This class is used to inject parameters into an object witch respect the RequestInterface of the PSR-7
- *
- * @author David Negrier and Benoit Ngo
+ * Classes implementing this interface can create parameter fetchers that will fill parameters of actions.
  */
-class SplashRequestFetcher implements ParameterFetcher
+interface ParameterFetcher
 {
     /**
      * Returns whether this fetcher factory can handle the parameter passed in parameter for the url $url.
@@ -17,15 +16,7 @@ class SplashRequestFetcher implements ParameterFetcher
      * @param string $url
      * @return bool
      */
-    public function canHandle(MoufReflectionParameter $reflectionParameter, string $url = null) : bool
-    {
-        // Check type of requested parameter; Only interface are allowed in an action of a controller.
-        if ($reflectionParameter->getType() === 'Psr\\Http\\Message\\RequestInterface' || $reflectionParameter->getType() === 'Psr\\Http\\Message\\ServerRequestInterface') {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public function canHandle(MoufReflectionParameter $reflectionParameter, string $url = null) : bool;
 
     /**
      * Returns some data needed by this fetcher to fetch data from the request.
@@ -36,10 +27,7 @@ class SplashRequestFetcher implements ParameterFetcher
      * @param string|null $url
      * @return mixed
      */
-    public function getFetcherData(MoufReflectionParameter $reflectionParameter, string $url = null)
-    {
-        return null;
-    }
+    public function getFetcherData(MoufReflectionParameter $reflectionParameter, string $url = null);
 
     /**
      * Returns the value to be injected in this parameter.
@@ -49,8 +37,5 @@ class SplashRequestFetcher implements ParameterFetcher
      *
      * @return mixed
      */
-    public function fetchValue($data, SplashRequestContext $context)
-    {
-        return $context->getRequest();
-    }
+    public function fetchValue($data, SplashRequestContext $context);
 }

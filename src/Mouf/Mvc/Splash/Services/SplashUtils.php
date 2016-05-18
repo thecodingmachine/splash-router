@@ -4,14 +4,10 @@ namespace Mouf\Mvc\Splash\Services;
 
 use Mouf\Annotations\URLAnnotation;
 use Mouf\Mvc\Splash\Utils\SplashException;
-use Mouf\Utils\Common\Validators\NumericValidator;
 use Mouf\Reflection\MoufReflectionMethod;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Mouf\Annotations\paramAnnotation;
-use Mouf\Reflection\TypesDescriptor;
 use Mouf\Reflection\MoufReflectionParameter;
-use Symfony\Component\HttpFoundation\Request;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class SplashUtils
@@ -32,32 +28,13 @@ class SplashUtils
         // Let's build a set of those parameters.
 
         if ($urlAnnotation != null) {
-            $urlParamsList = array();
-            /* @var $urlAnnotation URLAnnotation */
-            $url = $urlAnnotation->getUrl();
-            $urlParts = explode('/', $url);
-            foreach ($urlParts as $part) {
-                if (strpos($part, '{') === 0 && strpos($part, '}') === strlen($part) - 1) {
-                    // Parameterized URL element
-                    $varName = substr($part, 1, strlen($part) - 2);
-                    $urlParamsList[$varName] = $varName;
-                }
-            }
+            $urlParamsList = self::getUrlParameters($urlAnnotation);
         } else {
             $urlAnnotations = $refMethod->getAnnotations('URL');
             $urlParamsList = array();
             if ($urlAnnotations != null) {
-                foreach ($urlAnnotations as $urlAnnotation) {
-                    /* @var $urlAnnotation URLAnnotation */
-                    $url = $urlAnnotation->getUrl();
-                    $urlParts = explode('/', $url);
-                    foreach ($urlParts as $part) {
-                        if (strpos($part, '{') === 0 && strpos($part, '}') === strlen($part) - 1) {
-                            // Parameterized URL element
-                            $varName = substr($part, 1, strlen($part) - 2);
-                            $urlParamsList[$varName] = $varName;
-                        }
-                    }
+                foreach ($urlAnnotations as $urlAnnot) {
+                    $urlParamsList = array_merge($urlParamsList, self::getUrlParameters($urlAnnot));
                 }
             }
         }
@@ -72,7 +49,7 @@ class SplashUtils
             // First step: let's see if there is an @param annotation for that parameter.
             $found = false;
 			// Check type of requested parameter; Only interface are allowed in an action of a controller.
-            if ($parameter->getType() == 'Psr\\Http\\Message\\RequestInterface' || $parameter->getType() == 'Psr\\Http\\Message\\ServerRequestInterface') {
+            if ($parameter->getType() === 'Psr\\Http\\Message\\RequestInterface' || $parameter->getType() === 'Psr\\Http\\Message\\ServerRequestInterface') {
                 $values[] = new SplashRequestFetcher($parameter->getName());
                 continue;
             }
@@ -132,6 +109,30 @@ class SplashUtils
         }
 
         return $values;
+    }
+
+    /**
+     * Returns an array of parameters present in the URL.
+     * If the URL is /user/{id}/login/{name}, the returns array will be:
+     *  [ "id"=>"id",
+     *    "name"=>"name" ]
+     *
+     * @param URLAnnotation $urlAnnotation
+     * @return array
+     */
+    private static function getUrlParameters(URLAnnotation $urlAnnotation) : array
+    {
+        $urlParamsList = [];
+        $url = $urlAnnotation->getUrl();
+        $urlParts = explode('/', $url);
+        foreach ($urlParts as $part) {
+            if (strpos($part, '{') === 0 && strpos($part, '}') === strlen($part) - 1) {
+                // Parameterized URL element
+                $varName = substr($part, 1, strlen($part) - 2);
+                $urlParamsList[$varName] = $varName;
+            }
+        }
+        return $urlParamsList;
     }
 
     public static function buildControllerResponse($callback, $mode = self::MODE_STRICT, $debug = false)

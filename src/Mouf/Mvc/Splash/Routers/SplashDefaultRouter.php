@@ -2,6 +2,9 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Mouf\Mvc\Splash\Services\ParameterFetcher;
+use Mouf\Mvc\Splash\Services\SplashRequestFetcher;
+use Mouf\Mvc\Splash\Services\SplashRequestParameterFetcher;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface;
@@ -55,6 +58,11 @@ class SplashDefaultRouter implements MiddlewareInterface
     private $debug;
 
     /**
+     * @var ParameterFetcher[]
+     */
+    private $parameterFetchers;
+
+    /**
      * @Important
      *
      * @param UrlProviderInterface[] $routeProviders
@@ -63,13 +71,21 @@ class SplashDefaultRouter implements MiddlewareInterface
      * @param string $mode The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers are requested to return a ResponseInterface object).
      * @param bool $debug In debug mode, Splash will display more accurate messages if output starts (in strict mode)
      */
-    public function __construct(array $routeProviders, CacheInterface $cacheService = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true)
+    public function __construct(array $routeProviders, CacheInterface $cacheService = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true, array $parameterFetchers = [])
     {
         $this->routeProviders = $routeProviders;
         $this->cacheService = $cacheService;
         $this->log = $log;
         $this->mode = $mode;
         $this->debug = $debug;
+        if (empty($parameterFetchers)) {
+            // TODO: change this by an installer.
+            $parameterFetchers = [
+                new SplashRequestFetcher(),
+                new SplashRequestParameterFetcher()
+            ];
+        }
+        $this->parameterFetchers = $parameterFetchers;
     }
 
     /**
