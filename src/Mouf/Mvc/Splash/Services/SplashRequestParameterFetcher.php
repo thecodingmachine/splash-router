@@ -2,7 +2,7 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
-use Mouf\Reflection\MoufReflectionParameter;
+use ReflectionParameter;
 use Mouf\Utils\Common\Validators\ValidatorInterface;
 
 /**
@@ -16,11 +16,11 @@ class SplashRequestParameterFetcher implements ParameterFetcher
     /**
      * Returns whether this fetcher factory can handle the parameter passed in parameter for the url $url.
      *
-     * @param MoufReflectionParameter $reflectionParameter
+     * @param ReflectionParameter $reflectionParameter
      * @param string $url
      * @return bool
      */
-    public function canHandle(MoufReflectionParameter $reflectionParameter, string $url = null) : bool
+    public function canHandle(ReflectionParameter $reflectionParameter, string $url = null) : bool
     {
         // Yes, we can! (always)
         return true;
@@ -31,11 +31,11 @@ class SplashRequestParameterFetcher implements ParameterFetcher
      * This data MUST be serializable (and will be serialized). This function will be called only once
      * and data cached. You can perform expensive computation in this function.
      *
-     * @param MoufReflectionParameter $reflectionParameter
+     * @param ReflectionParameter $reflectionParameter
      * @param string|null $url
      * @return mixed
      */
-    public function getFetcherData(MoufReflectionParameter $reflectionParameter, string $url = null)
+    public function getFetcherData(ReflectionParameter $reflectionParameter, string $url = null)
     {
         if ($reflectionParameter->isDefaultValueAvailable()) {
             return [

@@ -3,6 +3,7 @@
 namespace Mouf\Mvc\Splash\Routers;
 
 use Mouf\Mvc\Splash\Services\ParameterFetcher;
+use Mouf\Mvc\Splash\Services\ParameterFetcherRegistry;
 use Mouf\Mvc\Splash\Services\SplashRequestFetcher;
 use Mouf\Mvc\Splash\Services\SplashRequestParameterFetcher;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
@@ -60,7 +61,7 @@ class SplashDefaultRouter implements MiddlewareInterface
     /**
      * @var ParameterFetcher[]
      */
-    private $parameterFetchers;
+    private $parameterFetcherRegistry;
 
     /**
      * @Important
@@ -71,21 +72,14 @@ class SplashDefaultRouter implements MiddlewareInterface
      * @param string $mode The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers are requested to return a ResponseInterface object).
      * @param bool $debug In debug mode, Splash will display more accurate messages if output starts (in strict mode)
      */
-    public function __construct(array $routeProviders, CacheInterface $cacheService = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true, array $parameterFetchers = [])
+    public function __construct(array $routeProviders, ParameterFetcherRegistry $parameterFetcherRegistry, CacheInterface $cacheService = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true)
     {
         $this->routeProviders = $routeProviders;
+        $this->parameterFetcherRegistry = $parameterFetcherRegistry;
         $this->cacheService = $cacheService;
         $this->log = $log;
         $this->mode = $mode;
         $this->debug = $debug;
-        if (empty($parameterFetchers)) {
-            // TODO: change this by an installer.
-            $parameterFetchers = [
-                new SplashRequestFetcher(),
-                new SplashRequestParameterFetcher()
-            ];
-        }
-        $this->parameterFetchers = $parameterFetchers;
     }
 
     /**
@@ -179,16 +173,16 @@ class SplashDefaultRouter implements MiddlewareInterface
             return $response;
         } else {
             // Let's pass everything to the controller:
-            $args = array();
+            $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
+            /*$args = array();
             foreach ($splashRoute->parameters as $paramFetcher) {
-                /* @var $param SplashParameterFetcherInterface */
                 try {
                     $args[] = $paramFetcher->fetchValue($context);
                 } catch (SplashValidationException $e) {
                     $e->setPrependedMessage("Error while validating parameter '".$paramFetcher->getName()."'");
                     throw $e;
                 }
-            }
+            }*/
 
             // Handle action__GET or action__POST method (for legacy code).
             if (method_exists($controller, $action.'__'.$request->getMethod())) {

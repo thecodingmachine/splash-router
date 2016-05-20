@@ -9,6 +9,7 @@ use Mouf\MoufManager;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Mouf\Reflection\MoufReflectionClass;
 use Mouf\Reflection\MoufReflectionMethod;
+use ReflectionMethod;
 
 /**
  * This class is in charge of registering controller's routes.
@@ -20,16 +21,24 @@ class ControllerRegistry implements UrlProviderInterface
     private $controllers;
 
     /**
+     * @var ParameterFetcherRegistry
+     */
+    private $parameterFetcherRegistry;
+
+    /**
      * Initializes the registry with an array of container instances names.
      *
      * @param ContainerInterface $container The container to fetch controllers from
+     * @param ParameterFetcherRegistry $parameterFetcherRegistry
      * @param string[] $controllers An array of controller instance name (as declared in the container)
      */
-    public function __construct(ContainerInterface $container, array $controllers = array())
+    public function __construct(ContainerInterface $container, ParameterFetcherRegistry $parameterFetcherRegistry, array $controllers = [])
     {
         $this->container = $container;
         $this->controllers = $controllers;
+        $this->parameterFetcherRegistry = $parameterFetcherRegistry;
     }
+
 
     /**
      * Adds a container to the registry (by its instance name).
@@ -93,7 +102,7 @@ class ControllerRegistry implements UrlProviderInterface
                 } else {
                     $url = $controllerInstanceName.'/'.$methodName;
                 }
-                $parameters = SplashUtils::mapParameters($refMethod);
+                $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod);
                 $filters = FilterUtils::getFilters($refMethod, $controller);
                 $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
             }
@@ -116,7 +125,7 @@ class ControllerRegistry implements UrlProviderInterface
 
                     $newUrlAnnotation = new URLAnnotation($url);
                     $url = ltrim($url, '/');
-                    $parameters = SplashUtils::mapParameters($refMethod, $newUrlAnnotation);
+                    $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod, $newUrlAnnotation->getUrl());
                     $filters = FilterUtils::getFilters($refMethod, $controller);
                     $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
                 }
@@ -167,4 +176,28 @@ class ControllerRegistry implements UrlProviderInterface
 
         return $methods;
     }
+
+    /**
+     * Returns an array of parameters present in the URL.
+     * If the URL is /user/{id}/login/{name}, the returns array will be:
+     *  [ "id"=>"id",
+     *    "name"=>"name" ]
+     *
+     * @param URLAnnotation $urlAnnotation
+     * @return array
+     */
+    /*private static function getUrlParameters(URLAnnotation $urlAnnotation) : array
+    {
+        $urlParamsList = [];
+        $url = $urlAnnotation->getUrl();
+        $urlParts = explode('/', $url);
+        foreach ($urlParts as $part) {
+            if (strpos($part, '{') === 0 && strpos($part, '}') === strlen($part) - 1) {
+                // Parameterized URL element
+                $varName = substr($part, 1, strlen($part) - 2);
+                $urlParamsList[$varName] = $varName;
+            }
+        }
+        return $urlParamsList;
+    }*/
 }

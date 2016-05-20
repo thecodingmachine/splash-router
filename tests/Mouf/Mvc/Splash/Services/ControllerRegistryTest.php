@@ -20,7 +20,8 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
            }
         ]);
 
-        $controllerRegistry = new ControllerRegistry($container);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry);
         $controllerRegistry->addController('controller');
 
         $urlsList = $controllerRegistry->getUrlsList('foo');
@@ -38,11 +39,12 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
             }
         ]);
 
-        $controllerRegistry = new ControllerRegistry($container, ['controller']);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, ['controller']);
 
         $urlsList = $controllerRegistry->getUrlsList('foo');
 
-        $this->assertCount(3, $urlsList);
+        $this->assertCount(4, $urlsList);
         $this->assertInstanceOf(SplashRoute::class, $urlsList[0]);
         $this->assertEquals('url/42/foo/52', $urlsList[0]->url);
 
@@ -68,7 +70,8 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
             }
         ]);
 
-        $controllerRegistry = new ControllerRegistry($container, ['controller']);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, ['controller']);
 
         $this->expectException(SplashException::class);
         $urlsList = $controllerRegistry->getUrlsList('foo');

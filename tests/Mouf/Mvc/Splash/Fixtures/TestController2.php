@@ -1,7 +1,8 @@
 <?php
 namespace Mouf\Mvc\Splash\Fixtures;
 
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\JsonResponse;
 
 class TestController2
 {
@@ -32,5 +33,17 @@ class TestController2
      */
     public function index() {
 
+    }
+
+    /**
+     * @URL /foo/{var}/bar
+     */
+    public function completeTest($id, ServerRequestInterface $request, $var, $opt = 42) {
+        return new JsonResponse([
+           'id' => $id,
+            'id2' => $request->getQueryParams('id'),
+            'var' => $var,
+            'opt' => $opt
+        ]);
     }
 }

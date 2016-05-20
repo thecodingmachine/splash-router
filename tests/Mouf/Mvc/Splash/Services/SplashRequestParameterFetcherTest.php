@@ -5,15 +5,13 @@ namespace Mouf\Mvc\Splash\Services;
 
 
 use Mouf\Mvc\Splash\Fixtures\TestController;
-use Mouf\Reflection\MoufReflectionClass;
-use Mouf\Reflection\MoufReflectionMethod;
+use ReflectionMethod;
 use Zend\Diactoros\ServerRequest;
 
 class SplashRequestParameterFetcherTest extends \PHPUnit_Framework_TestCase
 {
     public function testSplashRequestParameterFetcher() {
-        $class = new MoufReflectionClass(TestController::class);
-        $method = new MoufReflectionMethod($class, 'myAction');
+        $method = new ReflectionMethod(TestController::class, 'myAction');
         $params = $method->getParameters();
 
         $splashRequestFetcher = new SplashRequestParameterFetcher();

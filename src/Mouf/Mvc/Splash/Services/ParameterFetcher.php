@@ -2,7 +2,7 @@
 namespace Mouf\Mvc\Splash\Services;
 
 use Mouf\Annotations\URLAnnotation;
-use Mouf\Reflection\MoufReflectionParameter;
+use ReflectionParameter;
 
 /**
  * Classes implementing this interface can create parameter fetchers that will fill parameters of actions.
@@ -12,22 +12,22 @@ interface ParameterFetcher
     /**
      * Returns whether this fetcher factory can handle the parameter passed in parameter for the url $url.
      *
-     * @param MoufReflectionParameter $reflectionParameter
+     * @param ReflectionParameter $reflectionParameter
      * @param string $url
      * @return bool
      */
-    public function canHandle(MoufReflectionParameter $reflectionParameter, string $url = null) : bool;
+    public function canHandle(ReflectionParameter $reflectionParameter, string $url = null) : bool;
 
     /**
      * Returns some data needed by this fetcher to fetch data from the request.
      * This data MUST be serializable (and will be serialized). This function will be called only once
      * and data cached. You can perform expensive computation in this function.
      *
-     * @param MoufReflectionParameter $reflectionParameter
+     * @param ReflectionParameter $reflectionParameter
      * @param string|null $url
      * @return mixed
      */
-    public function getFetcherData(MoufReflectionParameter $reflectionParameter, string $url = null);
+    public function getFetcherData(ReflectionParameter $reflectionParameter, string $url = null);
 
     /**
      * Returns the value to be injected in this parameter.
