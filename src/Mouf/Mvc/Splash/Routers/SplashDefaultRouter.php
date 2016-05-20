@@ -2,12 +2,14 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Cache\Adapter\Void\VoidCachePool;
+use Interop\Container\ContainerInterface;
 use Mouf\Mvc\Splash\Services\ParameterFetcher;
 use Mouf\Mvc\Splash\Services\ParameterFetcherRegistry;
-use Mouf\Mvc\Splash\Services\SplashRequestFetcher;
 use Mouf\Mvc\Splash\Services\SplashRequestParameterFetcher;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Mouf\Utils\Cache\CacheInterface;
@@ -17,10 +19,18 @@ use Psr\Log\LoggerInterface;
 use Mouf\Mvc\Splash\Controllers\WebServiceInterface;
 use Mouf\Mvc\Splash\Services\SplashRequestContext;
 use Mouf\Mvc\Splash\Services\SplashUtils;
+use Psr\Log\NullLogger;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Stratigility\MiddlewareInterface;
 
 class SplashDefaultRouter implements MiddlewareInterface
 {
+    /**
+     * The container that will be used to fetch controllers.
+     *
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * List of objects that provide routes.
@@ -39,9 +49,9 @@ class SplashDefaultRouter implements MiddlewareInterface
     /**
      * Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action).
      *
-     * @var CacheInterface
+     * @var CacheItemPoolInterface
      */
-    private $cacheService;
+    private $cachePool;
 
     /**
      * The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers
@@ -64,22 +74,33 @@ class SplashDefaultRouter implements MiddlewareInterface
     private $parameterFetcherRegistry;
 
     /**
+     * The base URL of the application (from which the router will start routing).
+     * @var string
+     */
+    private $rootUrl;
+
+    /**
      * @Important
      *
+     * @param ContainerInterface $container The container that will be used to fetch controllers.
      * @param UrlProviderInterface[] $routeProviders
-     * @param CacheInterface $cacheService Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
+     * @param ParameterFetcherRegistry $parameterFetcherRegistry
+     * @param CacheItemPoolInterface $cachePool Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
      * @param LoggerInterface $log The logger used by Splash
      * @param string $mode The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers are requested to return a ResponseInterface object).
      * @param bool $debug In debug mode, Splash will display more accurate messages if output starts (in strict mode)
+     * @param string $rootUrl
      */
-    public function __construct(array $routeProviders, ParameterFetcherRegistry $parameterFetcherRegistry, CacheInterface $cacheService = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true)
+    public function __construct(ContainerInterface $container, array $routeProviders, ParameterFetcherRegistry $parameterFetcherRegistry, CacheItemPoolInterface $cachePool = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true, $rootUrl = '/')
     {
+        $this->container = $container;
         $this->routeProviders = $routeProviders;
         $this->parameterFetcherRegistry = $parameterFetcherRegistry;
-        $this->cacheService = $cacheService;
-        $this->log = $log;
+        $this->cachePool = $cachePool === null ? new VoidCachePool() : $cachePool;
+        $this->log = $log === null ? new NullLogger() : $log;
         $this->mode = $mode;
         $this->debug = $debug;
+        $this->rootUrl = $rootUrl;
     }
 
     /**
@@ -110,120 +131,89 @@ class SplashDefaultRouter implements MiddlewareInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        // FIXME: find a better way?
-        $splashUrlPrefix = ROOT_URL;
-
-        if ($this->cacheService == null) {
-            // Retrieve the split parts
+        $urlNodesCacheItem = $this->cachePool->getItem('splashUrlNodes');
+        if (!$urlNodesCacheItem->isHit()) {
+            // No value in cache, let's get the URL nodes
             $urlsList = $this->getSplashActionsList();
             $urlNodes = $this->generateUrlNode($urlsList);
-        } else {
-            $urlNodes = $this->cacheService->get('splashUrlNodes');
-            if ($urlNodes == null) {
-                // No value in cache, let's get the URL nodes
-                $urlsList = $this->getSplashActionsList();
-                $urlNodes = $this->generateUrlNode($urlsList);
-                $this->cacheService->set('splashUrlNodes', $urlNodes);
-            }
+            $urlNodesCacheItem->set($urlNodes);
+            $this->cachePool->save($urlNodesCacheItem);
         }
 
-        // TODO: add support for [properties] for injecting any property of the controller in the URL
+        $urlNodes = $urlNodesCacheItem->get();
 
         $request_path = $request->getUri()->getPath();
 
-        $pos = strpos($request_path, $splashUrlPrefix);
+        $pos = strpos($request_path, $this->rootUrl);
         if ($pos === false) {
-            throw new SplashException('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file. Requested URL : "'.$request_path.'"');
+            throw new SplashException('Error: the prefix of the web application "'.$this->rootUrl.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file. Requested URL : "'.$request_path.'"');
         }
 
-        $tailing_url = substr($request_path, $pos + strlen($splashUrlPrefix));
+        $tailing_url = substr($request_path, $pos + strlen($this->rootUrl));
 
         $context = new SplashRequestContext($request);
         $splashRoute = $urlNodes->walk($tailing_url, $request);
 
         if ($splashRoute === null) {
+            // No route found. Let's try variants with or without trailing / if we are in a GET.
+            if ($request->getMethod() === 'GET') {
+                // If there is a trailing /, let's remove it and retry
+                if (strrpos($tailing_url, '/') === strlen($tailing_url)-1) {
+                    $url = substr($tailing_url, 0, -1);
+                    $splashRoute = $urlNodes->walk($url, $request);
+                } else {
+                    $url = $tailing_url.'/';
+                    $splashRoute = $urlNodes->walk($url, $request);
+                }
+                
+                if ($splashRoute !== null) {
+                    // If a route does match, let's make a redirect.
+                    return new RedirectResponse($this->rootUrl.$url);
+                }
+            }
+
+            $this->log->debug('Found no route for URL {url}.', [
+                'url' => $request_path,
+            ]);
+
             // No route found, let's pass control to the next middleware.
             return $out($request, $response);
         }
 
-        $controller = MoufManager::getMoufManager()->getInstance($splashRoute->controllerInstanceName);
+        $controller = $this->container->get($splashRoute->controllerInstanceName);
         $action = $splashRoute->methodName;
 
         $context->setUrlParameters($splashRoute->filledParameters);
 
-        if ($this->log != null) {
-            $this->log->info('Routing user with URL {url} to controller {controller} and action {action}', array(
-                'url' => $request_path,
-                'controller' => get_class($controller),
-                'action' => $action,
-            ));
+        $this->log->debug('Routing URL {url} to controller instance {controller} and action {action}', [
+            'url' => $request_path,
+            'controller' => $splashRoute->controllerInstanceName,
+            'action' => $action,
+        ]);
+
+        // Let's pass everything to the controller:
+        $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
+
+        $filters = $splashRoute->filters;
+
+        // Apply filters
+        for ($i = count($filters) - 1; $i >= 0; --$i) {
+            $filters[$i]->beforeAction();
         }
 
-        if ($controller instanceof WebServiceInterface) {
-            // FIXME: handle correctly webservices (or remove this exception and handle
-            // webservice the way we handle controllers
-            $response = SplashUtils::buildControllerResponse(
-                function () use ($controller) {
-                    $this->handleWebservice($controller);
-                },
-                $this->mode,
-                $this->debug
-            );
+        $response = SplashUtils::buildControllerResponse(
+            function () use ($controller, $action, $args) {
+                return call_user_func_array(array($controller, $action), $args);
+            },
+            $this->mode,
+            $this->debug
+        );
 
-            return $response;
-        } else {
-            // Let's pass everything to the controller:
-            $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
-            /*$args = array();
-            foreach ($splashRoute->parameters as $paramFetcher) {
-                try {
-                    $args[] = $paramFetcher->fetchValue($context);
-                } catch (SplashValidationException $e) {
-                    $e->setPrependedMessage("Error while validating parameter '".$paramFetcher->getName()."'");
-                    throw $e;
-                }
-            }*/
-
-            // Handle action__GET or action__POST method (for legacy code).
-            if (method_exists($controller, $action.'__'.$request->getMethod())) {
-                $action = $action.'__'.$request->getMethod();
-            }
-
-            $filters = $splashRoute->filters;
-
-            // Apply filters
-            for ($i = count($filters) - 1; $i >= 0; --$i) {
-                $filters[$i]->beforeAction();
-            }
-
-            $response = SplashUtils::buildControllerResponse(
-                function () use ($controller, $action, $args) {
-                    return call_user_func_array(array($controller, $action), $args);
-                },
-                $this->mode,
-                $this->debug
-            );
-
-            foreach ($filters as $filter) {
-                $filter->afterAction();
-            }
-
-            return $response;
+        foreach ($filters as $filter) {
+            $filter->afterAction();
         }
-    }
 
-    /**
-     * Handles the call to the webservice.
-     *
-     * @param WebServiceInterface $webserviceInstance
-     */
-    private function handleWebservice(WebServiceInterface $webserviceInstance)
-    {
-        $url = $webserviceInstance->getWebserviceUri();
-
-        $server = new SoapServer(null, array('uri' => $url));
-        $server->setObject($webserviceInstance);
-        $server->handle();
+        return $response;
     }
 
     /**
@@ -265,11 +255,9 @@ class SplashDefaultRouter implements MiddlewareInterface
 
     /**
      * Purges the urls cache.
-     *
-     * @throws \Exception
      */
     public function purgeUrlsCache()
     {
-        $this->cacheService->purge('splashUrlNodes');
+        $this->cachePool->deleteItem('splashUrlNodes');
     }
 }

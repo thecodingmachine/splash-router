@@ -116,7 +116,7 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(SplashRoute::class, $result);
         $this->assertEquals('myController', $result->controllerInstanceName);
         $this->assertEquals('myMethod', $result->methodName);
-        $this->assertEquals(12, $result->parameters[0]);
+        $this->assertEquals(12, $result->filledParameters['var']);
     }
 
     /**
@@ -127,17 +127,89 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $splashUrlNode = new SplashUrlNode();
         $callback = new SplashRoute('/toto/*', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array());
         $splashUrlNode->registerCallback($callback);
+        $callback2 = new SplashRoute('/toto/*', 'myControllerPost', 'myMethodPost', 'myTitle', 'myComment', 'fullComment', array('POST'));
+        $splashUrlNode->registerCallback($callback2);
 
+        $result = $splashUrlNode->walk('/toto/tata/titi', new ServerRequest([], [], '/toto', 'GET'));
+        /* @var $result SplashRoute */
+        $this->assertInstanceOf(SplashRoute::class, $result);
+        $this->assertEquals('myController', $result->controllerInstanceName);
+        $this->assertEquals('myMethod', $result->methodName);
+
+        $result = $splashUrlNode->walk('/toto/', new ServerRequest([], [], '/toto', 'GET'));
+        /* @var $result SplashRoute */
+        $this->assertInstanceOf(SplashRoute::class, $result);
+        $this->assertEquals('myController', $result->controllerInstanceName);
+        $this->assertEquals('myMethod', $result->methodName);
+
+        // Now, let's test an URL with HTTP method set.
         $result = $splashUrlNode->walk('/toto/tata/titi', new ServerRequest([], [], '/toto', 'POST'));
-        /* @var $result SplashRoute */
-        $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
+        $this->assertEquals('myControllerPost', $result->controllerInstanceName);
+        $this->assertEquals('myMethodPost', $result->methodName);
 
-        $result = $splashUrlNode->walk('/toto/', new ServerRequest([], [], '/toto', 'POST'));
-        /* @var $result SplashRoute */
-        $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
     }
+
+    public function testUnsupportedWildcard()
+    {
+        $splashUrlNode = new SplashUrlNode();
+        $callback = new SplashRoute('toto/*/tata', 'myController', 'myMethod', 'myTitle', 'myComment');
+        $this->expectException(SplashException::class);
+        $splashUrlNode->registerCallback($callback);
+    }
+
+    public function testDoubleMethod()
+    {
+        $splashUrlNode = new SplashUrlNode();
+        $callback = new SplashRoute('foo/bar', 'myController', 'myMethod', 'myTitle', 'myComment');
+        $splashUrlNode->registerCallback($callback);
+        $callback2 = new SplashRoute('foo/bar', 'myController2', 'myMethod2', 'myTitle', 'myComment');
+        $this->expectException(SplashException::class);
+        $splashUrlNode->registerCallback($callback2);
+    }
+
+    public function testDoubleWildcardMethod()
+    {
+        $splashUrlNode = new SplashUrlNode();
+        $callback = new SplashRoute('foo/*', 'myController', 'myMethod', 'myTitle', 'myComment');
+        $splashUrlNode->registerCallback($callback);
+        $callback2 = new SplashRoute('foo/*', 'myController2', 'myMethod2', 'myTitle', 'myComment');
+        $this->expectException(SplashException::class);
+        $splashUrlNode->registerCallback($callback2);
+    }
+
+    public function testDoubleWildcardMethodWithHttpMethod()
+    {
+        $splashUrlNode = new SplashUrlNode();
+        $callback = new SplashRoute('foo/*', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', ['GET', 'POST']);
+        $splashUrlNode->registerCallback($callback);
+        $callback2 = new SplashRoute('foo/*', 'myController2', 'myMethod2', 'myTitle', 'myComment', 'fullComment', ['GET']);
+        $this->expectException(SplashException::class);
+        $splashUrlNode->registerCallback($callback2);
+    }
+
+    public function testDoubleParameter()
+    {
+        $splashUrlNode = new SplashUrlNode();
+        $callback = new SplashRoute('foo/{var}/bar/{var}/', 'myController', 'myMethod', 'myTitle', 'myComment');
+        $splashUrlNode->registerCallback($callback);
+
+        $this->expectException(SplashException::class);
+        $splashUrlNode->walk('foo/12/bar/42/', new ServerRequest([], [], '/toto', 'GET'));
+    }
+
+    public function testFallbackToWilcard()
+    {
+        $splashUrlNode = new SplashUrlNode();
+        $callback = new SplashRoute('foo/bar/baz', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment');
+        $splashUrlNode->registerCallback($callback);
+        $callback2 = new SplashRoute('foo/*', 'myController2', 'myMethod2', 'myTitle', 'myComment', 'fullComment');
+        $splashUrlNode->registerCallback($callback2);
+
+        $result = $splashUrlNode->walk('foo/bar', new ServerRequest([], [], '/foo/bar/biz', 'POST'));
+        $this->assertEquals('myController2', $result->controllerInstanceName);
+        $this->assertEquals('myMethod2', $result->methodName);
+    }
+
+    
+
 }

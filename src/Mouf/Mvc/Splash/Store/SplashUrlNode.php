@@ -155,21 +155,23 @@ class SplashUrlNode
             $key = array_shift($urlParts);
             if (isset($this->children[$key])) {
                 return $this->children[$key]->walkArray($urlParts, $request, $parameters, $closestWildcardRoute);
-            } else {
-                foreach ($this->parameterizedChildren as $varName => $splashUrlNode) {
-                    if (isset($parameters[$varName])) {
-                        throw new SplashException("An error occured while looking at the list URL managed in Splash. In a @URL annotation, the parameter '{$parameters[$varName]}' appears twice. That should never happen");
-                    }
-                    $newParams = $parameters;
-                    $newParams[$varName] = $key;
-                    $result = $this->parameterizedChildren[$varName]->walkArray($urlParts, $request, $newParams, $closestWildcardRoute);
-                    if ($result != null) {
-                        return $result;
-                    }
-                }
-                // If we arrive here, there was no parameterized URL matching our objective
-                return $closestWildcardRoute;
             }
+
+            foreach ($this->parameterizedChildren as $varName => $splashUrlNode) {
+                if (isset($parameters[$varName])) {
+                    throw new SplashException("An error occured while looking at the list URL managed in Splash. In a @URL annotation, the parameter '{$parameters[$varName]}' appears twice. That should never happen");
+                }
+                $newParams = $parameters;
+                $newParams[$varName] = $key;
+                $result = $this->parameterizedChildren[$varName]->walkArray($urlParts, $request, $newParams, $closestWildcardRoute);
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+
+            // If we arrive here, there was no parametrized URL matching our objective
+            return $closestWildcardRoute;
+
         } else {
             if (isset($this->callbacks[$httpMethod])) {
                 $route = $this->callbacks[$httpMethod];

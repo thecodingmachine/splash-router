@@ -41,7 +41,7 @@ class TestController2
     public function completeTest($id, ServerRequestInterface $request, $var, $opt = 42) {
         return new JsonResponse([
            'id' => $id,
-            'id2' => $request->getQueryParams('id'),
+            'id2' => $request->getQueryParams()['id'],
             'var' => $var,
             'opt' => $opt
         ]);

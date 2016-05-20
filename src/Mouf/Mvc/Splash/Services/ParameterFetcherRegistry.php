@@ -3,6 +3,7 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Mvc\Splash\Utils\SplashException;
 use ReflectionMethod;
 
 /**
@@ -66,11 +67,17 @@ class ParameterFetcherRegistry
         $values = [];
 
         foreach ($parameters as $parameter) {
+            $found = false;
             foreach ($this->parameterFetchers as $id => $fetcher) {
                 if ($fetcher->canHandle($parameter)) {
                     $data = $fetcher->getFetcherData($parameter, $url);
                     $values[] = [ 'fetcherId' => $id, 'data' => $data ];
+                    $found = true;
+                    break;
                 }
+            }
+            if (!$found) {
+                throw new SplashException('Unable to handle parameter $'.$parameter->getName().' in '.$parameter->getDeclaringClass()->getName().'::'.$parameter->getDeclaringFunction()->getName());
             }
         }
 
@@ -88,9 +95,10 @@ class ParameterFetcherRegistry
     {
         $arguments = [];
         foreach ($parametersMap as $parameter) {
-            $fetcherid = $parameter['fetcherid'];
+            $fetcherid = $parameter['fetcherId'];
             $data = $parameter['data'];
             $arguments[] = $this->parameterFetchers[$fetcherid]->fetchValue($data, $context);
         }
+        return $arguments;
     }
 }
