@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mouf\Mvc\Splash\Services;
-
 
 use Mouf\Mvc\Splash\Fixtures\TestController;
 use ReflectionMethod;
@@ -10,7 +8,8 @@ use Zend\Diactoros\ServerRequest;
 
 class SplashRequestParameterFetcherTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSplashRequestParameterFetcher() {
+    public function testSplashRequestParameterFetcher()
+    {
         $method = new ReflectionMethod(TestController::class, 'myAction');
         $params = $method->getParameters();
 
@@ -22,7 +21,7 @@ class SplashRequestParameterFetcherTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             'key' => 'id',
             'compulsory' => false,
-            'default' => null
+            'default' => null,
         ], $data);
 
         $dataCompulsory = $splashRequestFetcher->getFetcherData($params[1]);
@@ -40,7 +39,7 @@ class SplashRequestParameterFetcherTest extends \PHPUnit_Framework_TestCase
             [],
             [],
             [
-                'id' => 42
+                'id' => 42,
             ]
         );
         $context = new SplashRequestContext($request);

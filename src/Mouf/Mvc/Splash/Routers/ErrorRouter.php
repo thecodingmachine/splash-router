@@ -22,6 +22,7 @@ class ErrorRouter implements RouterInterface
 
     /**
      * Whether the middleware must be enabled or not.
+     *
      * @var ConditionInterface
      */
     private $enableCondition;
@@ -29,9 +30,9 @@ class ErrorRouter implements RouterInterface
     /**
      * @Important IfSet
      *
-     * @param ErrorMiddlewareInterface|callable $middleware The PSR-7 middleware to call
-     * @param string                   $path       The path to that middleware (defaults to /).
-     * @param ConditionInterface $enableCondition Whether the middleware must be enabled or not.
+     * @param ErrorMiddlewareInterface|callable $middleware      The PSR-7 middleware to call
+     * @param string                            $path            The path to that middleware (defaults to /).
+     * @param ConditionInterface                $enableCondition Whether the middleware must be enabled or not.
      */
     public function __construct($middleware, $path = '/', ConditionInterface $enableCondition = null)
     {
@@ -65,7 +66,8 @@ class ErrorRouter implements RouterInterface
      *
      * @return bool
      */
-    public function isActive() {
+    public function isActive()
+    {
         if ($this->enableCondition !== null && $this->enableCondition->isOk() === false) {
             return false;
         } else {

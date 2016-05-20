@@ -2,20 +2,14 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
-use Mouf\Annotations\URLAnnotation;
 use Mouf\Mvc\Splash\Utils\SplashException;
-use Mouf\Reflection\MoufReflectionMethod;
 use Psr\Http\Message\ResponseInterface;
-use Mouf\Annotations\paramAnnotation;
-use Mouf\Reflection\MoufReflectionParameter;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class SplashUtils
 {
     const MODE_WEAK = 'weak';
     const MODE_STRICT = 'strict';
-
-    
 
     public static function buildControllerResponse($callback, $mode = self::MODE_STRICT, $debug = false)
     {
@@ -50,6 +44,7 @@ class SplashUtils
             } else {
                 if ($debug) {
                     $html = '<h1>Output started in controller. A controller should return an object implementing the ResponseInterface rather than outputting directly content. Output detected:</h1>'.$html;
+
                     return new HtmlResponse($html, 500);
                 } else {
                     throw new SplashException('Output started in Controller : '.$html);
@@ -95,18 +90,21 @@ class SplashUtils
     }
 
     /**
-     * Same as apache_response_headers (for any server)
+     * Same as apache_response_headers (for any server).
+     *
      * @return array
      */
-    private static function getResponseHeaders() {
+    private static function getResponseHeaders()
+    {
         $arh = array();
 
         // headers_list don't return associative array
         $headers = headers_list();
         foreach ($headers as $header) {
-            $header = explode(":", $header);
-            $arh[array_shift($header)] = trim(implode(":", $header));
+            $header = explode(':', $header);
+            $arh[array_shift($header)] = trim(implode(':', $header));
         }
+
         return $arh;
     }
 }

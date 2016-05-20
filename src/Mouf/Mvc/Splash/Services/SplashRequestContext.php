@@ -72,14 +72,17 @@ class SplashRequestContext
         } elseif (isset($this->request->getUploadedFiles()[$key])) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Scan the URL parameters and the request parameters and return the given parameter (or a default value)
+     * Scan the URL parameters and the request parameters and return the given parameter (or a default value).
      *
      * @param string $key
+     *
      * @return mixed
+     *
      * @throws SplashMissingParameterException
      */
     public function getParameter(string $key, bool $compulsory, $default = null)
@@ -91,9 +94,7 @@ class SplashRequestContext
             $value = null;
             if (isset($postVals[$key])) {
                 $value = $postVals[$key];
-            }
-            else
-            {
+            } else {
                 $getVals = $this->request->getQueryParams();
                 if (isset($getVals[$key])) {
                     $value = $getVals[$key];

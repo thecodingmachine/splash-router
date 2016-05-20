@@ -22,6 +22,7 @@ class Router implements RouterInterface
 
     /**
      * Whether the middleware must be enabled or not.
+     *
      * @var ConditionInterface
      */
     private $enableCondition;
@@ -29,9 +30,9 @@ class Router implements RouterInterface
     /**
      * @Important IfSet
      *
-     * @param MiddlewareInterface $middleware The PSR-7 middleware to call
-     * @param string $path The path to that middleware (defaults to /).
-     * @param ConditionInterface $enableCondition Whether the middleware must be enabled or not.
+     * @param MiddlewareInterface $middleware      The PSR-7 middleware to call
+     * @param string              $path            The path to that middleware (defaults to /).
+     * @param ConditionInterface  $enableCondition Whether the middleware must be enabled or not.
      */
     public function __construct(MiddlewareInterface $middleware, $path = '/', ConditionInterface $enableCondition = null)
     {
@@ -65,7 +66,8 @@ class Router implements RouterInterface
      *
      * @return bool
      */
-    public function isActive() {
+    public function isActive()
+    {
         if ($this->enableCondition !== null && $this->enableCondition->isOk() === false) {
             return false;
         } else {

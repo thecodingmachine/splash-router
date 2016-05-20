@@ -6,17 +6,13 @@ use Cache\Adapter\Void\VoidCachePool;
 use Interop\Container\ContainerInterface;
 use Mouf\Mvc\Splash\Services\ParameterFetcher;
 use Mouf\Mvc\Splash\Services\ParameterFetcherRegistry;
-use Mouf\Mvc\Splash\Services\SplashRequestParameterFetcher;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Mouf\Utils\Cache\CacheInterface;
-use Mouf\MoufManager;
 use Mouf\Mvc\Splash\Store\SplashUrlNode;
 use Psr\Log\LoggerInterface;
-use Mouf\Mvc\Splash\Controllers\WebServiceInterface;
 use Mouf\Mvc\Splash\Services\SplashRequestContext;
 use Mouf\Mvc\Splash\Services\SplashUtils;
 use Psr\Log\NullLogger;
@@ -62,7 +58,7 @@ class SplashDefaultRouter implements MiddlewareInterface
     private $mode;
 
     /**
-     * In debug mode, Splash will display more accurate messages if output starts (in strict mode)
+     * In debug mode, Splash will display more accurate messages if output starts (in strict mode).
      *
      * @var bool
      */
@@ -75,6 +71,7 @@ class SplashDefaultRouter implements MiddlewareInterface
 
     /**
      * The base URL of the application (from which the router will start routing).
+     *
      * @var string
      */
     private $rootUrl;
@@ -82,14 +79,14 @@ class SplashDefaultRouter implements MiddlewareInterface
     /**
      * @Important
      *
-     * @param ContainerInterface $container The container that will be used to fetch controllers.
-     * @param UrlProviderInterface[] $routeProviders
+     * @param ContainerInterface       $container                The container that will be used to fetch controllers.
+     * @param UrlProviderInterface[]   $routeProviders
      * @param ParameterFetcherRegistry $parameterFetcherRegistry
-     * @param CacheItemPoolInterface $cachePool Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
-     * @param LoggerInterface $log The logger used by Splash
-     * @param string $mode The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers are requested to return a ResponseInterface object).
-     * @param bool $debug In debug mode, Splash will display more accurate messages if output starts (in strict mode)
-     * @param string $rootUrl
+     * @param CacheItemPoolInterface   $cachePool                Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
+     * @param LoggerInterface          $log                      The logger used by Splash
+     * @param string                   $mode                     The default mode for Splash. Can be one of 'weak' (controllers are allowed to output HTML), or 'strict' (controllers are requested to return a ResponseInterface object).
+     * @param bool                     $debug                    In debug mode, Splash will display more accurate messages if output starts (in strict mode)
+     * @param string                   $rootUrl
      */
     public function __construct(ContainerInterface $container, array $routeProviders, ParameterFetcherRegistry $parameterFetcherRegistry, CacheItemPoolInterface $cachePool = null, LoggerInterface $log = null, $mode = SplashUtils::MODE_STRICT, $debug = true, $rootUrl = '/')
     {
@@ -158,14 +155,14 @@ class SplashDefaultRouter implements MiddlewareInterface
             // No route found. Let's try variants with or without trailing / if we are in a GET.
             if ($request->getMethod() === 'GET') {
                 // If there is a trailing /, let's remove it and retry
-                if (strrpos($tailing_url, '/') === strlen($tailing_url)-1) {
+                if (strrpos($tailing_url, '/') === strlen($tailing_url) - 1) {
                     $url = substr($tailing_url, 0, -1);
                     $splashRoute = $urlNodes->walk($url, $request);
                 } else {
                     $url = $tailing_url.'/';
                     $splashRoute = $urlNodes->walk($url, $request);
                 }
-                
+
                 if ($splashRoute !== null) {
                     // If a route does match, let's make a redirect.
                     return new RedirectResponse($this->rootUrl.$url);

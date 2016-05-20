@@ -25,8 +25,8 @@ class FilterUtils
     /**
      * Returns a list of filters instances, order by priority (higher priority first).
      *
-     * @param MoufReflectionMethod $refMethod the reference method extended object.
-     * @param object $controller the controller the annotation was in.
+     * @param MoufReflectionMethod $refMethod  the reference method extended object.
+     * @param object               $controller the controller the annotation was in.
      *
      * @return array Array of filter instances sorted by priority.
      */

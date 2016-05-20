@@ -23,6 +23,7 @@
 		<td><?php echo plainstring_to_htmlprotected($splashUrl->title) ?></td>
 		<td><?php echo $splashUrl->methodName ?></td>
 	</tr>
-<?php 
+<?php
+
     } ?>
 </table>

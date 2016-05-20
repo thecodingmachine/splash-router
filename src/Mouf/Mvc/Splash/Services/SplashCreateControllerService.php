@@ -130,44 +130,51 @@ use Mouf\Mvc\Splash\Controllers\Controller;
     ?>
 use Mouf\Html\Template\TemplateInterface;
 use Mouf\Html\HtmlElement\HtmlBlock;
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($injectLogger) {
     ?>
 use Psr\Log\LoggerInterface;
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($injectDaoFactory) {
     ?>
 use <?= $moufManager->getVariable('tdbmDefaultDaoNamespace').'\\'.$moufManager->getVariable('tdbmDefaultDaoFactoryName') ?>;
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($injectTwig) {
     ?>
 use \Twig_Environment;
 use Mouf\Html\Renderer\Twig\TwigTemplate;
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($importJsonResponse) {
     ?>
 use Zend\Diactoros\Response\JsonResponse;
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($importRedirectResponse) {
     ?>
 use Zend\Diactoros\Response\RedirectResponse;
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($importHtmlResponse) {
     ?>
 use Mouf\Mvc\Splash\HtmlResponse;
-<?php 
+<?php
+
 }
                 ?>
 
@@ -184,7 +191,8 @@ class <?= $controllerName ?> extends Controller {
      */
     private $logger;
 
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($injectTemplate) {
@@ -201,7 +209,8 @@ class <?= $controllerName ?> extends Controller {
      */
     private $content;
 
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($injectDaoFactory) {
@@ -212,7 +221,8 @@ class <?= $controllerName ?> extends Controller {
      */
     private $daoFactory;
 
-<?php 
+<?php
+
 }
                 ?>
 <?php if ($injectTwig) {
@@ -223,7 +233,8 @@ class <?= $controllerName ?> extends Controller {
      */
     private $twig;
 
-<?php 
+<?php
+
 }
                 ?>
 
@@ -265,23 +276,27 @@ $parameters = array();
 <?php if ($injectLogger) {
     ?>
         $this->logger = $logger;
-<?php 
+<?php
+
 }
                 if ($injectTemplate) {
                     ?>
         $this->template = $template;
         $this->content = $content;
-<?php 
+<?php
+
                 }
                 if ($injectDaoFactory) {
                     ?>
         $this->daoFactory = $daoFactory;
-<?php 
+<?php
+
                 }
                 if ($injectTwig) {
                     ?>
         $this->twig = $twig;
-<?php 
+<?php
+
                 }
                 ?>
     }

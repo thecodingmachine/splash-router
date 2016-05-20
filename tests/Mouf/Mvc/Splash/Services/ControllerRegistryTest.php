@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mouf\Mvc\Splash\Services;
-
 
 use Mouf\Mvc\Splash\Fixtures\TestController;
 use Mouf\Mvc\Splash\Fixtures\TestController2;
@@ -15,9 +13,9 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
     public function testControllerRegistry()
     {
         $container = new Picotainer([
-           "controller" => function() {
+           'controller' => function () {
                return new TestController();
-           }
+           },
         ]);
 
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
@@ -34,9 +32,9 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
     public function testControllerRegistryThisParam()
     {
         $container = new Picotainer([
-            "controller" => function() {
+            'controller' => function () {
                 return new TestController2();
-            }
+            },
         ]);
 
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
@@ -55,19 +53,18 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('controller/', $urlsList[2]->url);
         $this->assertInstanceOf(SplashRoute::class, $urlsList[2]);
         $this->assertEquals('Main page', $urlsList[2]->title);
-        $this->assertContains('GET', $urlsList[2]->httpMethods );
-        $this->assertContains('POST', $urlsList[2]->httpMethods );
-        $this->assertContains('PUT', $urlsList[2]->httpMethods );
-        $this->assertContains('DELETE', $urlsList[2]->httpMethods );
-
+        $this->assertContains('GET', $urlsList[2]->httpMethods);
+        $this->assertContains('POST', $urlsList[2]->httpMethods);
+        $this->assertContains('PUT', $urlsList[2]->httpMethods);
+        $this->assertContains('DELETE', $urlsList[2]->httpMethods);
     }
 
     public function testDoubleTitle()
     {
         $container = new Picotainer([
-            "controller" => function() {
+            'controller' => function () {
                 return new TestControllerDoubleTitle();
-            }
+            },
         ]);
 
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();

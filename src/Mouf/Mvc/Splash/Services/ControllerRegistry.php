@@ -1,15 +1,12 @@
 <?php
 
-
 namespace Mouf\Mvc\Splash\Services;
 
 use Interop\Container\ContainerInterface;
 use Mouf\Annotations\URLAnnotation;
-use Mouf\MoufManager;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Mouf\Reflection\MoufReflectionClass;
 use Mouf\Reflection\MoufReflectionMethod;
-use ReflectionMethod;
 
 /**
  * This class is in charge of registering controller's routes.
@@ -28,9 +25,9 @@ class ControllerRegistry implements UrlProviderInterface
     /**
      * Initializes the registry with an array of container instances names.
      *
-     * @param ContainerInterface $container The container to fetch controllers from
+     * @param ContainerInterface       $container                The container to fetch controllers from
      * @param ParameterFetcherRegistry $parameterFetcherRegistry
-     * @param string[] $controllers An array of controller instance name (as declared in the container)
+     * @param string[]                 $controllers              An array of controller instance name (as declared in the container)
      */
     public function __construct(ContainerInterface $container, ParameterFetcherRegistry $parameterFetcherRegistry, array $controllers = [])
     {
@@ -39,17 +36,18 @@ class ControllerRegistry implements UrlProviderInterface
         $this->parameterFetcherRegistry = $parameterFetcherRegistry;
     }
 
-
     /**
      * Adds a container to the registry (by its instance name).
      * Note: any object that has a @Action or @URL annotation is a controller.
      *
      * @param string $controller
+     *
      * @return ControllerRegistry
      */
     public function addController(string $controller) : ControllerRegistry
     {
         $this->controllers[] = $controller;
+
         return $this;
     }
 
@@ -57,6 +55,7 @@ class ControllerRegistry implements UrlProviderInterface
      * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
      *
      * @param string $instanceName The identifier for this object in the container.
+     *
      * @return SplashRoute[]
      */
     public function getUrlsList($instanceName)
@@ -137,15 +136,16 @@ class ControllerRegistry implements UrlProviderInterface
 
     /**
      * Reads a private property value.
-     * Credit to Ocramius: https://ocramius.github.io/blog/accessing-private-php-class-members-without-reflection/
+     * Credit to Ocramius: https://ocramius.github.io/blog/accessing-private-php-class-members-without-reflection/.
      *
      * @param object $object
      * @param string $property
+     *
      * @return mixed
      */
     private function &readPrivateProperty($object, string $property)
     {
-        $value = & \Closure::bind(function & () use ($property) {
+        $value = &\Closure::bind(function &() use ($property) {
             return $this->$property;
         }, $object, $object)->__invoke();
 
@@ -156,6 +156,7 @@ class ControllerRegistry implements UrlProviderInterface
      * Returns the supported HTTP methods on this function, based on the annotations (@Get, @Post, etc...).
      *
      * @param MoufReflectionMethod $refMethod
+     *
      * @return array
      */
     private function getSupportedHttpMethods(MoufReflectionMethod $refMethod) : array
@@ -177,7 +178,7 @@ class ControllerRegistry implements UrlProviderInterface
         return $methods;
     }
 
-    /**
+    /*
      * Returns an array of parameters present in the URL.
      * If the URL is /user/{id}/login/{name}, the returns array will be:
      *  [ "id"=>"id",

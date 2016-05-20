@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Mouf\Mvc\Splash\Services;
 
 use Mouf\Mvc\Splash\Utils\SplashException;
@@ -11,7 +10,6 @@ use ReflectionMethod;
  */
 class ParameterFetcherRegistry
 {
-
     /**
      * @var ParameterFetcher[]
      */
@@ -42,11 +40,13 @@ class ParameterFetcherRegistry
      * Adds a parameter fetcher. It will be executed at the top of the list (first).
      *
      * @param ParameterFetcher $parameterFetcher
+     *
      * @return ParameterFetcherRegistry
      */
     public function registerParameterFetcher(ParameterFetcher $parameterFetcher) : ParameterFetcherRegistry
     {
         array_unshift($this->parameterFetchers, $parameterFetcher);
+
         return $this;
     }
 
@@ -55,9 +55,10 @@ class ParameterFetcherRegistry
      * Note: the return from this method is meant to be cached.
      *
      * @param ReflectionMethod $refMethod
-     * @param string $url
+     * @param string           $url
      *
      * @return array[] An array representing serializable fetchers. Each fetcher is represented as an array with 2 keys: "fetcherId" (an ID for the fetcher) and "data" (data required by the fetcher)
+     *
      * @throws SplashException
      */
     public function mapParameters(ReflectionMethod $refMethod, string $url = null) : array
@@ -71,7 +72,7 @@ class ParameterFetcherRegistry
             foreach ($this->parameterFetchers as $id => $fetcher) {
                 if ($fetcher->canHandle($parameter)) {
                     $data = $fetcher->getFetcherData($parameter, $url);
-                    $values[] = [ 'fetcherId' => $id, 'data' => $data ];
+                    $values[] = ['fetcherId' => $id, 'data' => $data];
                     $found = true;
                     break;
                 }
@@ -88,7 +89,8 @@ class ParameterFetcherRegistry
      * Maps data returned by mapParameters to real arguments to be passed to the action.
      *
      * @param SplashRequestContext $context
-     * @param array $parametersMap
+     * @param array                $parametersMap
+     *
      * @return array
      */
     public function toArguments(SplashRequestContext $context, array $parametersMap) : array
@@ -99,6 +101,7 @@ class ParameterFetcherRegistry
             $data = $parameter['data'];
             $arguments[] = $this->parameterFetchers[$fetcherid]->fetchValue($data, $context);
         }
+
         return $arguments;
     }
 }

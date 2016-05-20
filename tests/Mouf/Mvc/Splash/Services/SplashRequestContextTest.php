@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mouf\Mvc\Splash\Services;
-
 
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
@@ -13,12 +11,12 @@ class SplashRequestContextTest extends \PHPUnit_Framework_TestCase
     {
         $file = new UploadedFile('foo', 12, UPLOAD_ERR_OK);
         $request = new ServerRequest();
-        $request = $request->withQueryParams([ 'id' => 42 ])
-                ->withParsedBody([ 'post' => 'foo' ])
-                ->withUploadedFiles([ 'file' => $file ]);
+        $request = $request->withQueryParams(['id' => 42])
+                ->withParsedBody(['post' => 'foo'])
+                ->withUploadedFiles(['file' => $file]);
         $context = new SplashRequestContext($request);
         $context->addUrlParameter('url', 'bar');
-        
+
         $this->assertTrue($context->hasParameter('id'));
         $this->assertTrue($context->hasParameter('post'));
         $this->assertTrue($context->hasParameter('file'));
@@ -42,7 +40,7 @@ class SplashRequestContextTest extends \PHPUnit_Framework_TestCase
         $context->addUrlParameter('id', 24);
         $this->assertEquals(24, $context->getUrlParameters()['id']);
         $context->setUrlParameters([
-            'id' => 42
+            'id' => 42,
         ]);
         $this->assertEquals(42, $context->getUrlParameters()['id']);
     }

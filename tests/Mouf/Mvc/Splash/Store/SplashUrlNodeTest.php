@@ -1,10 +1,10 @@
 <?php
 
 namespace Mouf\Mvc\Splash\Store;
+
 use Mouf\Mvc\Splash\Services\SplashRoute;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Zend\Diactoros\ServerRequest;
-
 
 /**
  * A SplashUrlNode is a datastructure optimised to navigate all possible URLs known to the application.
@@ -99,7 +99,6 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(SplashRoute::class, $result);
         $this->assertEquals('myControllerOk', $result->controllerInstanceName);
         $this->assertEquals('myMethodOk', $result->methodName);
-
     }
 
     /**
@@ -146,7 +145,6 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $result = $splashUrlNode->walk('/toto/tata/titi', new ServerRequest([], [], '/toto', 'POST'));
         $this->assertEquals('myControllerPost', $result->controllerInstanceName);
         $this->assertEquals('myMethodPost', $result->methodName);
-
     }
 
     public function testUnsupportedWildcard()
@@ -209,7 +207,4 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('myController2', $result->controllerInstanceName);
         $this->assertEquals('myMethod2', $result->methodName);
     }
-
-    
-
 }

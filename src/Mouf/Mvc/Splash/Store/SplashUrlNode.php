@@ -171,7 +171,6 @@ class SplashUrlNode
 
             // If we arrive here, there was no parametrized URL matching our objective
             return $closestWildcardRoute;
-
         } else {
             if (isset($this->callbacks[$httpMethod])) {
                 $route = $this->callbacks[$httpMethod];

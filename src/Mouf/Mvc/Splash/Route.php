@@ -3,7 +3,6 @@
 namespace Mouf\Mvc\Splash;
 
 use Mouf\Utils\Action\ActionInterface;
-use Mouf\MoufManager;
 use Mouf\Mvc\Splash\Services\SplashRoute;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
 
@@ -43,6 +42,7 @@ class Route implements UrlProviderInterface
      * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
      *
      * @param string $instanceName The identifier for this object in the container.
+     *
      * @return array <SplashRoute>
      */
     public function getUrlsList($instanceName)

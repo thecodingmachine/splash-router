@@ -1,4 +1,5 @@
 <?php
+
 namespace Mouf\Mvc\Splash\Fixtures;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,15 +13,15 @@ class TestController2
     /**
      * @URL /url/{$this->param}/foo/{$this->param2}
      */
-    public function action1() {
-
+    public function action1()
+    {
     }
 
     /**
      * @Action
      */
-    public function actionAnnotation() {
-
+    public function actionAnnotation()
+    {
     }
 
     /**
@@ -31,19 +32,20 @@ class TestController2
      * @Put
      * @Delete
      */
-    public function index() {
-
+    public function index()
+    {
     }
 
     /**
      * @URL /foo/{var}/bar
      */
-    public function completeTest($id, ServerRequestInterface $request, $var, $opt = 42) {
+    public function completeTest($id, ServerRequestInterface $request, $var, $opt = 42)
+    {
         return new JsonResponse([
            'id' => $id,
             'id2' => $request->getQueryParams()['id'],
             'var' => $var,
-            'opt' => $opt
+            'opt' => $opt,
         ]);
     }
 }

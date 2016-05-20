@@ -2,12 +2,8 @@
 
 namespace Mouf\Mvc\Splash\Controllers;
 
-use Mouf\Annotations\URLAnnotation;
 use Mouf\Mvc\Splash\Utils\SplashException;
-use Mouf\Reflection\MoufReflectionMethod;
 use Mouf\Mvc\Splash\Services\SplashRoute;
-use Mouf\Mvc\Splash\Services\FilterUtils;
-use Mouf\Mvc\Splash\Services\SplashUtils;
 use Mouf\Reflection\MoufReflectionClass;
 use Mouf\MoufManager;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
@@ -82,9 +78,5 @@ abstract class Controller implements Scopable, UrlProviderInterface
         // TODOOOOOOOOOOOOOOOOOOOO migrate this OUT OF CONTROLLER!!!!
         // TODOOOOOOOOOOOOOOOOOOOO migrate this OUT OF CONTROLLER!!!!
         // TODOOOOOOOOOOOOOOOOOOOO migrate this OUT OF CONTROLLER!!!!
-
-
     }
-
-    
 }
