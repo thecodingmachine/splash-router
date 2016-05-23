@@ -2,11 +2,19 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
+use Doctrine\Common\Annotations\Reader;
 use Interop\Container\ContainerInterface;
 use Mouf\Annotations\URLAnnotation;
+use Mouf\Mvc\Splash\Annotations\Action;
+use Mouf\Mvc\Splash\Annotations\Delete;
+use Mouf\Mvc\Splash\Annotations\Get;
+use Mouf\Mvc\Splash\Annotations\Post;
+use Mouf\Mvc\Splash\Annotations\Put;
+use Mouf\Mvc\Splash\Annotations\Title;
+use Mouf\Mvc\Splash\Annotations\URL;
 use Mouf\Mvc\Splash\Utils\SplashException;
-use Mouf\Reflection\MoufReflectionClass;
 use Mouf\Reflection\MoufReflectionMethod;
+use ReflectionMethod;
 
 /**
  * This class is in charge of registering controller's routes.
@@ -23,17 +31,24 @@ class ControllerRegistry implements UrlProviderInterface
     private $parameterFetcherRegistry;
 
     /**
+     * @var Reader
+     */
+    private $annotationReader;
+
+    /**
      * Initializes the registry with an array of container instances names.
      *
      * @param ContainerInterface       $container                The container to fetch controllers from
      * @param ParameterFetcherRegistry $parameterFetcherRegistry
+     * @param Reader                   $annotationReader         A Doctrine annotation reader
      * @param string[]                 $controllers              An array of controller instance name (as declared in the container)
      */
-    public function __construct(ContainerInterface $container, ParameterFetcherRegistry $parameterFetcherRegistry, array $controllers = [])
+    public function __construct(ContainerInterface $container, ParameterFetcherRegistry $parameterFetcherRegistry, Reader $annotationReader, array $controllers = [])
     {
         $this->container = $container;
         $this->controllers = $controllers;
         $this->parameterFetcherRegistry = $parameterFetcherRegistry;
+        $this->annotationReader = $annotationReader;
     }
 
     /**
@@ -77,57 +92,61 @@ class ControllerRegistry implements UrlProviderInterface
 
         $controller = $this->container->get($controllerInstanceName);
 
-        $refClass = new MoufReflectionClass(get_class($controller));
+        $refClass = new \ReflectionClass($controller);
 
         foreach ($refClass->getMethods() as $refMethod) {
             /* @var $refMethod MoufReflectionMethod */
             $title = null;
             // Now, let's check the "Title" annotation (note: we do not support multiple title annotations for the same method)
-            if ($refMethod->hasAnnotation('Title')) {
-                $titles = $refMethod->getAnnotations('Title');
+            $titleAnnotation = $this->annotationReader->getMethodAnnotation($refMethod, Title::class);
+            if ($titleAnnotation !== null) {
+                /*$titles = $refMethod->getAnnotations('Title');
                 if (count($titles) > 1) {
                     throw new SplashException('Only one @Title annotation allowed per method.');
-                }
+                }*/
                 /* @var $titleAnnotation TitleAnnotation */
-                $titleAnnotation = $titles[0];
+                //$titleAnnotation = $titles[0];
                 $title = $titleAnnotation->getTitle();
             }
 
             // First, let's check the "Action" annotation
-            if ($refMethod->hasAnnotation('Action')) {
+            $actionAnnotation = $this->annotationReader->getMethodAnnotation($refMethod, Action::class);
+            if ($actionAnnotation !== null) {
                 $methodName = $refMethod->getName();
-                if ($methodName === 'index' || $methodName === 'defaultAction') {
+                if ($methodName === 'index') {
                     $url = $controllerInstanceName.'/';
                 } else {
                     $url = $controllerInstanceName.'/'.$methodName;
                 }
                 $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod);
-                $filters = FilterUtils::getFilters($refMethod, $controller);
-                $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
+                $filters = FilterUtils::getFilters($refMethod, $controller, $this->annotationReader);
+                $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
             }
 
             // Now, let's check the "URL" annotation (note: we support multiple URL annotations for the same method)
-            if ($refMethod->hasAnnotation('URL')) {
-                $urls = $refMethod->getAnnotations('URL');
-                foreach ($urls as $urlAnnotation) {
-                    /* @var $urlAnnotation URLAnnotation */
-                    $url = $urlAnnotation->getUrl();
+            $annotations = $this->annotationReader->getMethodAnnotations($refMethod);
 
-                    // Get public properties if they exist in the URL
-                    //if (preg_match_all('/([^\{]*){\$this->([^\/]*)}([^\{]*)/', $url, $output)) {
-                    if (preg_match_all('/[^{]*{\$this->([^\/]*)}[^{]*/', $url, $output)) {
-                        foreach ($output[1] as $param) {
-                            $value = $this->readPrivateProperty($controller, $param);
-                            $url = str_replace('{$this->'.$param.'}', $value, $url);
-                        }
-                    }
-
-                    $newUrlAnnotation = new URLAnnotation($url);
-                    $url = ltrim($url, '/');
-                    $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod, $newUrlAnnotation->getUrl());
-                    $filters = FilterUtils::getFilters($refMethod, $controller);
-                    $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
+            foreach ($annotations as $annotation) {
+                if (!$annotation instanceof URL) {
+                    continue;
                 }
+
+                /* @var $annotation URL */
+                $url = $annotation->getUrl();
+
+                // Get public properties if they exist in the URL
+                //if (preg_match_all('/([^\{]*){\$this->([^\/]*)}([^\{]*)/', $url, $output)) {
+                if (preg_match_all('/[^{]*{\$this->([^\/]*)}[^{]*/', $url, $output)) {
+                    foreach ($output[1] as $param) {
+                        $value = $this->readPrivateProperty($controller, $param);
+                        $url = str_replace('{$this->'.$param.'}', $value, $url);
+                    }
+                }
+
+                $url = ltrim($url, '/');
+                $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod, $url);
+                $filters = FilterUtils::getFilters($refMethod, $controller, $this->annotationReader);
+                $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
             }
         }
 
@@ -155,23 +174,24 @@ class ControllerRegistry implements UrlProviderInterface
     /**
      * Returns the supported HTTP methods on this function, based on the annotations (@Get, @Post, etc...).
      *
-     * @param MoufReflectionMethod $refMethod
+     * @param ReflectionMethod $refMethod
      *
      * @return array
      */
-    private function getSupportedHttpMethods(MoufReflectionMethod $refMethod) : array
+    private function getSupportedHttpMethods(ReflectionMethod $refMethod) : array
     {
         $methods = array();
-        if ($refMethod->hasAnnotation('Get')) {
+
+        if ($this->annotationReader->getMethodAnnotation($refMethod, Get::class)) {
             $methods[] = 'GET';
         }
-        if ($refMethod->hasAnnotation('Post')) {
+        if ($this->annotationReader->getMethodAnnotation($refMethod, Post::class)) {
             $methods[] = 'POST';
         }
-        if ($refMethod->hasAnnotation('Put')) {
+        if ($this->annotationReader->getMethodAnnotation($refMethod, Put::class)) {
             $methods[] = 'PUT';
         }
-        if ($refMethod->hasAnnotation('Delete')) {
+        if ($this->annotationReader->getMethodAnnotation($refMethod, Delete::class)) {
             $methods[] = 'DELETE';
         }
 

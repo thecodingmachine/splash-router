@@ -17,7 +17,7 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testAddUrl()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('toto/tata', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array('GET', 'POST'));
+        $callback = new SplashRoute('toto/tata', 'myController', 'myMethod', 'myTitle', 'fullComment', array('GET', 'POST'));
         $splashUrlNode->registerCallback($callback);
 
         $result = $splashUrlNode->walk('toto/tata', new ServerRequest([], [], 'toto/tata', 'GET'));
@@ -31,7 +31,7 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testTrailingSlashUrl()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('toto/tata/', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array('GET', 'POST'));
+        $callback = new SplashRoute('toto/tata/', 'myController', 'myMethod', 'myTitle', 'fullComment', array('GET', 'POST'));
         $splashUrlNode->registerCallback($callback);
 
         $result = $splashUrlNode->walk('toto/tata/', new ServerRequest([], [], 'toto/tata', 'GET'));
@@ -44,7 +44,7 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testRootUrl()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('/', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array('GET', 'POST'));
+        $callback = new SplashRoute('/', 'myController', 'myMethod', 'myTitle', 'fullComment', array('GET', 'POST'));
         $splashUrlNode->registerCallback($callback);
 
         $result = $splashUrlNode->walk('/', new ServerRequest([], [], '/', 'GET'));
@@ -57,9 +57,9 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testSameUrls()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('/', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array('GET', 'POST'));
+        $callback = new SplashRoute('/', 'myController', 'myMethod', 'myTitle', 'fullComment', array('GET', 'POST'));
         $splashUrlNode->registerCallback($callback);
-        $callback = new SplashRoute('/', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array('GET', 'POST'));
+        $callback = new SplashRoute('/', 'myController', 'myMethod', 'myTitle', 'fullComment', array('GET', 'POST'));
 
         $this->expectException(SplashException::class);
         $splashUrlNode->registerCallback($callback);
@@ -71,7 +71,7 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testGlobalUrlCatchGet()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('/toto', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array());
+        $callback = new SplashRoute('/toto', 'myController', 'myMethod', 'myTitle', 'fullComment', array());
         $splashUrlNode->registerCallback($callback);
 
         $result = $splashUrlNode->walk('/toto', new ServerRequest([], [], '/toto', 'GET'));
@@ -87,11 +87,11 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testMultiUrls()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('/toto', 'myControllerOk', 'myMethodOk', 'myTitle', 'myComment', 'fullComment', array());
+        $callback = new SplashRoute('/toto', 'myControllerOk', 'myMethodOk', 'myTitle', 'fullComment', array());
         $splashUrlNode->registerCallback($callback);
-        $callback = new SplashRoute('/toto/tata', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array());
+        $callback = new SplashRoute('/toto/tata', 'myController', 'myMethod', 'myTitle', 'fullComment', array());
         $splashUrlNode->registerCallback($callback);
-        $callback = new SplashRoute('/tata', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array());
+        $callback = new SplashRoute('/tata', 'myController', 'myMethod', 'myTitle', 'fullComment', array());
         $splashUrlNode->registerCallback($callback);
 
         $result = $splashUrlNode->walk('/toto', new ServerRequest([], [], '/toto', 'POST'));
@@ -107,7 +107,7 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testParametersUrls()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('/toto/{var}/tata', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', []);
+        $callback = new SplashRoute('/toto/{var}/tata', 'myController', 'myMethod', 'myTitle', 'fullComment', []);
         $splashUrlNode->registerCallback($callback);
 
         $result = $splashUrlNode->walk('/toto/12/tata', new ServerRequest([], [], '/toto/12/tata', 'POST'));
@@ -124,9 +124,9 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testWildcardUrls()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('/toto/*', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', array());
+        $callback = new SplashRoute('/toto/*', 'myController', 'myMethod', 'myTitle', 'fullComment', array());
         $splashUrlNode->registerCallback($callback);
-        $callback2 = new SplashRoute('/toto/*', 'myControllerPost', 'myMethodPost', 'myTitle', 'myComment', 'fullComment', array('POST'));
+        $callback2 = new SplashRoute('/toto/*', 'myControllerPost', 'myMethodPost', 'myTitle', 'fullComment', array('POST'));
         $splashUrlNode->registerCallback($callback2);
 
         $result = $splashUrlNode->walk('/toto/tata/titi', new ServerRequest([], [], '/toto', 'GET'));
@@ -178,9 +178,9 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testDoubleWildcardMethodWithHttpMethod()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('foo/*', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment', ['GET', 'POST']);
+        $callback = new SplashRoute('foo/*', 'myController', 'myMethod', 'myTitle', 'fullComment', ['GET', 'POST']);
         $splashUrlNode->registerCallback($callback);
-        $callback2 = new SplashRoute('foo/*', 'myController2', 'myMethod2', 'myTitle', 'myComment', 'fullComment', ['GET']);
+        $callback2 = new SplashRoute('foo/*', 'myController2', 'myMethod2', 'myTitle', 'fullComment', ['GET']);
         $this->expectException(SplashException::class);
         $splashUrlNode->registerCallback($callback2);
     }
@@ -198,9 +198,9 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
     public function testFallbackToWilcard()
     {
         $splashUrlNode = new SplashUrlNode();
-        $callback = new SplashRoute('foo/bar/baz', 'myController', 'myMethod', 'myTitle', 'myComment', 'fullComment');
+        $callback = new SplashRoute('foo/bar/baz', 'myController', 'myMethod', 'myTitle', 'fullComment');
         $splashUrlNode->registerCallback($callback);
-        $callback2 = new SplashRoute('foo/*', 'myController2', 'myMethod2', 'myTitle', 'myComment', 'fullComment');
+        $callback2 = new SplashRoute('foo/*', 'myController2', 'myMethod2', 'myTitle', 'fullComment');
         $splashUrlNode->registerCallback($callback2);
 
         $result = $splashUrlNode->walk('foo/bar', new ServerRequest([], [], '/foo/bar/biz', 'POST'));

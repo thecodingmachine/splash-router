@@ -25,8 +25,6 @@ class SplashRoute
 
     public $title;
 
-    public $comment;
-
     public $fullComment;
 
     /**
@@ -54,14 +52,13 @@ class SplashRoute
     public $filledParameters = array();
     // Question: abstraire SplashRoute et rajouter un getCallbackHandler???
 
-    public function __construct($url, $controllerInstanceName, $methodName, $title, $comment, $fullComment = null, $httpMethods = array(), $parameters = array(), $filters = array())
+    public function __construct($url, $controllerInstanceName, $methodName, $title, $fullComment = null, $httpMethods = array(), $parameters = array(), $filters = array())
     {
         $this->url = $url;
         $this->httpMethods = $httpMethods;
         $this->controllerInstanceName = $controllerInstanceName;
         $this->methodName = $methodName;
         $this->title = $title;
-        $this->comment = $comment;
         $this->fullComment = $fullComment;
         $this->parameters = $parameters;
         $this->filters = $filters;

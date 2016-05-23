@@ -2,14 +2,20 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Mouf\Mvc\Splash\Fixtures\TestController;
 use Mouf\Mvc\Splash\Fixtures\TestController2;
-use Mouf\Mvc\Splash\Fixtures\TestControllerDoubleTitle;
-use Mouf\Mvc\Splash\Utils\SplashException;
 use Mouf\Picotainer\Picotainer;
 
 class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        $loader = require __DIR__.'../../../../../../vendor/autoload.php';
+        AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+    }
+
     public function testControllerRegistry()
     {
         $container = new Picotainer([
@@ -19,7 +25,7 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry);
+        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry->addController('controller');
 
         $urlsList = $controllerRegistry->getUrlsList('foo');
@@ -38,11 +44,11 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, ['controller']);
+        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
 
         $urlsList = $controllerRegistry->getUrlsList('foo');
 
-        $this->assertCount(4, $urlsList);
+        $this->assertCount(5, $urlsList);
         $this->assertInstanceOf(SplashRoute::class, $urlsList[0]);
         $this->assertEquals('url/42/foo/52', $urlsList[0]->url);
 
@@ -57,20 +63,5 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('POST', $urlsList[2]->httpMethods);
         $this->assertContains('PUT', $urlsList[2]->httpMethods);
         $this->assertContains('DELETE', $urlsList[2]->httpMethods);
-    }
-
-    public function testDoubleTitle()
-    {
-        $container = new Picotainer([
-            'controller' => function () {
-                return new TestControllerDoubleTitle();
-            },
-        ]);
-
-        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, ['controller']);
-
-        $this->expectException(SplashException::class);
-        $urlsList = $controllerRegistry->getUrlsList('foo');
     }
 }

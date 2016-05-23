@@ -2,6 +2,7 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Mvc\Splash\Exception\SplashMissingParameterException;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -111,7 +112,7 @@ class SplashRequestContext
         } elseif (!$compulsory) {
             return $default;
         } else {
-            throw new SplashMissingParameterException($key);
+            throw SplashMissingParameterException::create($key);
         }
     }
 }

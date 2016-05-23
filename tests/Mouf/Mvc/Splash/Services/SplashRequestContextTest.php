@@ -2,6 +2,7 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Mvc\Splash\Exception\SplashMissingParameterException;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
 

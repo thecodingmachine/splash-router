@@ -4,6 +4,11 @@ namespace Mouf\Mvc\Splash\Routers;
 
 use Cache\Adapter\Void\VoidCachePool;
 use Interop\Container\ContainerInterface;
+use Mouf\Mvc\Splash\Controllers\Http400HandlerInterface;
+use Mouf\Mvc\Splash\Controllers\Http404HandlerInterface;
+use Mouf\Mvc\Splash\Controllers\Http500HandlerInterface;
+use Mouf\Mvc\Splash\Exception\BadRequestException;
+use Mouf\Mvc\Splash\Exception\PageNotFoundException;
 use Mouf\Mvc\Splash\Services\ParameterFetcher;
 use Mouf\Mvc\Splash\Services\ParameterFetcherRegistry;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;
@@ -77,6 +82,27 @@ class SplashDefaultRouter implements MiddlewareInterface
     private $rootUrl;
 
     /**
+     * (optional) Handles HTTP 400 status code.
+     *
+     * @var Http400HandlerInterface
+     */
+    private $http400Handler;
+
+    /**
+     * (optional) Handles HTTP 404 status code (if no $out provided).
+     *
+     * @var Http404HandlerInterface
+     */
+    private $http404Handler;
+
+    /**
+     * (optional) Handles HTTP 500 status code.
+     *
+     * @var Http500HandlerInterface
+     */
+    private $http500Handler;
+
+    /**
      * @Important
      *
      * @param ContainerInterface       $container                The container that will be used to fetch controllers.
@@ -98,6 +124,36 @@ class SplashDefaultRouter implements MiddlewareInterface
         $this->mode = $mode;
         $this->debug = $debug;
         $this->rootUrl = $rootUrl;
+    }
+
+    /**
+     * @param Http400HandlerInterface $http400Handler
+     */
+    public function setHttp400Handler($http400Handler)
+    {
+        $this->http400Handler = $http400Handler;
+
+        return $this;
+    }
+
+    /**
+     * @param Http404HandlerInterface $http404Handler
+     */
+    public function setHttp404Handler($http404Handler)
+    {
+        $this->http404Handler = $http404Handler;
+
+        return $this;
+    }
+
+    /**
+     * @param Http500HandlerInterface $http500Handler
+     */
+    public function setHttp500Handler($http500Handler)
+    {
+        $this->http500Handler = $http500Handler;
+
+        return $this;
     }
 
     /**
@@ -128,89 +184,113 @@ class SplashDefaultRouter implements MiddlewareInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        $urlNodesCacheItem = $this->cachePool->getItem('splashUrlNodes');
-        if (!$urlNodesCacheItem->isHit()) {
-            // No value in cache, let's get the URL nodes
-            $urlsList = $this->getSplashActionsList();
-            $urlNodes = $this->generateUrlNode($urlsList);
-            $urlNodesCacheItem->set($urlNodes);
-            $this->cachePool->save($urlNodesCacheItem);
-        }
+        try {
+            $urlNodesCacheItem = $this->cachePool->getItem('splashUrlNodes');
+            if (!$urlNodesCacheItem->isHit()) {
+                // No value in cache, let's get the URL nodes
+                $urlsList = $this->getSplashActionsList();
+                $urlNodes = $this->generateUrlNode($urlsList);
+                $urlNodesCacheItem->set($urlNodes);
+                $this->cachePool->save($urlNodesCacheItem);
+            }
 
-        $urlNodes = $urlNodesCacheItem->get();
+            $urlNodes = $urlNodesCacheItem->get();
 
-        $request_path = $request->getUri()->getPath();
+            $request_path = $request->getUri()->getPath();
 
-        $pos = strpos($request_path, $this->rootUrl);
-        if ($pos === false) {
-            throw new SplashException('Error: the prefix of the web application "'.$this->rootUrl.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file. Requested URL : "'.$request_path.'"');
-        }
+            $pos = strpos($request_path, $this->rootUrl);
+            if ($pos === false) {
+                throw new SplashException('Error: the prefix of the web application "'.$this->rootUrl.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your config.php file at the root of your project. It should have the same value as the RewriteBase parameter in your .htaccess file. Requested URL : "'.$request_path.'"');
+            }
 
-        $tailing_url = substr($request_path, $pos + strlen($this->rootUrl));
+            $tailing_url = substr($request_path, $pos + strlen($this->rootUrl));
 
-        $context = new SplashRequestContext($request);
-        $splashRoute = $urlNodes->walk($tailing_url, $request);
+            $context = new SplashRequestContext($request);
+            $splashRoute = $urlNodes->walk($tailing_url, $request);
 
-        if ($splashRoute === null) {
-            // No route found. Let's try variants with or without trailing / if we are in a GET.
-            if ($request->getMethod() === 'GET') {
-                // If there is a trailing /, let's remove it and retry
-                if (strrpos($tailing_url, '/') === strlen($tailing_url) - 1) {
-                    $url = substr($tailing_url, 0, -1);
-                    $splashRoute = $urlNodes->walk($url, $request);
-                } else {
-                    $url = $tailing_url.'/';
-                    $splashRoute = $urlNodes->walk($url, $request);
+            if ($splashRoute === null) {
+                // No route found. Let's try variants with or without trailing / if we are in a GET.
+                if ($request->getMethod() === 'GET') {
+                    // If there is a trailing /, let's remove it and retry
+                    if (strrpos($tailing_url, '/') === strlen($tailing_url) - 1) {
+                        $url = substr($tailing_url, 0, -1);
+                        $splashRoute = $urlNodes->walk($url, $request);
+                    } else {
+                        $url = $tailing_url.'/';
+                        $splashRoute = $urlNodes->walk($url, $request);
+                    }
+
+                    if ($splashRoute !== null) {
+                        // If a route does match, let's make a redirect.
+                        return new RedirectResponse($this->rootUrl.$url);
+                    }
                 }
 
-                if ($splashRoute !== null) {
-                    // If a route does match, let's make a redirect.
-                    return new RedirectResponse($this->rootUrl.$url);
+                $this->log->debug('Found no route for URL {url}.', [
+                    'url' => $request_path,
+                ]);
+
+                // No route found, let's pass control to the next middleware.
+                if ($out !== null) {
+                    return $out($request, $response);
+                } else {
+                    throw PageNotFoundException::create($tailing_url);
                 }
             }
 
-            $this->log->debug('Found no route for URL {url}.', [
+            $controller = $this->container->get($splashRoute->controllerInstanceName);
+            $action = $splashRoute->methodName;
+
+            $context->setUrlParameters($splashRoute->filledParameters);
+
+            $this->log->debug('Routing URL {url} to controller instance {controller} and action {action}', [
                 'url' => $request_path,
+                'controller' => $splashRoute->controllerInstanceName,
+                'action' => $action,
             ]);
 
-            // No route found, let's pass control to the next middleware.
-            return $out($request, $response);
+            // Let's pass everything to the controller:
+            $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
+
+            $filters = $splashRoute->filters;
+
+            // Apply filters
+            for ($i = count($filters) - 1; $i >= 0; --$i) {
+                $filters[$i]->beforeAction();
+            }
+
+            $response = SplashUtils::buildControllerResponse(
+                function () use ($controller, $action, $args) {
+                    return call_user_func_array(array($controller, $action), $args);
+                },
+                $this->mode,
+                $this->debug
+            );
+
+            foreach ($filters as $filter) {
+                $filter->afterAction();
+            }
+
+            return $response;
+        } catch (BadRequestException $e) {
+            if ($this->http400Handler !== null) {
+                return $this->http400Handler->badRequest($e, $request);
+            } else {
+                throw $e;
+            }
+        } catch (PageNotFoundException $e) {
+            if ($this->http404Handler !== null) {
+                return $this->http404Handler->pageNotFound($request);
+            } else {
+                throw $e;
+            }
+        } catch (\Throwable $t) {
+            if ($this->http500Handler !== null) {
+                return $this->http500Handler->serverError($t, $request);
+            } else {
+                throw $t;
+            }
         }
-
-        $controller = $this->container->get($splashRoute->controllerInstanceName);
-        $action = $splashRoute->methodName;
-
-        $context->setUrlParameters($splashRoute->filledParameters);
-
-        $this->log->debug('Routing URL {url} to controller instance {controller} and action {action}', [
-            'url' => $request_path,
-            'controller' => $splashRoute->controllerInstanceName,
-            'action' => $action,
-        ]);
-
-        // Let's pass everything to the controller:
-        $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
-
-        $filters = $splashRoute->filters;
-
-        // Apply filters
-        for ($i = count($filters) - 1; $i >= 0; --$i) {
-            $filters[$i]->beforeAction();
-        }
-
-        $response = SplashUtils::buildControllerResponse(
-            function () use ($controller, $action, $args) {
-                return call_user_func_array(array($controller, $action), $args);
-            },
-            $this->mode,
-            $this->debug
-        );
-
-        foreach ($filters as $filter) {
-            $filter->afterAction();
-        }
-
-        return $response;
     }
 
     /**
