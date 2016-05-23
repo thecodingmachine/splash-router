@@ -241,35 +241,47 @@ class SplashDefaultRouter implements MiddlewareInterface
             $controller = $this->container->get($splashRoute->controllerInstanceName);
             $action = $splashRoute->methodName;
 
-            $context->setUrlParameters($splashRoute->filledParameters);
-
             $this->log->debug('Routing URL {url} to controller instance {controller} and action {action}', [
                 'url' => $request_path,
                 'controller' => $splashRoute->controllerInstanceName,
                 'action' => $action,
             ]);
 
-            // Let's pass everything to the controller:
-            $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
 
             $filters = $splashRoute->filters;
 
+
+
+            $middlewareCaller = function(ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute, $splashRoute) {
+                // Let's recreate a new context object (because request can be modified by the filters)
+                $context = new SplashRequestContext($request);
+                $context->setUrlParameters($splashRoute->filledParameters);
+                // Let's pass everything to the controller:
+                $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
+
+
+
+                $response = SplashUtils::buildControllerResponse(
+                    function () use ($controller, $action, $args) {
+                        return $controller->$action(...$args);
+                    },
+                    $this->mode,
+                    $this->debug
+                );
+
+                return $response;
+            };
+
             // Apply filters
             for ($i = count($filters) - 1; $i >= 0; --$i) {
-                $filters[$i]->beforeAction();
+                $filter = $filters[$i];
+                $middlewareCaller = function(ServerRequestInterface $request, ResponseInterface $response) use ($middlewareCaller, $filter) {
+                    return $filter($request, $response, $middlewareCaller, $this->container);
+                };
             }
 
-            $response = SplashUtils::buildControllerResponse(
-                function () use ($controller, $action, $args) {
-                    return call_user_func_array(array($controller, $action), $args);
-                },
-                $this->mode,
-                $this->debug
-            );
 
-            foreach ($filters as $filter) {
-                $filter->afterAction();
-            }
+            $response = $middlewareCaller($request, $response);
 
             return $response;
         } catch (BadRequestException $e) {

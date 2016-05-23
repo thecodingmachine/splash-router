@@ -8,6 +8,7 @@ use Mouf\Mvc\Splash\Controllers\HttpErrorsController;
 use Mouf\Mvc\Splash\Exception\PageNotFoundException;
 use Mouf\Mvc\Splash\Exception\SplashMissingParameterException;
 use Mouf\Mvc\Splash\Fixtures\TestController2;
+use Mouf\Mvc\Splash\Fixtures\TestFilteredController;
 use Mouf\Mvc\Splash\Services\ControllerRegistry;
 use Mouf\Mvc\Splash\Services\ParameterFetcherRegistry;
 use Mouf\Mvc\Splash\Services\SplashUtils;
@@ -203,5 +204,24 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry, $cache->reveal());
         $defaultRouter->purgeUrlsCache();
+    }
+
+    public function testFilters()
+    {
+        $container = new Picotainer([
+            'controller' => function () {
+                return new TestFilteredController();
+            },
+        ]);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $defaultRouter = new SplashDefaultRouter($container, [
+            $controllerRegistry,
+        ], $parameterFetcherRegistry);
+
+        $request = new ServerRequest([], [], '/foo', 'GET');
+        $response = new HtmlResponse('');
+        $response = $defaultRouter($request, $response);
+        $this->assertEquals("42bar", (string) $response->getBody());
     }
 }
