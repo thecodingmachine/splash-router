@@ -2,6 +2,7 @@
 
 namespace Mouf\Mvc\Splash\Store;
 
+use Mouf\Mvc\Splash\Services\SplashRouteInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
 /*
  * A SplashUrlNode is a datastructure optimised to navigate all possible URLs known to the application.
@@ -43,9 +44,9 @@ class SplashUrlNode
      */
     private $wildcardCallbacks = array();
 
-    public function registerCallback(SplashRoute $callback)
+    public function registerCallback(SplashRouteInterface $callback)
     {
-        $this->addUrl(explode('/', $callback->url), $callback);
+        $this->addUrl(explode('/', $callback->getUrl()), $callback);
     }
 
     /**
@@ -54,7 +55,7 @@ class SplashUrlNode
      *
      * @param array<string> $urlParts
      */
-    protected function addUrl(array $urlParts, SplashRoute $callback)
+    protected function addUrl(array $urlParts, SplashRouteInterface $callback)
     {
         if (!empty($urlParts)) {
             $key = array_shift($urlParts);
@@ -65,17 +66,18 @@ class SplashUrlNode
                     throw new SplashException('Sorry, the URL pattern /foo/*/bar is not supported. The wildcard (*) must be at the end of an URL');
                 }
 
-                if (empty($callback->httpMethods)) {
+                $httpMethods = $callback->getHttpMethods();
+                if (empty($httpMethods)) {
                     if (isset($this->wildcardCallbacks[''])) {
-                        throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->url."' is associated "
-                                ."to 2 methods: \$".$callback->controllerInstanceName.'->'.$callback->methodName." and \$".$this->wildcardCallbacks['']->controllerInstanceName.'->'.$this->wildcardCallbacks['']->methodName);
+                        throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->getUrl()."' is associated "
+                                ."to 2 methods: \$".$callback->getControllerInstanceName().'->'.$callback->getMethodName()." and \$".$this->wildcardCallbacks['']->getControllerInstanceName().'->'.$this->wildcardCallbacks['']->getMethodName());
                     }
                     $this->wildcardCallbacks[''] = $callback;
                 } else {
-                    foreach ($callback->httpMethods as $httpMethod) {
+                    foreach ($httpMethods as $httpMethod) {
                         if (isset($this->wildcardCallbacks[$httpMethod])) {
-                            throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->url."' for HTTP method '".$httpMethod."' is associated "
-                                    ."to 2 methods: \$".$callback->controllerInstanceName.'->'.$callback->methodName." and \$".$this->wildcardCallbacks[$httpMethod]->controllerInstanceName.'->'.$this->wildcardCallbacks[$httpMethod]->methodName);
+                            throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->getUrl()."' for HTTP method '".$httpMethod."' is associated "
+                                    ."to 2 methods: \$".$callback->getControllerInstanceName().'->'.$callback->getMethodName()." and \$".$this->wildcardCallbacks[$httpMethod]->getControllerInstanceName().'->'.$this->wildcardCallbacks[$httpMethod]->getMethodName());
                         }
                         $this->wildcardCallbacks[$httpMethod] = $callback;
                     }
@@ -96,17 +98,18 @@ class SplashUrlNode
                 $this->children[$key]->addUrl($urlParts, $callback);
             }
         } else {
-            if (empty($callback->httpMethods)) {
+            $httpMethods = $callback->getHttpMethods();
+            if (empty($httpMethods)) {
                 if (isset($this->callbacks[''])) {
-                    throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->url."' is associated "
-                        ."to 2 methods: \$".$callback->controllerInstanceName.'->'.$callback->methodName." and \$".$this->callbacks['']->controllerInstanceName.'->'.$this->callbacks['']->methodName);
+                    throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->getUrl()."' is associated "
+                        ."to 2 methods: \$".$callback->getControllerInstanceName().'->'.$callback->getMethodName()." and \$".$this->callbacks['']->getControllerInstanceName().'->'.$this->callbacks['']->getMethodName());
                 }
                 $this->callbacks[''] = $callback;
             } else {
-                foreach ($callback->httpMethods as $httpMethod) {
+                foreach ($httpMethods as $httpMethod) {
                     if (isset($this->callbacks[$httpMethod])) {
-                        throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->url."' for HTTP method '".$httpMethod."' is associated "
-                            ."to 2 methods: \$".$callback->controllerInstanceName.'->'.$callback->methodName." and \$".$this->callbacks[$httpMethod]->controllerInstanceName.'->'.$this->callbacks[$httpMethod]->methodName);
+                        throw new SplashException("An error occured while looking at the list URL managed in Splash. The URL '".$callback->getUrl()."' for HTTP method '".$httpMethod."' is associated "
+                            ."to 2 methods: \$".$callback->getControllerInstanceName().'->'.$callback->getMethodName()." and \$".$this->callbacks[$httpMethod]->getControllerInstanceName().'->'.$this->callbacks[$httpMethod]->getMethodName());
                     }
                     $this->callbacks[$httpMethod] = $callback;
                 }
@@ -145,40 +148,41 @@ class SplashUrlNode
 
         if (isset($this->wildcardCallbacks[$httpMethod])) {
             $closestWildcardRoute = $this->wildcardCallbacks[$httpMethod];
-            $closestWildcardRoute->filledParameters = $parameters;
+            $closestWildcardRoute->setFilledParameters($parameters);
         } elseif (isset($this->wildcardCallbacks[''])) {
             $closestWildcardRoute = $this->wildcardCallbacks[''];
-            $closestWildcardRoute->filledParameters = $parameters;
+            $closestWildcardRoute->setFilledParameters($parameters);
         }
 
         if (!empty($urlParts)) {
             $key = array_shift($urlParts);
             if (isset($this->children[$key])) {
                 return $this->children[$key]->walkArray($urlParts, $request, $parameters, $closestWildcardRoute);
-            } else {
-                foreach ($this->parameterizedChildren as $varName => $splashUrlNode) {
-                    if (isset($parameters[$varName])) {
-                        throw new SplashException("An error occured while looking at the list URL managed in Splash. In a @URL annotation, the parameter '{$parameters[$varName]}' appears twice. That should never happen");
-                    }
-                    $newParams = $parameters;
-                    $newParams[$varName] = $key;
-                    $result = $this->parameterizedChildren[$varName]->walkArray($urlParts, $request, $newParams, $closestWildcardRoute);
-                    if ($result != null) {
-                        return $result;
-                    }
-                }
-                // If we arrive here, there was no parameterized URL matching our objective
-                return $closestWildcardRoute;
             }
+
+            foreach ($this->parameterizedChildren as $varName => $splashUrlNode) {
+                if (isset($parameters[$varName])) {
+                    throw new SplashException("An error occured while looking at the list URL managed in Splash. In a @URL annotation, the parameter '{$parameters[$varName]}' appears twice. That should never happen");
+                }
+                $newParams = $parameters;
+                $newParams[$varName] = $key;
+                $result = $this->parameterizedChildren[$varName]->walkArray($urlParts, $request, $newParams, $closestWildcardRoute);
+                if ($result !== null) {
+                    return $result;
+                }
+            }
+
+            // If we arrive here, there was no parametrized URL matching our objective
+            return $closestWildcardRoute;
         } else {
             if (isset($this->callbacks[$httpMethod])) {
                 $route = $this->callbacks[$httpMethod];
-                $route->filledParameters = $parameters;
+                $route->setFilledParameters($parameters);
 
                 return $route;
             } elseif (isset($this->callbacks[''])) {
                 $route = $this->callbacks[''];
-                $route->filledParameters = $parameters;
+                $route->setFilledParameters($parameters);
 
                 return $route;
             } else {

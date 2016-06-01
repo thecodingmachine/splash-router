@@ -11,7 +11,7 @@ use Mouf\Mvc\Splash\Services\SplashUtils;
 use Zend\Stratigility\ErrorMiddlewareInterface;
 
 /**
- * This router returns transforms exceptions into HTTP 500 pages, based on the configured error controller.
+ * This router transforms exceptions into HTTP 500 pages, based on the configured error controller.
  *
  * @author Kevin Nguyen
  * @author David Négrier
@@ -45,7 +45,7 @@ class ExceptionRouter implements ErrorMiddlewareInterface
     }
 
     /**
-     * Actually handle the exception depending.
+     * Actually handle the exception.
      *
      * @param \Exception $e
      *

@@ -2,14 +2,16 @@
 
 namespace Mouf\Mvc\Splash\Services;
 
+use Mouf\Mvc\Splash\Utils\SplashException;
+
 /**
  * A callback used to access a page.
  *
  * @author David
  */
-class SplashRoute
+class SplashRoute implements SplashRouteInterface
 {
-    public $url;
+    private $url;
 
     /**
      * List of HTTP methods allowed for this callback.
@@ -17,17 +19,15 @@ class SplashRoute
      *
      * @var array<string>
      */
-    public $httpMethods;
+    private $httpMethods;
 
-    public $controllerInstanceName;
+    private $controllerInstanceName;
 
-    public $methodName;
+    private $methodName;
 
-    public $title;
+    private $title;
 
-    public $comment;
-
-    public $fullComment;
+    private $fullComment;
 
     /**
      * An ordered list of parameters.
@@ -36,14 +36,14 @@ class SplashRoute
      *
      * @var array<SplashParameterFetcherInterface>
      */
-    public $parameters;
+    private $parameters;
 
     /**
      * A list of all filters to apply to the route.
      *
-     * @var array<AbstractFilter>
+     * @var array An array of filters.
      */
-    public $filters;
+    private $filters;
 
     /**
      * The list of parameters matched during the route.
@@ -51,19 +51,133 @@ class SplashRoute
      *
      * @var array<string, string>
      */
-    public $filledParameters = array();
+    private $filledParameters = array();
     // Question: abstraire SplashRoute et rajouter un getCallbackHandler???
 
-    public function __construct($url, $controllerInstanceName, $methodName, $title, $comment, $fullComment = null, $httpMethods = array(), $parameters = array(), $filters = array())
+    /**
+     * The file that contains the controller class.
+     * Used to invalidate the cache.
+     *
+     * @var string
+     */
+    private $fileName;
+
+    /**
+     * @var int
+     */
+    private $fileModificationTime;
+
+    public function __construct(string $url, string $controllerInstanceName, string $methodName, string $title = null, string $fullComment = null, array $httpMethods = array(), array $parameters = array(), array $filters = array(), string $fileName = null)
     {
         $this->url = $url;
         $this->httpMethods = $httpMethods;
         $this->controllerInstanceName = $controllerInstanceName;
         $this->methodName = $methodName;
         $this->title = $title;
-        $this->comment = $comment;
         $this->fullComment = $fullComment;
         $this->parameters = $parameters;
         $this->filters = $filters;
+
+        if ($fileName !== null) {
+            $this->fileName = $fileName;
+            $this->fileModificationTime = filemtime($fileName);
+            if ($this->fileModificationTime === false) {
+                throw new SplashException(sprintf('Could not find file modification time for "%s"', $this->fileName));
+            }
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUrl() : string
+    {
+        return $this->url;
+    }
+
+    /**
+     * List of HTTP methods allowed for this callback.
+     * If empty, all methods are allowed.
+     *
+     * @return string[]
+     */
+    public function getHttpMethods() : array
+    {
+        return $this->httpMethods;
+    }
+
+    /**
+     * @return string
+     */
+    public function getControllerInstanceName() : string
+    {
+        return $this->controllerInstanceName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethodName() : string
+    {
+        return $this->methodName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle() : string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFullComment()
+    {
+        return $this->fullComment;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters() : array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilters() : array
+    {
+        return $this->filters;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getFilledParameters() : array
+    {
+        return $this->filledParameters;
+    }
+
+    public function setFilledParameters(array $parameters)
+    {
+        $this->filledParameters = $parameters;
+    }
+
+    /**
+     * Checks if the data stored in this route is fresh or not (it comes from the cache).
+     *
+     * @return bool
+     */
+    public function isCacheValid() : bool
+    {
+        if ($this->fileName === null) {
+            return true;
+        }
+
+        return $this->fileModificationTime === filemtime($this->fileName);
     }
 }

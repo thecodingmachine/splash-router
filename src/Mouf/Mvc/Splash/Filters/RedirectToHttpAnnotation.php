@@ -2,56 +2,44 @@
 
 namespace Mouf\Mvc\Splash\Filters;
 
-//FIXME: Provide filters another way...
-//FilterUtils::registerFilter("RedirectToHttp");
+use Interop\Container\ContainerInterface;
+use Mouf\Mvc\Splash\Utils\SplashException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Filter that will bring the user back to HTTP if the user is in HTTPS.
- * The port can be specified in parameter if needed.
+ * The port can be specified in parameter if needed (@RedirectToHttpAnnotation(port=8080))
  * Works only with GET requests. If another request is performed, an exception will be thrown.
+ *
+ * @Annotation
  */
-class RedirectToHttpAnnotation extends AbstractFilter
+class RedirectToHttpAnnotation
 {
     /**
      * The value passed to the filter.
      */
     protected $port;
 
-    public function setValue($value)
+    public function __construct(array $values)
     {
-        $this->port = $value;
+        $this->port = $values['port'] ?? 80;
     }
 
-    /**
-     * Function to be called before the action.
-     */
-    public function beforeAction()
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next, ContainerInterface $container)
     {
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) {
-            if ($_SERVER['REQUEST_METHOD'] != 'GET') {
-                throw new ApplicationException('annotation.redirecttohttp.getonly.title', 'annotation.redirecttohttp.getonly.getonly.text');
+        $uri = $request->getUri();
+        $scheme = $uri->getScheme();
+        if ($scheme === 'https') {
+            if ($request->getMethod() !== 'GET') {
+                throw new SplashException('Only GET HTTP methods can be redirected to HTTP');
             }
-            header('Location: '.$this->selfURL());
-            exit;
+            $uri = $uri->withScheme('http')->withPort($this->port);
+
+            return new RedirectResponse($uri);
         }
-    }
 
-    /**
-     * Function to be called after the action.
-     */
-    public function afterAction()
-    {
-    }
-
-    private function selfURL()
-    {
-        $protocol = 'http';
-        $port = (empty($this->port)) ? '' : (':'.$this->port);
-
-        return $protocol.'://'.$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
-    }
-    public function strleft($s1, $s2)
-    {
-        return substr($s1, 0, strpos($s1, $s2));
+        return $next($request, $response);
     }
 }

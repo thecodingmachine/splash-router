@@ -6,10 +6,8 @@
  * Date: 23/06/15
  * Time: 15:10.
  */
-
 namespace Mouf\Mvc\Splash\Routers;
 
-use Mouf\Utils\Common\ConditionInterface\ConditionInterface;
 use Zend\Stratigility\ErrorMiddlewareInterface;
 use Zend\Stratigility\MiddlewareInterface;
 

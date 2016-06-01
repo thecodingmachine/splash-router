@@ -4,7 +4,6 @@ namespace Mouf\Mvc\Splash\Routers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Mouf\Utils\Cache\CacheInterface;
@@ -15,7 +14,7 @@ use Zend\Stratigility\MiddlewareInterface;
 class CacheRouter implements MiddlewareInterface
 {
     /**
-     * @CacheInterface
+     * @var CacheInterface
      */
     private $cache;
 
@@ -57,8 +56,9 @@ class CacheRouter implements MiddlewareInterface
      * later middleware will return a response.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param null|callable $out
+     * @param ResponseInterface      $response
+     * @param null|callable          $out
+     *
      * @return null|ResponseInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)

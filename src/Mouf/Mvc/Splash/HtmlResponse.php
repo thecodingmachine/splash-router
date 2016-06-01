@@ -78,7 +78,6 @@ class HtmlResponse extends Response
             $content = ob_get_clean();
             $this->stream = new Stream('php://memory', 'wb+');
             $this->stream->write($content);
-
         }
 
         return $this->stream;

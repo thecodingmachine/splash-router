@@ -16,7 +16,8 @@ globalData = <?php echo json_encode(array(
     ?>
 <div class="alert">Warning! Splash could not detect the autoload section of your <code>composer.json</code> file.
 Unless you are developing your own autoload system, you should configure <code>composer.json</code> to <a href="http://getcomposer.org/doc/01-basic-usage.md#autoloading" target="_blank">define a source directory and a root namespace using PSR-0</a>.</div>
-<?php 
+<?php
+
 } ?>
 
 <div class="control-group" ng-class="{error:controllerNameError}">

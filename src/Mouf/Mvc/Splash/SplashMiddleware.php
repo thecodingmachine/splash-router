@@ -1,11 +1,9 @@
 <?php
+
 namespace Mouf\Mvc\Splash;
 
 use Mouf\Mvc\Splash\Routers\RouterInterface;
-use Mouf\Validator\MoufValidatorResult;
-use Mouf\Validator\MoufStaticValidatorInterface;
 use Mouf\Mvc\Splash\Controllers\Controller;
-use Mouf\MoufManager;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -17,12 +15,10 @@ use Zend\Stratigility\MiddlewarePipe;
  * The SplashMiddleware component has several ways to bind an URL to a Controller.<br/>
  * It can do so based on the @URL annotation, or based on the @Action annotation.<br/>
  * Check out the Splash documentation here:
- * <a href="https://github.com/thecodingmachine/mvc.splash/">https://github.com/thecodingmachine/mvc.splash/</a>
- *
+ * <a href="https://github.com/thecodingmachine/mvc.splash/">https://github.com/thecodingmachine/mvc.splash/</a>.
  */
 class SplashMiddleware extends MiddlewarePipe
 {
-
     /**
      * @param RouterInterface[] $routers
      */
