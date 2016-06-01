@@ -69,9 +69,9 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
     protected $exception;
 
     /**
-     * @param TemplateInterface $template The template used by Splash for displaying error pages (HTTP 400, 404 and 500).
-     * @param HtmlBlock $contentBlock The content block the template will be written into.
-     * @param bool $debugMode Whether we should display exception stacktrace or not in HTTP 500.
+     * @param TemplateInterface $template     The template used by Splash for displaying error pages (HTTP 400, 404 and 500).
+     * @param HtmlBlock         $contentBlock The content block the template will be written into.
+     * @param bool              $debugMode    Whether we should display exception stacktrace or not in HTTP 500.
      */
     public function __construct(TemplateInterface $template, HtmlBlock $contentBlock, bool $debugMode = true)
     {
@@ -181,6 +181,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
      * If not set, a default block will be used instead.
      *
      * @param HtmlElementInterface $contentFor400
+     *
      * @return $this
      */
     public function setContentFor400(HtmlElementInterface $contentFor400)
@@ -195,6 +196,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
      * If not set, a default block will be used instead.
      *
      * @param HtmlElementInterface $contentFor404
+     *
      * @return $this
      */
     public function setContentFor404(HtmlElementInterface $contentFor404)
@@ -209,6 +211,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
      * If not set, a default block will be used instead.
      *
      * @param HtmlElementInterface $contentFor500
+     *
      * @return $this
      */
     public function setContentFor500(HtmlElementInterface $contentFor500)

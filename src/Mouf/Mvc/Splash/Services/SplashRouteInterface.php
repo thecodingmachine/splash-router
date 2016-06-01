@@ -1,6 +1,6 @@
 <?php
-namespace Mouf\Mvc\Splash\Services;
 
+namespace Mouf\Mvc\Splash\Services;
 
 /**
  * A callback used to access a page.
@@ -60,7 +60,7 @@ interface SplashRouteInterface
     public function setFilledParameters(array $parameters);
 
     /**
-     * Checks if the data stored in this route is fresh or not (it comes from the cache)
+     * Checks if the data stored in this route is fresh or not (it comes from the cache).
      *
      * @return bool
      */

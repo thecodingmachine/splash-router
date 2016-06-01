@@ -223,7 +223,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $request = new ServerRequest([], [], '/foo', 'GET');
         $response = new HtmlResponse('');
         $response = $defaultRouter($request, $response);
-        $this->assertEquals("42bar", (string) $response->getBody());
+        $this->assertEquals('42bar', (string) $response->getBody());
     }
 
     public function testExpirationTag()

@@ -1,6 +1,7 @@
 <?php
 
 namespace Mouf\Mvc\Splash\Services;
+
 use Mouf\Mvc\Splash\Utils\SplashException;
 
 /**
@@ -167,7 +168,7 @@ class SplashRoute implements SplashRouteInterface
     }
 
     /**
-     * Checks if the data stored in this route is fresh or not (it comes from the cache)
+     * Checks if the data stored in this route is fresh or not (it comes from the cache).
      *
      * @return bool
      */
@@ -176,6 +177,7 @@ class SplashRoute implements SplashRouteInterface
         if ($this->fileName === null) {
             return true;
         }
+
         return $this->fileModificationTime === filemtime($this->fileName);
     }
 }

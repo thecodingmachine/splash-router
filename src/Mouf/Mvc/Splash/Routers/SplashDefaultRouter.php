@@ -244,9 +244,9 @@ class SplashDefaultRouter implements MiddlewareInterface
             if (!$splashRoute->isCacheValid()) {
                 // The route is invalid! Let's purge the cache and retry!
                 $this->purgeUrlsCache();
+
                 return $this($request, $response, $out);
             }
-
 
             $controller = $this->container->get($splashRoute->getControllerInstanceName());
             $action = $splashRoute->getMethodName();
@@ -257,19 +257,14 @@ class SplashDefaultRouter implements MiddlewareInterface
                 'action' => $action,
             ]);
 
-
             $filters = $splashRoute->getFilters();
 
-
-
-            $middlewareCaller = function(ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute, $splashRoute) {
+            $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute, $splashRoute) {
                 // Let's recreate a new context object (because request can be modified by the filters)
                 $context = new SplashRequestContext($request);
                 $context->setUrlParameters($splashRoute->getFilledParameters());
                 // Let's pass everything to the controller:
                 $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->getParameters());
-
-
 
                 $response = SplashUtils::buildControllerResponse(
                     function () use ($controller, $action, $args) {
@@ -285,11 +280,10 @@ class SplashDefaultRouter implements MiddlewareInterface
             // Apply filters
             for ($i = count($filters) - 1; $i >= 0; --$i) {
                 $filter = $filters[$i];
-                $middlewareCaller = function(ServerRequestInterface $request, ResponseInterface $response) use ($middlewareCaller, $filter) {
+                $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($middlewareCaller, $filter) {
                     return $filter($request, $response, $middlewareCaller, $this->container);
                 };
             }
-
 
             $response = $middlewareCaller($request, $response);
 
@@ -339,7 +333,6 @@ class SplashDefaultRouter implements MiddlewareInterface
         $urlNodesCacheItem->set($value);
         $this->cachePool->save($urlNodesCacheItem);
     }
-
 
     /**
      * Returns the list of all SplashActions.

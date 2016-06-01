@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mouf\Mvc\Splash\DI;
-
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
@@ -27,16 +25,16 @@ class SplashServiceProviderTest extends \PHPUnit_Framework_TestCase
         $simplex = new Container();
         $simplex->register(new SplashServiceProvider());
 
-        $simplex[Reader::class] = function() {
+        $simplex[Reader::class] = function () {
             return new AnnotationReader();
         };
 
-        $simplex[TestController2::class] = function() {
+        $simplex[TestController2::class] = function () {
             return new TestController2();
         };
 
         $simplex['thecodingmachine.splash.controllers'] = [
-            TestController2::class
+            TestController2::class,
         ];
 
         $defaultRouter = $simplex->get(SplashDefaultRouter::class);
@@ -52,7 +50,5 @@ class SplashServiceProviderTest extends \PHPUnit_Framework_TestCase
         $response = $defaultRouter($request, $response);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals('/foo/var/bar', $response->getHeader('Location')[0]);
-
     }
-
 }

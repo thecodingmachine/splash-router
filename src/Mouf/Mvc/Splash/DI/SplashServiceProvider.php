@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mouf\Mvc\Splash\DI;
-
 
 use Doctrine\Common\Annotations\Reader;
 use Interop\Container\ContainerInterface;
@@ -40,17 +38,16 @@ class SplashServiceProvider implements ServiceProvider
     public function getServices()
     {
         return [
-            SplashDefaultRouter::class => [ self::class, 'createDefaultRouter' ],
-            'thecodingmachine.splash.route-providers' => [ self::class, 'createRouteProviders' ],
-            ControllerRegistry::class => [ self::class, 'createControllerRegistry' ],
-            ParameterFetcherRegistry::class => [self::class, 'createParameterFetcherRegistry' ],
-            'thecodingmachine.splash.parameter-fetchers' => [self::class, 'createParameterFetchers' ],
-            SplashRequestFetcher::class => [self::class, 'createSplashRequestFetcher' ],
-            SplashRequestParameterFetcher::class => [self::class, 'createSplashRequestParameterFetcher' ],
+            SplashDefaultRouter::class => [self::class, 'createDefaultRouter'],
+            'thecodingmachine.splash.route-providers' => [self::class, 'createRouteProviders'],
+            ControllerRegistry::class => [self::class, 'createControllerRegistry'],
+            ParameterFetcherRegistry::class => [self::class, 'createParameterFetcherRegistry'],
+            'thecodingmachine.splash.parameter-fetchers' => [self::class, 'createParameterFetchers'],
+            SplashRequestFetcher::class => [self::class, 'createSplashRequestFetcher'],
+            SplashRequestParameterFetcher::class => [self::class, 'createSplashRequestParameterFetcher'],
             'thecodingmachine.splash.mode' => new Parameter(SplashUtils::MODE_STRICT),
         ];
     }
-
 
     public static function createDefaultRouter(ContainerInterface $container) : SplashDefaultRouter
     {
@@ -87,7 +84,7 @@ class SplashServiceProvider implements ServiceProvider
     public static function createRouteProviders(ContainerInterface $container) : array
     {
         return [
-            $container->get(ControllerRegistry::class)
+            $container->get(ControllerRegistry::class),
         ];
     }
 

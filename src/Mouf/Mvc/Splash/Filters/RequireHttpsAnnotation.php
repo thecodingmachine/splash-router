@@ -44,10 +44,10 @@ class RequireHttpsAnnotation
                 throw new SplashException('Only GET HTTP methods can be redirected to HTTPS');
             }
             $uri = $uri->withScheme('https');
+
             return new RedirectResponse($uri);
         }
 
         return $next($request, $response);
     }
-
 }

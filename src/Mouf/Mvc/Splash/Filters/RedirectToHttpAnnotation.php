@@ -1,6 +1,7 @@
 <?php
 
 namespace Mouf\Mvc\Splash\Filters;
+
 use Interop\Container\ContainerInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface;
@@ -35,6 +36,7 @@ class RedirectToHttpAnnotation
                 throw new SplashException('Only GET HTTP methods can be redirected to HTTP');
             }
             $uri = $uri->withScheme('http')->withPort($this->port);
+
             return new RedirectResponse($uri);
         }
 

@@ -6,7 +6,6 @@ namespace Mouf\Mvc\Splash\Services;
  * Utility class for filters.
  */
 use Doctrine\Common\Annotations\AnnotationReader;
-use Mouf\Mvc\Splash\Controllers\Controller;
 use ReflectionMethod;
 
 class FilterUtils
@@ -19,7 +18,7 @@ class FilterUtils
      *
      *     __invoke(ServerRequestInterface $request, $next, ContainerInterface $container)
      *
-     * @param ReflectionMethod $refMethod  the reference method extended object.
+     * @param ReflectionMethod $refMethod the reference method extended object.
      * @param AnnotationReader $reader
      *
      * @return array Array of filter instances sorted by priority.

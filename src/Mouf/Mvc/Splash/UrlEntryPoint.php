@@ -2,7 +2,6 @@
 
 namespace Mouf\Mvc\Splash;
 
-use Mouf\Mvc\Splash\Controllers\Controller;
 use Mouf\Utils\Action\ActionInterface;
 use Mouf\Mvc\Splash\Services\SplashRoute;
 use Mouf\Mvc\Splash\Services\UrlProviderInterface;

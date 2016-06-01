@@ -4,7 +4,6 @@ namespace Mouf\Mvc\Splash\Services;
 
 use Doctrine\Common\Annotations\Reader;
 use Interop\Container\ContainerInterface;
-use Mouf\Annotations\URLAnnotation;
 use Mouf\Mvc\Splash\Annotations\Action;
 use Mouf\Mvc\Splash\Annotations\Delete;
 use Mouf\Mvc\Splash\Annotations\Get;
@@ -12,7 +11,6 @@ use Mouf\Mvc\Splash\Annotations\Post;
 use Mouf\Mvc\Splash\Annotations\Put;
 use Mouf\Mvc\Splash\Annotations\Title;
 use Mouf\Mvc\Splash\Annotations\URL;
-use Mouf\Mvc\Splash\Utils\SplashException;
 use Mouf\Reflection\MoufReflectionMethod;
 use ReflectionMethod;
 
