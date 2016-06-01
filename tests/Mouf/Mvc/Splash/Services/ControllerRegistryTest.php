@@ -32,7 +32,7 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $urlsList);
         $this->assertInstanceOf(SplashRoute::class, $urlsList[0]);
-        $this->assertEquals('myurl', $urlsList[0]->url);
+        $this->assertEquals('myurl', $urlsList[0]->getUrl());
     }
 
     public function testControllerRegistryThisParam()
@@ -50,18 +50,18 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5, $urlsList);
         $this->assertInstanceOf(SplashRoute::class, $urlsList[0]);
-        $this->assertEquals('url/42/foo/52', $urlsList[0]->url);
+        $this->assertEquals('url/42/foo/52', $urlsList[0]->getUrl());
 
         $this->assertInstanceOf(SplashRoute::class, $urlsList[1]);
-        $this->assertEquals('controller/actionAnnotation', $urlsList[1]->url);
+        $this->assertEquals('controller/actionAnnotation', $urlsList[1]->getUrl());
 
         $this->assertInstanceOf(SplashRoute::class, $urlsList[2]);
-        $this->assertEquals('controller/', $urlsList[2]->url);
+        $this->assertEquals('controller/', $urlsList[2]->getUrl());
         $this->assertInstanceOf(SplashRoute::class, $urlsList[2]);
-        $this->assertEquals('Main page', $urlsList[2]->title);
-        $this->assertContains('GET', $urlsList[2]->httpMethods);
-        $this->assertContains('POST', $urlsList[2]->httpMethods);
-        $this->assertContains('PUT', $urlsList[2]->httpMethods);
-        $this->assertContains('DELETE', $urlsList[2]->httpMethods);
+        $this->assertEquals('Main page', $urlsList[2]->getTitle());
+        $this->assertContains('GET', $urlsList[2]->getHttpMethods());
+        $this->assertContains('POST', $urlsList[2]->getHttpMethods());
+        $this->assertContains('PUT', $urlsList[2]->getHttpMethods());
+        $this->assertContains('DELETE', $urlsList[2]->getHttpMethods());
     }
 }

@@ -33,12 +33,19 @@
 		"mouf/utils.cache.cache-interface": "~2.0",
         "zendframework/zend-stratigility": "~1.0",
         "zendframework/zend-diactoros": "~1.0",
-		"mouf/html.template.templateinterface": "^2.1"
+		"mouf/html.template.templateinterface": "^2.1",
+		"container-interop/service-provider": "~0.3.0",
+		"thecodingmachine/common-factories": "dev-master",
+		"thecodingmachine/middleware-list-universal-module": "~1.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^5.0",
 		"satooshi/php-coveralls": "^1.0",
-		"mouf/picotainer": "~1.0"
+		"mouf/picotainer": "~1.0",
+		"puli/cli":"^1.0",
+		"puli/composer-plugin": "^1.0",
+		"mnapoli/simplex": "~0.2.0",
+		"cache/array-adapter": "^0.4.0"
 	},
 	"autoload" : {
 		"psr-4" : {

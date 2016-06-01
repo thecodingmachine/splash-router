@@ -22,10 +22,7 @@ use Zend\Diactoros\Response\JsonResponse;
 class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInterface, Http500HandlerInterface, Scopable
 {
     /**
-     * The template used by Splash for displaying error pages (HTTP 404 and 500).
-     *
-     * @Property
-     * @Compulsory
+     * The template used by Splash for displaying error pages (HTTP 400, 404 and 500).
      *
      * @var TemplateInterface
      */
@@ -34,17 +31,12 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
     /**
      * The content block the template will be written into.
      *
-     * @Property
-     * @Compulsory
-     *
      * @var HtmlBlock
      */
     private $contentBlock;
 
     /**
      * Whether we should display exception stacktrace or not in HTTP 500.
-     *
-     * @Property
      *
      * @var bool
      */
@@ -76,6 +68,11 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
 
     protected $exception;
 
+    /**
+     * @param TemplateInterface $template The template used by Splash for displaying error pages (HTTP 400, 404 and 500).
+     * @param HtmlBlock $contentBlock The content block the template will be written into.
+     * @param bool $debugMode Whether we should display exception stacktrace or not in HTTP 500.
+     */
     public function __construct(TemplateInterface $template, HtmlBlock $contentBlock, bool $debugMode = true)
     {
         $this->template = $template;
@@ -161,7 +158,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
         }
 
         if ($this->contentFor500) {
-            $this->contentBlock = $this->contentFor500;
+            $this->contentBlock->addHtmlElement($this->contentFor500);
         } else {
             $this->contentBlock->addFile(__DIR__.'/../../../../views/500.php', $this);
         }
@@ -184,6 +181,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
      * If not set, a default block will be used instead.
      *
      * @param HtmlElementInterface $contentFor400
+     * @return $this
      */
     public function setContentFor400(HtmlElementInterface $contentFor400)
     {
@@ -197,6 +195,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
      * If not set, a default block will be used instead.
      *
      * @param HtmlElementInterface $contentFor404
+     * @return $this
      */
     public function setContentFor404(HtmlElementInterface $contentFor404)
     {
@@ -210,6 +209,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
      * If not set, a default block will be used instead.
      *
      * @param HtmlElementInterface $contentFor500
+     * @return $this
      */
     public function setContentFor500(HtmlElementInterface $contentFor500)
     {

@@ -46,7 +46,8 @@ class ControllerRegistry implements UrlProviderInterface
     public function __construct(ContainerInterface $container, ParameterFetcherRegistry $parameterFetcherRegistry, Reader $annotationReader, array $controllers = [])
     {
         $this->container = $container;
-        $this->controllers = $controllers;
+        $controllersArr = array_values($controllers);
+        $this->controllers = array_combine($controllersArr, $controllersArr);
         $this->parameterFetcherRegistry = $parameterFetcherRegistry;
         $this->annotationReader = $annotationReader;
     }
@@ -61,7 +62,7 @@ class ControllerRegistry implements UrlProviderInterface
      */
     public function addController(string $controller) : ControllerRegistry
     {
-        $this->controllers[] = $controller;
+        $this->controllers[$controller] = $controller;
 
         return $this;
     }
@@ -100,12 +101,7 @@ class ControllerRegistry implements UrlProviderInterface
             // Now, let's check the "Title" annotation (note: we do not support multiple title annotations for the same method)
             $titleAnnotation = $this->annotationReader->getMethodAnnotation($refMethod, Title::class);
             if ($titleAnnotation !== null) {
-                /*$titles = $refMethod->getAnnotations('Title');
-                if (count($titles) > 1) {
-                    throw new SplashException('Only one @Title annotation allowed per method.');
-                }*/
                 /* @var $titleAnnotation TitleAnnotation */
-                //$titleAnnotation = $titles[0];
                 $title = $titleAnnotation->getTitle();
             }
 
@@ -119,7 +115,7 @@ class ControllerRegistry implements UrlProviderInterface
                     $url = $controllerInstanceName.'/'.$methodName;
                 }
                 $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod);
-                $filters = FilterUtils::getFilters($refMethod, $controller, $this->annotationReader);
+                $filters = FilterUtils::getFilters($refMethod, $this->annotationReader);
                 $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
             }
 
@@ -135,7 +131,6 @@ class ControllerRegistry implements UrlProviderInterface
                 $url = $annotation->getUrl();
 
                 // Get public properties if they exist in the URL
-                //if (preg_match_all('/([^\{]*){\$this->([^\/]*)}([^\{]*)/', $url, $output)) {
                 if (preg_match_all('/[^{]*{\$this->([^\/]*)}[^{]*/', $url, $output)) {
                     foreach ($output[1] as $param) {
                         $value = $this->readPrivateProperty($controller, $param);
@@ -145,7 +140,7 @@ class ControllerRegistry implements UrlProviderInterface
 
                 $url = ltrim($url, '/');
                 $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod, $url);
-                $filters = FilterUtils::getFilters($refMethod, $controller, $this->annotationReader);
+                $filters = FilterUtils::getFilters($refMethod, $this->annotationReader);
                 $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
             }
         }
@@ -198,27 +193,17 @@ class ControllerRegistry implements UrlProviderInterface
         return $methods;
     }
 
-    /*
-     * Returns an array of parameters present in the URL.
-     * If the URL is /user/{id}/login/{name}, the returns array will be:
-     *  [ "id"=>"id",
-     *    "name"=>"name" ]
+    /**
+     * Returns a unique tag representing the list of SplashRoutes returned.
+     * If the tag changes, the cache is flushed by Splash.
      *
-     * @param URLAnnotation $urlAnnotation
-     * @return array
+     * Important! This must be quick to compute.
+     *
+     * @return mixed
      */
-    /*private static function getUrlParameters(URLAnnotation $urlAnnotation) : array
+    public function getExpirationTag() : string
     {
-        $urlParamsList = [];
-        $url = $urlAnnotation->getUrl();
-        $urlParts = explode('/', $url);
-        foreach ($urlParts as $part) {
-            if (strpos($part, '{') === 0 && strpos($part, '}') === strlen($part) - 1) {
-                // Parameterized URL element
-                $varName = substr($part, 1, strlen($part) - 2);
-                $urlParamsList[$varName] = $varName;
-            }
-        }
-        return $urlParamsList;
-    }*/
+        // An approximate, quick-to-compute rule that will force renewing the cache if a controller is added are a parameter is fetched.
+        return implode('-/-', $this->controllers).'-'.count($this->parameterFetcherRegistry);
+    }
 }

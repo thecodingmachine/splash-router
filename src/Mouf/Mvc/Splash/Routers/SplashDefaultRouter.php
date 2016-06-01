@@ -185,6 +185,8 @@ class SplashDefaultRouter implements MiddlewareInterface
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
         try {
+            $this->purgeExpiredRoutes();
+
             $urlNodesCacheItem = $this->cachePool->getItem('splashUrlNodes');
             if (!$urlNodesCacheItem->isHit()) {
                 // No value in cache, let's get the URL nodes
@@ -195,6 +197,7 @@ class SplashDefaultRouter implements MiddlewareInterface
             }
 
             $urlNodes = $urlNodesCacheItem->get();
+            /* @var $urlNodes SplashUrlNode */
 
             $request_path = $request->getUri()->getPath();
 
@@ -205,7 +208,6 @@ class SplashDefaultRouter implements MiddlewareInterface
 
             $tailing_url = substr($request_path, $pos + strlen($this->rootUrl));
 
-            $context = new SplashRequestContext($request);
             $splashRoute = $urlNodes->walk($tailing_url, $request);
 
             if ($splashRoute === null) {
@@ -238,26 +240,34 @@ class SplashDefaultRouter implements MiddlewareInterface
                 }
             }
 
-            $controller = $this->container->get($splashRoute->controllerInstanceName);
-            $action = $splashRoute->methodName;
+            // Is the route still valid according to the cache?
+            if (!$splashRoute->isCacheValid()) {
+                // The route is invalid! Let's purge the cache and retry!
+                $this->purgeUrlsCache();
+                return $this($request, $response, $out);
+            }
+
+
+            $controller = $this->container->get($splashRoute->getControllerInstanceName());
+            $action = $splashRoute->getMethodName();
 
             $this->log->debug('Routing URL {url} to controller instance {controller} and action {action}', [
                 'url' => $request_path,
-                'controller' => $splashRoute->controllerInstanceName,
+                'controller' => $splashRoute->getControllerInstanceName(),
                 'action' => $action,
             ]);
 
 
-            $filters = $splashRoute->filters;
+            $filters = $splashRoute->getFilters();
 
 
 
             $middlewareCaller = function(ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute, $splashRoute) {
                 // Let's recreate a new context object (because request can be modified by the filters)
                 $context = new SplashRequestContext($request);
-                $context->setUrlParameters($splashRoute->filledParameters);
+                $context->setUrlParameters($splashRoute->getFilledParameters());
                 // Let's pass everything to the controller:
-                $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->parameters);
+                $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->getParameters());
 
 
 
@@ -304,6 +314,32 @@ class SplashDefaultRouter implements MiddlewareInterface
             }
         }
     }
+
+    /**
+     * Purges the cache if one of the url providers tells us to.
+     */
+    private function purgeExpiredRoutes()
+    {
+        $expireTag = '';
+        foreach ($this->routeProviders as $routeProvider) {
+            /* @var $routeProvider UrlProviderInterface */
+            $expireTag .= $routeProvider->getExpirationTag();
+        }
+
+        $value = md5($expireTag);
+
+        $urlNodesCacheItem = $this->cachePool->getItem('splashExpireTag');
+
+        if ($urlNodesCacheItem->isHit() && $urlNodesCacheItem->get() === $value) {
+            return;
+        }
+
+        $this->purgeUrlsCache();
+
+        $urlNodesCacheItem->set($value);
+        $this->cachePool->save($urlNodesCacheItem);
+    }
+
 
     /**
      * Returns the list of all SplashActions.

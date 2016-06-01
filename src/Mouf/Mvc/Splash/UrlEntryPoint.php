@@ -11,11 +11,9 @@ use Mouf\Utils\Common\UrlInterface;
 /**
  * This class represents a single URL that can be bound to a specific behaviour.
  *
- * FIXME: we should not have to extend Controller. Modify Splash to remove this limitation.
- *
  * @author David Negrier
  */
-class UrlEntryPoint extends Controller implements UrlProviderInterface, UrlInterface
+class UrlEntryPoint implements UrlProviderInterface, UrlInterface
 {
     private $url;
     private $actions;
@@ -24,7 +22,7 @@ class UrlEntryPoint extends Controller implements UrlProviderInterface, UrlInter
      * Construct the object passing in parameter the URL and the list of actions to perform.
      *
      * @param string                 $url     The URL to bind to. It should
-     * @param array<ActionInterface> $actions
+     * @param array<ActionInterface> $actions The list of actions to perform when the URL is called.
      */
     public function __construct($url, array $actions = array())
     {
@@ -47,7 +45,7 @@ class UrlEntryPoint extends Controller implements UrlProviderInterface, UrlInter
      *
      * @param string $instanceName The identifier for this object in the container.
      *
-     * @return array <SplashRoute>
+     * @return SplashRoute[]
      */
     public function getUrlsList($instanceName)
     {
@@ -60,6 +58,19 @@ class UrlEntryPoint extends Controller implements UrlProviderInterface, UrlInter
      * @see \Mouf\Utils\Common\UrlInterface::getUrl()
      */
     public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Returns a unique tag representing the list of SplashRoutes returned.
+     * If the tag changes, the cache is flushed by Splash.
+     *
+     * Important! This must be quick to compute.
+     *
+     * @return mixed
+     */
+    public function getExpirationTag() : string
     {
         return $this->url;
     }

@@ -20,12 +20,11 @@ class FilterUtils
      *     __invoke(ServerRequestInterface $request, $next, ContainerInterface $container)
      *
      * @param ReflectionMethod $refMethod  the reference method extended object.
-     * @param object           $controller the controller the annotation was in.
      * @param AnnotationReader $reader
      *
      * @return array Array of filter instances sorted by priority.
      */
-    public static function getFilters(ReflectionMethod $refMethod, $controller, AnnotationReader $reader) : array
+    public static function getFilters(ReflectionMethod $refMethod, AnnotationReader $reader) : array
     {
         $filterArray = array();
 

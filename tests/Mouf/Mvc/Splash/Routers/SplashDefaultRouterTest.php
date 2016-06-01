@@ -2,6 +2,7 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Cache\Adapter\PHPArray\ArrayCachePool;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Mouf\Mvc\Splash\Controllers\HttpErrorsController;
@@ -223,5 +224,32 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $response = new HtmlResponse('');
         $response = $defaultRouter($request, $response);
         $this->assertEquals("42bar", (string) $response->getBody());
+    }
+
+    public function testExpirationTag()
+    {
+        $container = new Picotainer([
+            'controller' => function () {
+                return new TestController2();
+            },
+        ]);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $defaultRouter = new SplashDefaultRouter($container, [
+            $controllerRegistry,
+        ], $parameterFetcherRegistry, new ArrayCachePool());
+
+        $request = new ServerRequest([], [], '/foo/var/bar', 'GET', 'php://input',
+            [],
+            [],
+            ['id' => 42]
+        );
+        $response = new HtmlResponse('');
+        $response = $defaultRouter($request, $response);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+
+        // Now, let's make another request (this time, we should go through the cache with unchanged etag)
+        $response2 = $defaultRouter($request, $response);
+        $this->assertInstanceOf(JsonResponse::class, $response2);
     }
 }

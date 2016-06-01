@@ -24,8 +24,8 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
 
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
+        $this->assertEquals('myController', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod', $result->getMethodName());
     }
 
     public function testTrailingSlashUrl()
@@ -37,8 +37,8 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $result = $splashUrlNode->walk('toto/tata/', new ServerRequest([], [], 'toto/tata', 'GET'));
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
+        $this->assertEquals('myController', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod', $result->getMethodName());
     }
 
     public function testRootUrl()
@@ -50,8 +50,8 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $result = $splashUrlNode->walk('/', new ServerRequest([], [], '/', 'GET'));
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
+        $this->assertEquals('myController', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod', $result->getMethodName());
     }
 
     public function testSameUrls()
@@ -77,8 +77,8 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $result = $splashUrlNode->walk('/toto', new ServerRequest([], [], '/toto', 'GET'));
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
+        $this->assertEquals('myController', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod', $result->getMethodName());
     }
 
     /**
@@ -97,8 +97,8 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $result = $splashUrlNode->walk('/toto', new ServerRequest([], [], '/toto', 'POST'));
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myControllerOk', $result->controllerInstanceName);
-        $this->assertEquals('myMethodOk', $result->methodName);
+        $this->assertEquals('myControllerOk', $result->getControllerInstanceName());
+        $this->assertEquals('myMethodOk', $result->getMethodName());
     }
 
     /**
@@ -113,9 +113,9 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $result = $splashUrlNode->walk('/toto/12/tata', new ServerRequest([], [], '/toto/12/tata', 'POST'));
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
-        $this->assertEquals(12, $result->filledParameters['var']);
+        $this->assertEquals('myController', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod', $result->getMethodName());
+        $this->assertEquals(12, $result->getFilledParameters()['var']);
     }
 
     /**
@@ -132,19 +132,19 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $result = $splashUrlNode->walk('/toto/tata/titi', new ServerRequest([], [], '/toto', 'GET'));
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
+        $this->assertEquals('myController', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod', $result->getMethodName());
 
         $result = $splashUrlNode->walk('/toto/', new ServerRequest([], [], '/toto', 'GET'));
         /* @var $result SplashRoute */
         $this->assertInstanceOf(SplashRoute::class, $result);
-        $this->assertEquals('myController', $result->controllerInstanceName);
-        $this->assertEquals('myMethod', $result->methodName);
+        $this->assertEquals('myController', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod', $result->getMethodName());
 
         // Now, let's test an URL with HTTP method set.
         $result = $splashUrlNode->walk('/toto/tata/titi', new ServerRequest([], [], '/toto', 'POST'));
-        $this->assertEquals('myControllerPost', $result->controllerInstanceName);
-        $this->assertEquals('myMethodPost', $result->methodName);
+        $this->assertEquals('myControllerPost', $result->getControllerInstanceName());
+        $this->assertEquals('myMethodPost', $result->getMethodName());
     }
 
     public function testUnsupportedWildcard()
@@ -204,7 +204,7 @@ class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
         $splashUrlNode->registerCallback($callback2);
 
         $result = $splashUrlNode->walk('foo/bar', new ServerRequest([], [], '/foo/bar/biz', 'POST'));
-        $this->assertEquals('myController2', $result->controllerInstanceName);
-        $this->assertEquals('myMethod2', $result->methodName);
+        $this->assertEquals('myController2', $result->getControllerInstanceName());
+        $this->assertEquals('myMethod2', $result->getMethodName());
     }
 }

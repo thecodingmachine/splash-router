@@ -14,7 +14,7 @@ use Zend\Stratigility\MiddlewareInterface;
 class CacheRouter implements MiddlewareInterface
 {
     /**
-     * @CacheInterface
+     * @var CacheInterface
      */
     private $cache;
 
