@@ -20,5 +20,4 @@ class TestAction
     public function myAction()
     {
     }
-
 }
