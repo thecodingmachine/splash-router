@@ -10,6 +10,7 @@ use Mouf\Mvc\Splash\Exception\PageNotFoundException;
 use Mouf\Mvc\Splash\Exception\SplashMissingParameterException;
 use Mouf\Mvc\Splash\Fixtures\TestController2;
 use Mouf\Mvc\Splash\Fixtures\TestFilteredController;
+use Mouf\Mvc\Splash\Services\ControllerAnalyzer;
 use Mouf\Mvc\Splash\Services\ControllerRegistry;
 use Mouf\Mvc\Splash\Services\ParameterFetcherRegistry;
 use Mouf\Mvc\Splash\Services\SplashUtils;
@@ -37,7 +38,8 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             },
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
         $defaultRouter = new SplashDefaultRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
@@ -138,7 +140,8 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             },
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
         $defaultRouter = new SplashDefaultRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
@@ -158,7 +161,8 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             },
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
         $defaultRouter = new SplashDefaultRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
@@ -181,7 +185,8 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             },
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
         $defaultRouter = new SplashDefaultRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
@@ -215,7 +220,8 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             },
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
         $defaultRouter = new SplashDefaultRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
@@ -234,7 +240,8 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             },
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
         $defaultRouter = new SplashDefaultRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry, new ArrayCachePool());

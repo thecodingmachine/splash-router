@@ -125,7 +125,7 @@ class SplashCreateControllerService
                 ?>
 namespace <?= $namespace ?>;
 
-use Mouf\Mvc\Splash\Controllers\Controller;
+use Mouf\Mvc\Splash\Annotations\URL;
 <?php if ($injectTemplate) {
     ?>
 use Mouf\Html\Template\TemplateInterface;
@@ -181,7 +181,7 @@ use Mouf\Mvc\Splash\HtmlResponse;
 /**
  * TODO: write controller comment
  */
-class <?= $controllerName ?> extends Controller {
+class <?= $controllerName ?> {
 
 <?php if ($injectLogger) {
     ?>
@@ -302,7 +302,7 @@ $parameters = array();
     }
 
 <?php foreach ($actions as $action):
-    // First step, let's detect the {parameters} in the URL and add them if necessarry
+    // First step, let's detect the {parameters} in the URL and add them if necessary
     // TODO
     // TODO
     // TODO
@@ -310,7 +310,7 @@ $parameters = array();
 
 ?>
     /**
-     * @URL <?= $action['url'] ?>
+     * @URL("<?= addslashes($action['url']) ?>")
 
 <?php if ($action['anyMethod'] == 'false') {
     if ($action['getMethod'] == 'true') {

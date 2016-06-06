@@ -7,6 +7,7 @@ use Interop\Container\ContainerInterface;
 use Interop\Container\Factories\Parameter;
 use Interop\Container\ServiceProvider;
 use Mouf\Mvc\Splash\Routers\SplashDefaultRouter;
+use Mouf\Mvc\Splash\Services\ControllerAnalyzer;
 use Mouf\Mvc\Splash\Services\ControllerRegistry;
 use Mouf\Mvc\Splash\Services\ParameterFetcherRegistry;
 use Mouf\Mvc\Splash\Services\SplashRequestFetcher;
@@ -41,6 +42,7 @@ class SplashServiceProvider implements ServiceProvider
             SplashDefaultRouter::class => [self::class, 'createDefaultRouter'],
             'thecodingmachine.splash.route-providers' => [self::class, 'createRouteProviders'],
             ControllerRegistry::class => [self::class, 'createControllerRegistry'],
+            ControllerAnalyzer::class => [self::class, 'createControllerAnalyzer'],
             ParameterFetcherRegistry::class => [self::class, 'createParameterFetcherRegistry'],
             'thecodingmachine.splash.parameter-fetchers' => [self::class, 'createParameterFetchers'],
             SplashRequestFetcher::class => [self::class, 'createSplashRequestFetcher'],
@@ -90,8 +92,14 @@ class SplashServiceProvider implements ServiceProvider
 
     public static function createControllerRegistry(ContainerInterface $container) : ControllerRegistry
     {
-        return new ControllerRegistry($container, $container->get(ParameterFetcherRegistry::class),
-            $container->get(Reader::class), $container->get('thecodingmachine.splash.controllers'));
+        return new ControllerRegistry($container->get(ControllerAnalyzer::class),
+            $container->get('thecodingmachine.splash.controllers'));
+    }
+
+    public static function createControllerAnalyzer(ContainerInterface $container) : ControllerAnalyzer
+    {
+        return new ControllerAnalyzer($container, $container->get(ParameterFetcherRegistry::class),
+            $container->get(Reader::class));
     }
 
     public static function createParameterFetcherRegistry(ContainerInterface $container) : ParameterFetcherRegistry

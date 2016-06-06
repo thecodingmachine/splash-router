@@ -25,7 +25,8 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer);
         $controllerRegistry->addController('controller');
 
         $urlsList = $controllerRegistry->getUrlsList('foo');
@@ -44,7 +45,8 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerRegistry = new ControllerRegistry($container, $parameterFetcherRegistry, new AnnotationReader(), ['controller']);
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
 
         $urlsList = $controllerRegistry->getUrlsList('foo');
 
@@ -63,5 +65,38 @@ class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('POST', $urlsList[2]->getHttpMethods());
         $this->assertContains('PUT', $urlsList[2]->getHttpMethods());
         $this->assertContains('DELETE', $urlsList[2]->getHttpMethods());
+    }
+
+    public function testControllerRegistryWithDetector()
+    {
+        $container = new Picotainer([
+            'controller' => function () {
+                return new TestController();
+            },
+        ]);
+
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+
+        $detector = new class implements ControllerDetector
+ {
+     public function getControllerIdentifiers(ControllerAnalyzer $controllerAnalyzer) : array
+     {
+         return ['controller'];
+     }
+
+     public function getExpirationTag() : string
+     {
+         return '';
+     }
+ };
+
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, [], $detector);
+
+        $urlsList = $controllerRegistry->getUrlsList('foo');
+
+        $this->assertCount(1, $urlsList);
+        $this->assertInstanceOf(SplashRoute::class, $urlsList[0]);
+        $this->assertEquals('myurl', $urlsList[0]->getUrl());
     }
 }

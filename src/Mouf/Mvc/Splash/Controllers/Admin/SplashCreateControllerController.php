@@ -67,7 +67,7 @@ class SplashCreateControllerController extends Controller
                         '../mvc.splash-common/src/views/javascript/createController.js',
                 )));
 
-        $this->content->addFile(dirname(__FILE__).'/../../../../../views/admin/createController.php', $this);
+        $this->content->addFile(__DIR__.'/../../../../../views/admin/createController.php', $this);
         $this->template->toHtml();
     }
 

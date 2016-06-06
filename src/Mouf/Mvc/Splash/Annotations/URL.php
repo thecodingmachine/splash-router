@@ -6,7 +6,7 @@ namespace Mouf\Mvc\Splash\Annotations;
  * @Annotation
  * @Target({"METHOD"})
  * @Attributes({
- *   @Attribute("value", type = "string")
+ *   @Attribute("value", type = "string", required = true)
  * })
  */
 class URL

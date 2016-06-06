@@ -3,8 +3,6 @@
 namespace Mouf\Mvc\Splash\Routers;
 
 use Mouf\Mvc\Splash\Controllers\Http404HandlerInterface;
-use Mouf\Utils\Value\ValueInterface;
-use Mouf\Utils\Value\ValueUtils;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
@@ -25,13 +23,6 @@ class NotFoundRouter implements MiddlewareInterface
      * @var LoggerInterface
      */
     private $log;
-
-    /**
-     * The "404" message.
-     *
-     * @var string|ValueInterface
-     */
-    private $message = 'Page not found';
 
     /**
      * @var Http404HandlerInterface
@@ -75,11 +66,10 @@ class NotFoundRouter implements MiddlewareInterface
         if ($this->log) {
             $this->log->info('404 - Page not found on URL: '.$request->getUri()->getPath());
         }
-        $message = ValueUtils::val($this->message);
 
         $response = SplashUtils::buildControllerResponse(
-            function () use ($message) {
-                return $this->pageNotFoundController->pageNotFound($message);
+            function () use ($request) {
+                return $this->pageNotFoundController->pageNotFound($request);
             }
         );
 
