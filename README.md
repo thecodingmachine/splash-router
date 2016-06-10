@@ -1,5 +1,13 @@
-Welcome to the Splash MVC framework common library
-==================================================
+[![Latest Stable Version](https://poser.pugx.org/mouf/mvc.splash-common/v/stable)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![Total Downloads](https://poser.pugx.org/mouf/mvc.splash-common/downloads)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![Latest Unstable Version](https://poser.pugx.org/mouf/mvc.splash-common/v/unstable)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![License](https://poser.pugx.org/mouf/mvc.splash-common/license)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/mvc.splash-common/badges/quality-score.png?b=8.0)](https://scrutinizer-ci.com/g/thecodingmachine/mvc.splash-common/?branch=8.0)
+[![Build Status](https://travis-ci.org/thecodingmachine/mvc.splash-common.svg?branch=8.0)](https://travis-ci.org/thecodingmachine/mvc.splash-common)
+[![Coverage Status](https://coveralls.io/repos/thecodingmachine/mvc.splash-common/badge.svg?branch=8.0&service=github)](https://coveralls.io/github/thecodingmachine/mvc.splash-common?branch=8.0)
+
+Welcome to the Splash MVC framework
+===================================
 
 What is Splash?
 ---------------
@@ -13,11 +21,105 @@ Splash is a PHP router. It takes an HTTP request and dispatches it to the approp
 - It is a **pure** router. It is not a full-featured MVC framework. No views management, no model, only routing!
 - It promotes best practices. Controllers must be declared in a [container-interop compatible container](https://github.com/container-interop/container-interop/).
 - It is extensible.
+- It integrates with a high number of tools:
+    - With [Mouf](http://mouf-php.com): this provides a friendly UI to generate controllers
+    - With [Drupal (through Druplash, a module that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.drupal.druplash),
+    - With [Wordpress (through Moufpress, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
+    - With [Joomla (through Moufla, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
+    - With [Magento (through Moufgento, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.magento.moufgento),
 
 
 
+Quickstart
+----------
+
+Want to get a feeling of Splash? Here is a typical controller:
+
+```php
+use Mouf\Mvc\Splash\Annotations\Get;
+use Mouf\Mvc\Splash\Annotations\URL;
+
+class MyController
+{
+    /**
+     * @URL("/my/path")
+     * @Get
+     */
+    public function index(ServerRequestInterface $request)
+    {
+        return new JsonResponse("Hello" => "World!");
+    }
+}
+```
+
+Ok, so far, things should be fairly obvious to anyone used to PSR-7. The important parts are:
+
+- Routing is done using the **@URL** annotation. When a method has the **@URL** annotation, we call it an *action*.
+- **Controllers are clean**. They don't extend any "Splash" object (so are reusable in any other PSR-7 compatible MVC framework)
+- Actions can optionally have a **@Get**, **@Post**, **@Put**, **@Delete** annotation to restrict the response to some HTTP method.
+- Splash analyzes the action signature. If it finds a type-hinted `ServerRequestInterface` parameter, it will fill it the PSR-7 request object.
+- Actions should return an object implementing the PSR-7 `ResponseInterface`.
 
 
+Even better
+-----------
+
+But Splash can provide much more than this.
+
+Here is a more advanced routing scenario:
+
+```php
+use Mouf\Mvc\Splash\Annotations\Post;
+use Mouf\Mvc\Splash\Annotations\URL;
+use Psr\Http\Message\UploadedFileInterface;
+
+class MyController
+{
+    /**
+     * @URL("/user/{id}")
+     * @Post
+     */
+    public function index($id, $firstName, $lastName, UploadedFileInterface $logo)
+    {
+        return //...;
+    }
+}
+```
+
+Look at the signature: `public function index($id, $firstName, $lastName, UploadedFileInterface $logo)`.
+
+- `$id` will be fetched from the URL (`@URL("/user/{id}")`)
+- `$firstName` and `$lastName` will be automatically fetched from the GET/POST parameters
+- finally, `$logo` will contain the uploaded file from `$_FILES['logo']`
+
+See the magic? **Just by looking at your method signature, you know what parameters your route is expecting.** The method signature is self-documenting the route!
+
+Even better, Splash is highly extensible. You can add your own plugins to automatically fill some parameters of the request (we call those `ParameterFetchers`).
+You could for instance write a parameter fetcher to automatically load Doctrine entities:
+
+```php
+    /**
+     * Lo and behold: you can extend Splash to automatically fill the function parameters with objects of your liking
+     *
+     * @URL("/product/{product}")
+     * @Post
+     */
+    public function index(My\Entities\Product $product)
+    {
+        return //...;
+    }
+
+```
+
+Best practices
+--------------
+
+
+
+High performance
+----------------
+
+TODO
 
 
 
@@ -25,23 +127,3 @@ Splash is a PHP router. It takes an HTTP request and dispatches it to the approp
 
 TODO
 
-Splash is a MVC PHP framework. It is making a heavy use of annotations, and of [the Mouf dependency injection framework](http://www.mouf-php.com).
-You might want to use Splash in order to seperate cleanly the controllers (that perform the actions required when you navigate your web application) and the view (that generates and displays the HTML that makes your web pages).
-
-What is this common library thing?
-----------------------------------
-
-This package contains the common functions used by all libraries respecting the Splash syntax (annotations, etc...)
-All libraries you said? Yes, all libraries. Indeed, there are many packages respecting the Splash syntax.
-
-Of course, there is [Splash (a full-featured MVC framework)](http://mouf-php.com/packages/mouf/mvc.splash).
-But there is also [Druplash (a module for Drupal that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.drupal.druplash),
-[Moufpress (a plugin for Wordpress that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
-[Moufla (a plugin for Joomla that adds a Splash-compatible MVC framework)](https://github.com/thecodingmachine/integration.joomla.moufla),
-[moufgento (a plugin for Magento that adds a Splash-compatible MVC framework)](https://github.com/thecodingmachine/integration.magento.moufgento).
-
-
-Documentation
--------------
-
-To learn more about Splash, [check the documentation on the Splash website](http://mouf-php.com/packages/mouf/mvc.splash/)
