@@ -6,8 +6,8 @@
 [![Build Status](https://travis-ci.org/thecodingmachine/mvc.splash-common.svg?branch=8.0)](https://travis-ci.org/thecodingmachine/mvc.splash-common)
 [![Coverage Status](https://coveralls.io/repos/thecodingmachine/mvc.splash-common/badge.svg?branch=8.0&service=github)](https://coveralls.io/github/thecodingmachine/mvc.splash-common?branch=8.0)
 
-Welcome to the Splash MVC framework
-===================================
+Splash: a highly configuration PSR-7 router
+===========================================
 
 What is Splash?
 ---------------

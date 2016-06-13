@@ -15,7 +15,7 @@
 		"splash",
 		"splash-common"
 	],
-	"homepage" : "https://github.com/thecodingmachine/mvc.splash-common",
+	"homepage" : "http://mouf-php.com/packages/mouf/mvc.splash-common",
 	"license" : [
 		"MIT"
 	],
