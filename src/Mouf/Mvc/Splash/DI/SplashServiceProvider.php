@@ -15,6 +15,8 @@ use Mouf\Mvc\Splash\Services\SplashRequestParameterFetcher;
 use Mouf\Mvc\Splash\Services\SplashUtils;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
+use TheCodingMachine\MiddlewareListServiceProvider;
+use TheCodingMachine\MiddlewareOrder;
 
 class SplashServiceProvider implements ServiceProvider
 {
@@ -48,6 +50,7 @@ class SplashServiceProvider implements ServiceProvider
             SplashRequestFetcher::class => [self::class, 'createSplashRequestFetcher'],
             SplashRequestParameterFetcher::class => [self::class, 'createSplashRequestParameterFetcher'],
             'thecodingmachine.splash.mode' => new Parameter(SplashUtils::MODE_STRICT),
+            MiddlewareListServiceProvider::MIDDLEWARES_QUEUE => [self::class, 'updatePriorityQueue']
         ];
     }
 
@@ -67,7 +70,7 @@ class SplashServiceProvider implements ServiceProvider
 
         $routeProviders = $container->get('thecodingmachine.splash.route-providers');
 
-        $router = new SplashDefaultRouter($container, $routeProviders, $container->get(ParameterFetcherRegistry::class), $cache, $logger, self::getRootUrl($container));
+        $router = new SplashDefaultRouter($container, $routeProviders, $container->get(ParameterFetcherRegistry::class), $cache, $logger, SplashUtils::MODE_STRICT, true, self::getRootUrl($container));
 
         return $router;
     }
@@ -123,5 +126,16 @@ class SplashServiceProvider implements ServiceProvider
     public static function createSplashRequestParameterFetcher() : SplashRequestParameterFetcher
     {
         return new SplashRequestParameterFetcher();
+    }
+
+    public static function updatePriorityQueue(ContainerInterface $container, callable $previous = null) : \SplPriorityQueue
+    {
+        if ($previous) {
+            $priorityQueue = $previous();
+            $priorityQueue->insert($container->get(SplashDefaultRouter::class), MiddlewareOrder::ROUTER);
+            return $priorityQueue;
+        } else {
+            throw new InvalidArgumentException("Could not find declaration for service '".MiddlewareListServiceProvider::MIDDLEWARES_QUEUE."'.");
+        }
     }
 }

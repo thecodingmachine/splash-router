@@ -123,7 +123,7 @@ class SplashDefaultRouter implements MiddlewareInterface
         $this->log = $log === null ? new NullLogger() : $log;
         $this->mode = $mode;
         $this->debug = $debug;
-        $this->rootUrl = $rootUrl;
+        $this->rootUrl = rtrim($rootUrl, '/').'/';
     }
 
     /**
