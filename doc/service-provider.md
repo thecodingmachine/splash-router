@@ -2,6 +2,8 @@
 
 Splash provides a service-provider to be easily integrated in any [container-interop/service-provider](https://github.com/container-interop/service-provider) compatible framework/container.
 
+If you need a complete working sample, check the [Splash standalone installation guide](install/standalone.md).
+
 ## Registering the service provider
 
 You need to register the [`Mouf\Mvc\Splash\DI\SplashServiceProvider`](src/Mouf/Mvc/Splash/DI/SplashServiceProvider.php) into your container.
@@ -62,7 +64,7 @@ This *service provider* provides the following services:
 
 ## Extended services
 
-This *service provider* registers the `Slim\App` in the `MiddlewareListServiceProvider::MIDDLEWARES_QUEUE`.
+This *service provider* registers the `SplashDefaultRouter::class` in the `MiddlewareListServiceProvider::MIDDLEWARES_QUEUE`.
 
 | Service name                | Description                          |
 |-----------------------------|--------------------------------------|

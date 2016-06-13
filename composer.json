@@ -58,5 +58,63 @@
 		}
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true
+	"prefer-stable": true,
+	"extra" : {
+		"mouf" : {
+			"logo" : "logo.png",
+			"doc" : [{
+				"title" : "Installing Splash",
+				"url" : "doc/install/index.md",
+				"children": [
+					{
+						"title" : "Standalone mode",
+						"url" : "doc/install/standalone.md"
+					},
+					{
+						"title" : "Mouf integration",
+						"url" : "doc/install/mouf.md"
+					},
+					{
+						"title" : "Service provider",
+						"url" : "doc/service-provider.md"
+					}
+				]
+				},
+				{
+					"title" : "Writing controllers",
+					"url" : "doc/writing_controllers_manually.md"
+				},
+				{
+					"title" : "Integrations",
+					"children" : [
+						{
+							"title" : "Mouf",
+							"children" : [
+								{
+									"title" : "Controller creation wizard",
+									"url" : "doc/mouf/writing_controllers.md"
+								},
+								{
+									"title" : "Advanced: configuring routing",
+									"url" : "doc/url_routing.md"
+								}
+							]
+						}
+					]
+				},
+				{
+					"title" : "Managing URL parameters",
+					"url" : "doc/url_parameters.md"
+				},
+				{
+					"title" : "Writing your own filters",
+					"url" : "doc/filters.md"
+				},
+				{
+					"title" : "Migrating from older version",
+					"url" : "doc/migrating.md"
+				}
+			]
+		}
+	}
 }

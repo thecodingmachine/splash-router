@@ -30,8 +30,8 @@ Splash is a PHP router. It takes an HTTP request and dispatches it to the approp
 
 
 
-Quickstart
-----------
+Clean controllers
+-----------------
 
 Want to get a feeling of Splash? Here is a typical controller:
 
@@ -58,7 +58,7 @@ Ok, so far, things should be fairly obvious to anyone used to PSR-7. The importa
 - **Controllers are clean**. They don't extend any "Splash" object (so are reusable in any other PSR-7 compatible MVC framework)
 - Actions can optionally have a **@Get**, **@Post**, **@Put**, **@Delete** annotation to restrict the response to some HTTP method.
 - Splash analyzes the action signature. If it finds a type-hinted `ServerRequestInterface` parameter, it will fill it the PSR-7 request object.
-- Actions should return an object implementing the PSR-7 `ResponseInterface`.
+- Actions must return an object implementing the PSR-7 `ResponseInterface`.
 
 
 Even better
@@ -114,16 +114,13 @@ You could for instance write a parameter fetcher to automatically load Doctrine 
 Best practices
 --------------
 
+You might wonder: "*How will Splash instantiate your controller*?" Well, Splash will not instantiate your controller.
+Instantiating services and containers is the role of the dependency injection container. Splash connects to any *container-interop* compatible container and will fetch your controllers from the container.
+
+This means that you **must** declare your controller in the container you are using. This is actually a *good thing* as this encourages you to not use the container as a service locator.
 
 
 High performance
 ----------------
 
-TODO
-
-
-
-
-
-TODO
-
+For best performance, Splash is caching the list of routes it detects. Unlike what can be seen in most micro-frameworks where the application slows down as the number of routes increases, in Splash, **performance stays constant as the number of routes increases**.
