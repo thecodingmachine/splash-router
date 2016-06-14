@@ -6,8 +6,8 @@
 [![Build Status](https://travis-ci.org/thecodingmachine/mvc.splash-common.svg?branch=8.0)](https://travis-ci.org/thecodingmachine/mvc.splash-common)
 [![Coverage Status](https://coveralls.io/repos/thecodingmachine/mvc.splash-common/badge.svg?branch=8.0&service=github)](https://coveralls.io/github/thecodingmachine/mvc.splash-common?branch=8.0)
 
-Splash: a highly configuration PSR-7 router
-===========================================
+Splash: a highly configurable PSR-7 router
+==========================================
 
 What is Splash?
 ---------------
@@ -15,7 +15,7 @@ What is Splash?
 Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.
   
 - Splash is [PSR-7 compatible](http://www.php-fig.org/psr/psr-7/)
-- It uses PSR-7 middlewares
+- It acts as a [PSR-7 middleware](https://akrabat.com/writing-psr-7-middleware/)
 - It is based on **controllers** and **annotations** (routes are declared as annotations in the controllers)
 - It is heavily optimized, relying on an underlying [PSR-6 cache](http://www.php-fig.org/psr/psr-6/)
 - It is a **pure** router. It is not a full-featured MVC framework. No views management, no model, only routing!

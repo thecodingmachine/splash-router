@@ -61,7 +61,7 @@
 	"prefer-stable": true,
 	"extra" : {
 		"mouf" : {
-			"logo" : "logo.png",
+			"logo" : "doc/images/logo.png",
 			"doc" : [{
 				"title" : "Installing Splash",
 				"url" : "doc/install/index.md",
