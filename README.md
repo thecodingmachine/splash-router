@@ -12,7 +12,7 @@ Splash: a highly configuration PSR-7 router
 What is Splash?
 ---------------
 
-Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate container.
+Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.
   
 - Splash is [PSR-7 compatible](http://www.php-fig.org/psr/psr-7/)
 - It uses PSR-7 middlewares

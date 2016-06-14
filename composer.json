@@ -1,6 +1,6 @@
 {
 	"name" : "mouf/mvc.splash-common",
-	"description" : "The Core part of Splash (an MVC framework). It is used by Splash itself, but also by Drusplash (the Splash wrapper for Drupal)",
+	"description" : "Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.",
 	"type" : "mouf-library",
 	"authors" : [{
 			"name" : "David Négrier",
@@ -114,7 +114,12 @@
 					"title" : "Migrating from older version",
 					"url" : "doc/migrating.md"
 				}
-			]
+			],
+			"section": {
+				"name": "MVC",
+				"description": "All the tools you need to route requests and display pages",
+				"weight": 10
+			}
 		}
 	}
 }
