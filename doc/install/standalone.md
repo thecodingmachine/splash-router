@@ -39,7 +39,8 @@ Here is a typical `composer.json` file to load all dependencies.
     "thecodingmachine/doctrine-annotations-universal-module": "~1.0",
     "thecodingmachine/psr-6-doctrine-bridge-universal-module": "~1.0",
     "thecodingmachine/stash-universal-module": "~1.0",
-    "thecodingmachine/stratigility-harmony": "~1.0"
+    "thecodingmachine/stratigility-harmony": "~1.0",
+    "thecodingmachine/whoops-middleware-universal-module": "~0.4"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
@@ -47,6 +48,7 @@ Here is a typical `composer.json` file to load all dependencies.
 ```
 
 Note: the *thecodingmachine/xxx-universal-module* packages are service providers that we will use to quickly set up the environment.
+Note: the *thecodingmachine/whoops-middleware-universal-module* package is optional. It helps debugging by displaying a nice error screen.
 
 Run `composer install`.
 
@@ -64,6 +66,7 @@ use TheCodingMachine\MiddlewareListServiceProvider;
 use TheCodingMachine\StashServiceProvider;
 use TheCodingMachine\StratigilityServiceProvider;
 use Mouf\Mvc\Splash\DI\SplashServiceProvider;
+use TheCodingMachine\WhoopsMiddlewareServiceProvider;
 
 $container = new Container();
 
@@ -73,6 +76,9 @@ $container->register(new DoctrineCacheBridgeServiceProvider());
 $container->register(new MiddlewareListServiceProvider());
 $container->register(new StashServiceProvider());
 $container->register(new StratigilityServiceProvider());
+// Note: You should remove the whoops service provider in production.
+$container->register(new WhoopsMiddlewareServiceProvider());
+
 // The Splash service provider will automatically register Splash in the Stratigility middleware pipe.
 $container->register(new SplashServiceProvider());
 
