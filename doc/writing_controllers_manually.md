@@ -49,7 +49,6 @@ class MyController {
 
 Note: this class must be auto-loadable by Composer. Be sure to put the class in the correct repository according to your *composer.json* `autoload` section.
 
-First thing you can see: the `MyController` class extends the `Controller` class provided by Splash.
 
 The *@URL* annotation points to the web path the action is bound to.
 
@@ -64,6 +63,7 @@ Finally, we must also register this controller in Splash. How this is done essen
  - if you are using Mouf, you have nothing to do. Splash will automatically detect your controllers.
  - if you are using Splash service provider, you need to put in your container an entry named 'thecodingmachine.splash.controllers' that is an array of controller identifiers.
    The way to do this depends on the container you are using, but might be something similar to:
+    
     ```php
     $container->set('thecodingmachine.splash.controllers', [
        'myController',
