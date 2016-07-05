@@ -143,7 +143,7 @@ use Psr\Log\LoggerInterface;
                 ?>
 <?php if ($injectDaoFactory) {
     ?>
-use <?= $moufManager->getVariable('tdbmDefaultDaoNamespace').'\\'.$moufManager->getVariable('tdbmDefaultDaoFactoryName') ?>;
+use <?= $moufManager->getVariable('tdbmDefaultDaoNamespace').'\\Generated\\'.$moufManager->getVariable('tdbmDefaultDaoFactoryName') ?>;
 <?php
 
 }
