@@ -125,6 +125,10 @@ class SplashCreateControllerService
                 ?>
 namespace <?= $namespace ?>;
 
+use Mouf\Mvc\Splash\Annotations\Get;
+use Mouf\Mvc\Splash\Annotations\Post;
+use Mouf\Mvc\Splash\Annotations\Put;
+use Mouf\Mvc\Splash\Annotations\Delete;
 use Mouf\Mvc\Splash\Annotations\URL;
 <?php if ($injectTemplate) {
     ?>
