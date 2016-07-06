@@ -44,7 +44,7 @@ class ControllerAnalyzer
     }
 
     /**
-     * Returns is a given class name is a controller or not (whether it contains @Action or @URL annotations).
+     * Returns is a given class name is a controller or not (whether it contains \@Action or \@URL annotations).
      *
      * @param string $className
      *

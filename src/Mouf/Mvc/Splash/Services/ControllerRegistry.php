@@ -38,7 +38,7 @@ class ControllerRegistry implements UrlProviderInterface
 
     /**
      * Adds a container to the registry (by its instance name).
-     * Note: any object that has a @Action or @URL annotation is a controller.
+     * Note: any object that has a \@Action or \@URL annotation is a controller.
      *
      * @param string $controller
      *
