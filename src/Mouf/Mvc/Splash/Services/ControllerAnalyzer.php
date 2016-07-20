@@ -50,9 +50,10 @@ class ControllerAnalyzer
      *
      * @return bool
      */
-    public function isController($className) : bool
+    public function isController(string $className) : bool
     {
         $refClass = new \ReflectionClass($className);
+
 
         foreach ($refClass->getMethods() as $refMethod) {
             $actionAnnotation = $this->annotationReader->getMethodAnnotation($refMethod, Action::class);
