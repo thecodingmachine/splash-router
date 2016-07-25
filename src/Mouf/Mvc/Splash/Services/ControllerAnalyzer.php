@@ -107,7 +107,7 @@ class ControllerAnalyzer
                 }
                 $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod);
                 $filters = FilterUtils::getFilters($refMethod, $this->annotationReader);
-                $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
+                $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters, $refClass->getFileName());
             }
 
             // Now, let's check the "URL" annotation (note: we support multiple URL annotations for the same method)
@@ -132,7 +132,7 @@ class ControllerAnalyzer
                 $url = ltrim($url, '/');
                 $parameters = $this->parameterFetcherRegistry->mapParameters($refMethod, $url);
                 $filters = FilterUtils::getFilters($refMethod, $this->annotationReader);
-                $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters);
+                $urlsList[] = new SplashRoute($url, $controllerInstanceName, $refMethod->getName(), $title, $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters, $filters, $refClass->getFileName());
             }
         }
 
