@@ -305,14 +305,17 @@ class SplashDefaultRouter implements MiddlewareInterface
             // Let's pass everything to the controller:
             $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->getParameters());
 
-            $response = SplashUtils::buildControllerResponse(
-                function () use ($controller, $action, $args) {
-                    return $controller->$action(...$args);
-                },
-                $this->mode,
-                $this->debug
-            );
-
+            try {
+                $response = SplashUtils::buildControllerResponse(
+                    function () use ($controller, $action, $args) {
+                        return $controller->$action(...$args);
+                    },
+                    $this->mode,
+                    $this->debug
+                );
+            } catch(SplashException $e) {
+                throw new SplashException($e->getMessage(). ' (in '.$splashRoute->getControllerInstanceName().'->'.$splashRoute->getMethodName().')', $e->getCode(), $e);
+            }
             return $response;
         };
 
