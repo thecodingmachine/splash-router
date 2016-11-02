@@ -27,7 +27,7 @@ Splash is a PHP router. It takes an HTTP request and dispatches it to the approp
     - With [Wordpress (through Moufpress, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
     - With [Joomla (through Moufla, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
     - With [Magento (through Moufgento, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.magento.moufgento),
-
+- And it supports emoji routes (mydomain.com/😍)
 
 
 Clean controllers
