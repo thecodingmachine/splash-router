@@ -21,6 +21,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
+use Mouf\Mvc\Splash\Fixtures\TestController3;
 
 class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
 {
@@ -100,6 +101,27 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $response = $defaultRouter($request, $response);
     }
 
+
+    public function testEmojiRoute()
+    {
+        $container = new Picotainer([
+            'controller' => function () {
+            return new TestController3();
+            },
+            ]);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
+        $defaultRouter = new SplashDefaultRouter($container, [
+            $controllerRegistry,
+        ], $parameterFetcherRegistry);
+        
+        $request = new ServerRequest([], [], '/'.urlencode('🍕'), 'GET');
+        $response = new HtmlResponse('');
+        $response = $defaultRouter($request, $response);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+    
     public function testUnknownRouteWith404Handler()
     {
         $container = new Picotainer([
