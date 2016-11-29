@@ -22,6 +22,9 @@ class TestController2
      */
     public function action1()
     {
+        return new JsonResponse([
+            "hello" => "world"
+        ]);
     }
 
     /**

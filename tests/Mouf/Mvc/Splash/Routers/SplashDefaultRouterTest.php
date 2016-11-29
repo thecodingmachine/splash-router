@@ -8,7 +8,9 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use Mouf\Mvc\Splash\Controllers\HttpErrorsController;
 use Mouf\Mvc\Splash\Exception\PageNotFoundException;
 use Mouf\Mvc\Splash\Exception\SplashMissingParameterException;
+use Mouf\Mvc\Splash\Fixtures\TestBadParamController;
 use Mouf\Mvc\Splash\Fixtures\TestController2;
+use Mouf\Mvc\Splash\Fixtures\TestExtendedController2;
 use Mouf\Mvc\Splash\Fixtures\TestFilteredController;
 use Mouf\Mvc\Splash\Services\ControllerAnalyzer;
 use Mouf\Mvc\Splash\Services\ControllerRegistry;
@@ -280,5 +282,54 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         // Now, let's make another request (this time, we should go through the cache with unchanged etag)
         $response2 = $defaultRouter($request, $response);
         $this->assertInstanceOf(JsonResponse::class, $response2);
+    }
+
+    public function testExtendedController()
+    {
+        $container = new Picotainer([
+            'controller' => function () {
+                return new TestExtendedController2();
+            },
+        ]);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
+        $defaultRouter = new SplashDefaultRouter($container, [
+            $controllerRegistry,
+        ], $parameterFetcherRegistry, new ArrayCachePool());
+
+        $request = new ServerRequest([], [], '/url/42/foo/52', 'GET', 'php://input',
+            [],
+            [],
+            []
+        );
+        $response = new HtmlResponse('');
+        $response = $defaultRouter($request, $response);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testBadParam()
+    {
+        $container = new Picotainer([
+            'controller' => function () {
+                return new TestBadParamController();
+            },
+        ]);
+        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
+        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
+        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
+        $defaultRouter = new SplashDefaultRouter($container, [
+            $controllerRegistry,
+        ], $parameterFetcherRegistry, new ArrayCachePool());
+
+        $request = new ServerRequest([], [], '/notexistparam/42', 'GET', 'php://input',
+            [],
+            [],
+            []
+        );
+        $response = new HtmlResponse('');
+        $this->expectException(\InvalidArgumentException::class);
+        $response = $defaultRouter($request, $response);
+
     }
 }

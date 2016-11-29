@@ -148,11 +148,27 @@ class ControllerAnalyzer
      *
      * @return mixed
      */
-    private function &readPrivateProperty($object, string $property)
+    private function readPrivateProperty($object, string $property)
     {
+        $reflectionClass = new \ReflectionClass($object);
+        $reflectionProperty = null;
+        do {
+            if ($reflectionClass->hasProperty($property)) {
+                $reflectionProperty = $reflectionClass->getProperty($property);
+            }
+            $reflectionClass = $reflectionClass->getParentClass();
+        } while ($reflectionClass);
+
+        if ($reflectionProperty === null) {
+            throw new \InvalidArgumentException("Unable to find property '".$property.'" in object of class '.get_class($object).". Please check your @URL annotation.");
+        }
+
+        $reflectionProperty->setAccessible(true);
+        return $reflectionProperty->getValue($object);
+
         $value = &\Closure::bind(function &() use ($property) {
             return $this->$property;
-        }, $object, $object)->__invoke();
+        }, $object, $declaringClass)->__invoke();
 
         return $value;
     }
