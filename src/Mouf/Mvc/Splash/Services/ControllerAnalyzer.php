@@ -165,12 +165,6 @@ class ControllerAnalyzer
 
         $reflectionProperty->setAccessible(true);
         return $reflectionProperty->getValue($object);
-
-        $value = &\Closure::bind(function &() use ($property) {
-            return $this->$property;
-        }, $object, $declaringClass)->__invoke();
-
-        return $value;
     }
 
     /**
