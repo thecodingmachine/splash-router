@@ -168,7 +168,7 @@ class ControllerAnalyzer
     }
 
     /**
-     * Returns the supported HTTP methods on this function, based on the annotations (@Get, @Post, etc...).
+     * Returns the supported HTTP methods on this function, based on the annotations (\@Get, \@Post, etc...).
      *
      * @param ReflectionMethod $refMethod
      *
