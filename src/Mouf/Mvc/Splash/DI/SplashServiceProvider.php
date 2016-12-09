@@ -50,7 +50,8 @@ class SplashServiceProvider implements ServiceProvider
             SplashRequestFetcher::class => [self::class, 'createSplashRequestFetcher'],
             SplashRequestParameterFetcher::class => [self::class, 'createSplashRequestParameterFetcher'],
             'thecodingmachine.splash.mode' => new Parameter(SplashUtils::MODE_STRICT),
-            MiddlewareListServiceProvider::MIDDLEWARES_QUEUE => [self::class, 'updatePriorityQueue']
+            MiddlewareListServiceProvider::MIDDLEWARES_QUEUE => [self::class, 'updatePriorityQueue'],
+            'thecodingmachine.splash.controllers' => new Parameter([])
         ];
     }
 
