@@ -301,7 +301,7 @@ class SplashDefaultRouter implements MiddlewareInterface, ServerMiddlewareInterf
 
         $filters = $splashRoute->getFilters();
 
-        $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute, $splashRoute) {
+        $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute) {
             // Let's recreate a new context object (because request can be modified by the filters)
             $context = new SplashRequestContext($request);
             $context->setUrlParameters($splashRoute->getFilledParameters());
