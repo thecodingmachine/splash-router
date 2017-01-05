@@ -298,7 +298,7 @@ class SplashDefaultRouter implements MiddlewareInterface
 
         $filters = $splashRoute->getFilters();
 
-        $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute, $splashRoute) {
+        $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute) {
             // Let's recreate a new context object (because request can be modified by the filters)
             $context = new SplashRequestContext($request);
             $context->setUrlParameters($splashRoute->getFilledParameters());
@@ -313,7 +313,7 @@ class SplashDefaultRouter implements MiddlewareInterface
                     $this->mode,
                     $this->debug
                 );
-            } catch(SplashException $e) {
+            } catch (SplashException $e) {
                 throw new SplashException($e->getMessage(). ' (in '.$splashRoute->getControllerInstanceName().'->'.$splashRoute->getMethodName().')', $e->getCode(), $e);
             }
             return $response;
