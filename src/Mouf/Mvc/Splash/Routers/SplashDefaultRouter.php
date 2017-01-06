@@ -262,15 +262,14 @@ class SplashDefaultRouter implements MiddlewareInterface, ServerMiddlewareInterf
                 }
             }
 
-            $this->log->debug('Found no route for URL {url}.', [
-                'url' => $request_path,
-            ]);
-
             if ($this->debug === false || $retry === true) {
                 // No route found, let's pass control to the next middleware.
                 if ($out !== null) {
                     return $out($request, $response);
                 } else {
+                    $this->log->debug('Found no route for URL {url}.', [
+                        'url' => $request_path,
+                    ]);
                     throw PageNotFoundException::create($tailing_url);
                 }
             } else {
