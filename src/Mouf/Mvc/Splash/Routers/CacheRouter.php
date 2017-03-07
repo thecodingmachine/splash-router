@@ -2,14 +2,13 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Mouf\Utils\Cache\CacheInterface;
 use Psr\Log\LoggerInterface;
 use Mouf\Utils\Common\ConditionInterface\ConditionInterface;
-use Zend\Stratigility\MiddlewareInterface;
 
 class CacheRouter implements MiddlewareInterface
 {
@@ -36,32 +35,15 @@ class CacheRouter implements MiddlewareInterface
     }
 
     /**
-     * Process an incoming request and/or response.
-     *
-     * Accepts a server-side request and a response instance, and does
-     * something with them.
-     *
-     * If the response is not complete and/or further processing would not
-     * interfere with the work done in the middleware, or if the middleware
-     * wants to delegate to another process, it can use the `$out` callable
-     * if present.
-     *
-     * If the middleware does not return a value, execution of the current
-     * request is considered complete, and the response instance provided will
-     * be considered the response to return.
-     *
-     * Alternately, the middleware may return a response instance.
-     *
-     * Often, middleware will `return $out();`, with the assumption that a
-     * later middleware will return a response.
+     * Process an incoming server request and return a response, optionally delegating
+     * to the next middleware component to create the response.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param null|callable          $out
+     * @param DelegateInterface $delegate
      *
-     * @return null|ResponseInterface
+     * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $requestMethod = $request->getMethod();
         $key = str_replace(['\\', '/', ':', '*', '?', '"', '<', '>', '|'], '_', $request->getUri()->getPath().'?'.$request->getUri()->getQuery());
@@ -74,7 +56,7 @@ class CacheRouter implements MiddlewareInterface
                 return $cacheResponse;
             } else {
                 $this->log->debug("Cache MISS on key $key");
-                $response = $out($request, $response);
+                $response = $delegate->process($request);
 
                 $noCache = false;
                 if ($response->hasHeader('Mouf-Cache-Control') && $response->getHeader('Mouf-Cache-Control')[0] == 'no-cache') {

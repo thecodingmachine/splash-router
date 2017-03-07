@@ -4,8 +4,8 @@ namespace Mouf\Mvc\Splash\Routers;
 
 use Cache\Adapter\Void\VoidCachePool;
 use Interop\Container\ContainerInterface;
-use Interop\Http\Middleware\DelegateInterface;
-use Interop\Http\Middleware\ServerMiddlewareInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Mouf\Mvc\Splash\Controllers\Http400HandlerInterface;
 use Mouf\Mvc\Splash\Controllers\Http404HandlerInterface;
 use Mouf\Mvc\Splash\Controllers\Http500HandlerInterface;
@@ -25,9 +25,8 @@ use Mouf\Mvc\Splash\Services\SplashUtils;
 use Psr\Log\NullLogger;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Stratigility\MiddlewareInterface;
 
-class SplashDefaultRouter implements MiddlewareInterface, ServerMiddlewareInterface
+class SplashDefaultRouter implements MiddlewareInterface
 {
     /**
      * The container that will be used to fetch controllers.
@@ -415,7 +414,7 @@ class SplashDefaultRouter implements MiddlewareInterface, ServerMiddlewareInterf
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        // create a dummy response to keep compatilbility with old middlewares.
+        // create a dummy response to keep compatibility with old middlewares.
         $response = new Response();
 
         return $this($request, $response, function($request) use ($delegate) {

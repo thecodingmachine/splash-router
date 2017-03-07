@@ -241,6 +241,10 @@
             "install-path": "vendor/psr/cache",
             "installer": "composer"
         },
+        "psr/container": {
+            "install-path": "vendor/psr/container",
+            "installer": "composer"
+        },
         "psr/http-message": {
             "install-path": "vendor/psr/http-message",
             "installer": "composer"
@@ -433,14 +437,6 @@
         },
         "zendframework/zend-diactoros": {
             "install-path": "vendor/zendframework/zend-diactoros",
-            "installer": "composer"
-        },
-        "zendframework/zend-escaper": {
-            "install-path": "vendor/zendframework/zend-escaper",
-            "installer": "composer"
-        },
-        "zendframework/zend-stratigility": {
-            "install-path": "vendor/zendframework/zend-stratigility",
             "installer": "composer"
         }
     }
