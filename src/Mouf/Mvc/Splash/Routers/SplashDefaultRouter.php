@@ -315,7 +315,7 @@ class SplashDefaultRouter implements MiddlewareInterface, ServerMiddlewareInterf
                     $this->mode,
                     $this->debug
                 );
-            } catch(SplashException $e) {
+            } catch (SplashException $e) {
                 throw new SplashException($e->getMessage(). ' (in '.$splashRoute->getControllerInstanceName().'->'.$splashRoute->getMethodName().')', $e->getCode(), $e);
             }
             return $response;
