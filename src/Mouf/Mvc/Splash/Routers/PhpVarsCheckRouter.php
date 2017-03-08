@@ -2,15 +2,16 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
-use Zend\Stratigility\MiddlewareInterface;
 
 /**
  * This router :
- *  - just checks that some PHP settings are not exeeded : max_input_vars, max_post_size
+ *  - just checks that some PHP settings are not exceeded : max_input_vars, max_post_size
  *  - doesn't actually 'routes' the request. It's more like a filter to me applied and check the request.
  *  - should be placed BEFORE the effective applications router and AFTER the Exceptions handling routers.
  *
@@ -62,7 +63,7 @@ class PhpVarsCheckRouter implements MiddlewareInterface
             return $val2;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -107,34 +108,16 @@ class PhpVarsCheckRouter implements MiddlewareInterface
     }
 
     /**
-     * Process an incoming request and/or response.
+     * Process an incoming server request and return a response, optionally delegating
+     * to the next middleware component to create the response.
      *
-     * Accepts a server-side request and a response instance, and does
-     * something with them.
+     * @param Request $request
+     * @param DelegateInterface $delegate
      *
-     * If the response is not complete and/or further processing would not
-     * interfere with the work done in the middleware, or if the middleware
-     * wants to delegate to another process, it can use the `$out` callable
-     * if present.
-     *
-     * If the middleware does not return a value, execution of the current
-     * request is considered complete, and the response instance provided will
-     * be considered the response to return.
-     *
-     * Alternately, the middleware may return a response instance.
-     *
-     * Often, middleware will `return $out();`, with the assumption that a
-     * later middleware will return a response.
-     *
-     * @param Request       $request
-     * @param Response      $response
-     * @param null|callable $out
-     *
-     * @return null|Response
-     *
-     * @throws SplashException
+     * @return Response
+     * @throws \Mouf\Mvc\Splash\Utils\SplashException
      */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function process(Request $request, DelegateInterface $delegate)
     {
         // Check if there is a limit of input number in php
         // Throw exception if the limit is reached
@@ -143,8 +126,8 @@ class PhpVarsCheckRouter implements MiddlewareInterface
             if ($maxGet !== null) {
                 $this->count = 0;
                 array_walk_recursive($_GET, array($this, 'countRecursive'));
-                if ($this->count == $maxGet) {
-                    if ($this->log != null) {
+                if ($this->count === $maxGet) {
+                    if ($this->log !== null) {
                         $this->log->error('Max input vars reaches for get parameters ({maxGet}). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.', ['maxGet' => $maxGet]);
                     }
                     throw new SplashException('Max input vars reaches for get parameters ('.$maxGet.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.');
@@ -156,8 +139,8 @@ class PhpVarsCheckRouter implements MiddlewareInterface
             if ($maxPost !== null) {
                 $this->count = 0;
                 array_walk_recursive($_POST, array($this, 'countRecursive'));
-                if ($this->count == $maxPost) {
-                    if ($this->log != null) {
+                if ($this->count === $maxPost) {
+                    if ($this->log !== null) {
                         $this->log->error('Max input vars reaches for post parameters ({maxPost}). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.', ['maxPost' => $maxPost]);
                     }
                     throw new SplashException('Max input vars reaches for post parameters ('.$maxPost.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.');
@@ -169,8 +152,8 @@ class PhpVarsCheckRouter implements MiddlewareInterface
             if ($maxRequest !== null) {
                 $this->count = 0;
                 array_walk_recursive($_REQUEST, array($this, 'countRecursive'));
-                if ($this->count == $maxRequest) {
-                    if ($this->log != null) {
+                if ($this->count === $maxRequest) {
+                    if ($this->log !== null) {
                         $this->log->error('Max input vars reaches for request parameters ({maxRequest}). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.', ['maxRequest' => $maxRequest]);
                     }
                     throw new SplashException('Max input vars reaches for request parameters ('.$maxRequest.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.');
@@ -180,7 +163,7 @@ class PhpVarsCheckRouter implements MiddlewareInterface
         if (isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post' && empty($_POST) && empty($_FILES)) {
             $maxPostSize = self::iniGetBytes('post_max_size');
             if ($_SERVER['CONTENT_LENGTH'] > $maxPostSize) {
-                if ($this->log != null) {
+                if ($this->log !== null) {
                     $this->log->error('Max post size exceeded! Got {length} bytes, but limit is {maxPostSize} bytes. Edit post_max_size setting in your php.ini.', ['length' => $_SERVER['CONTENT_LENGTH'], 'maxPostSize' => $maxPostSize]);
                 }
                 throw new SplashException(
@@ -193,6 +176,6 @@ class PhpVarsCheckRouter implements MiddlewareInterface
         }
 
         //If no Exception has been thrown, call next router
-        return $out($request, $response);
+        return $delegate->process($request);
     }
 }

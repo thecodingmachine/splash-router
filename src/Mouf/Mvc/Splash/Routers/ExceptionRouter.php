@@ -2,13 +2,14 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Mouf\Mvc\Splash\Controllers\Http500HandlerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Mouf\Mvc\Splash\Services\SplashUtils;
-use Zend\Stratigility\ErrorMiddlewareInterface;
 
 /**
  * This router transforms exceptions into HTTP 500 pages, based on the configured error controller.
@@ -16,7 +17,7 @@ use Zend\Stratigility\ErrorMiddlewareInterface;
  * @author Kevin Nguyen
  * @author David Négrier
  */
-class ExceptionRouter implements ErrorMiddlewareInterface
+class ExceptionRouter implements MiddlewareInterface
 {
     /**
      * The logger.
@@ -35,8 +36,8 @@ class ExceptionRouter implements ErrorMiddlewareInterface
     /**
      * @Important
      *
-     * @param HttpKernelInterface $router The default router (the router we will catch exceptions from).
-     * @param LoggerInterface     $log    Logger to log errors.
+     * @param Http500HandlerInterface $errorController The controller in charge of displaying the HTTP 500 error.
+     * @param LoggerInterface $log Logger to log errors.
      */
     public function __construct(Http500HandlerInterface $errorController, LoggerInterface $log = null)
     {
@@ -47,24 +48,24 @@ class ExceptionRouter implements ErrorMiddlewareInterface
     /**
      * Actually handle the exception.
      *
-     * @param \Exception $e
-     *
+     * @param \Throwable $t
+     * @param Request $request
      * @return ResponseInterface
      */
-    private function handleException(\Exception $e, Request $request)
+    private function handleException(\Throwable $t, Request $request)
     {
-        if ($this->log != null) {
+        if ($this->log !== null) {
             $this->log->error('Exception thrown inside a controller.', array(
-                    'exception' => $e,
+                    'exception' => $t,
             ));
         } else {
             // If no logger is set, let's log in PHP error_log
-            error_log($e->getMessage().' - '.$e->getTraceAsString());
+            error_log($t->getMessage().' - '.$t->getTraceAsString());
         }
 
         $response = SplashUtils::buildControllerResponse(
-            function () use ($e, $request) {
-                return $this->errorController->serverError($e, $request);
+            function () use ($t, $request) {
+                return $this->errorController->serverError($t, $request);
             }
         );
 
@@ -72,23 +73,20 @@ class ExceptionRouter implements ErrorMiddlewareInterface
     }
 
     /**
-     * Process an incoming error, along with associated request and response.
+     * Process an incoming server request and return a response, optionally delegating
+     * to the next middleware component to create the response.
      *
-     * Accepts an error, a server-side request, and a response instance, and
-     * does something with them; if further processing can be done, it can
-     * delegate to `$out`.
+     * @param Request $request
+     * @param DelegateInterface $delegate
      *
-     * @see MiddlewareInterface
-     *
-     * @param mixed         $error
-     * @param Request       $request
-     * @param Response      $response
-     * @param null|callable $out
-     *
-     * @return null|Response
+     * @return Response
      */
-    public function __invoke($error, Request $request, Response $response, callable $out = null)
+    public function process(Request $request, DelegateInterface $delegate)
     {
-        return $this->handleException($error, $request);
+        try {
+            return $delegate->process($request);
+        } catch (\Throwable $t) {
+            return $this->handleException($t, $request);
+        }
     }
 }
