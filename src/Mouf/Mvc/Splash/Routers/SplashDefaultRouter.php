@@ -227,9 +227,10 @@ class SplashDefaultRouter implements MiddlewareInterface
             $urlNodes = $this->generateUrlNode($urlsList);
             $urlNodesCacheItem->set($urlNodes);
             $this->cachePool->save($urlNodesCacheItem);
+        } else {
+            $urlNodes = $urlNodesCacheItem->get();
         }
 
-        $urlNodes = $urlNodesCacheItem->get();
         /* @var $urlNodes SplashUrlNode */
 
         $request_path = $request->getUri()->getPath();
