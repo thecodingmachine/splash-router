@@ -1,0 +1,3 @@
+{
+    "Interop\\Container\\ServiceProvider": "Mouf\\Mvc\\Splash\\DI\\SplashServiceProvider"
+}
