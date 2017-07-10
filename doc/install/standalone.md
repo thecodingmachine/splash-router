@@ -32,15 +32,15 @@ Here is a typical `composer.json` file to load all dependencies.
       "psr-4": {"Test\\": "src/Test"}
   },
   "require": {
-    "mouf/mvc.splash-common": "~8.0",
-    "zendframework/zend-diactoros": "^1.3",
-    "zendframework/zend-stratigility": "^1.1",
-    "tedivm/stash": "~0.14.0",
-    "thecodingmachine/doctrine-annotations-universal-module": "~1.0",
-    "thecodingmachine/psr-6-doctrine-bridge-universal-module": "~1.0",
-    "thecodingmachine/stash-universal-module": "~1.0",
-    "thecodingmachine/stratigility-harmony": "~1.0",
-    "thecodingmachine/whoops-middleware-universal-module": "~0.4"
+    "mouf/mvc.splash-common": "~8.2",
+      "mnapoli/simplex": "~0.2.1",
+      "zendframework/zend-diactoros": "^1.3",
+      "zendframework/zend-stratigility": "^2.0",
+      "tedivm/stash": "~0.14.0",
+      "thecodingmachine/doctrine-annotations-universal-module": "~1.0",
+      "thecodingmachine/psr-6-doctrine-bridge-universal-module": "~1.0",
+      "thecodingmachine/stash-universal-module": "~1.0",
+      "thecodingmachine/stratigility-harmony": "~2.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
@@ -97,7 +97,7 @@ $container->set('root_url', getenv('BASE'));
 
 // Let's get the PSR-7 server, and let's bootstrap it.
 $diactorosServer = $container->get(\Zend\Diactoros\Server::class);
-$diactorosServer->listen();
+$diactorosServer->listen(new \Zend\Stratigility\NoopFinalHandler());
 ```
 
 The important part here is:
