@@ -33,7 +33,7 @@
         "zendframework/zend-diactoros": "~1.0",
 		"mouf/html.template.templateinterface": "^2.1",
 		"container-interop/service-provider": "~0.3.0",
-		"thecodingmachine/common-factories": "dev-master",
+		"thecodingmachine/common-factories": "^0.3",
 		"thecodingmachine/middleware-list-universal-module": "~1.0",
 		"http-interop/http-middleware": "^0.4"
 	},
