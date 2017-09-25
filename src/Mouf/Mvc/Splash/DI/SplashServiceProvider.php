@@ -5,7 +5,7 @@ namespace Mouf\Mvc\Splash\DI;
 use Doctrine\Common\Annotations\Reader;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Factories\Parameter;
-use Interop\Container\ServiceProvider;
+use Interop\Container\ServiceProviderInterface;
 use Mouf\Mvc\Splash\Routers\SplashDefaultRouter;
 use Mouf\Mvc\Splash\Services\ControllerAnalyzer;
 use Mouf\Mvc\Splash\Services\ControllerRegistry;
@@ -18,27 +18,11 @@ use Psr\Log\LoggerInterface;
 use TheCodingMachine\MiddlewareListServiceProvider;
 use TheCodingMachine\MiddlewareOrder;
 
-class SplashServiceProvider implements ServiceProvider
+class SplashServiceProvider implements ServiceProviderInterface
 {
     const PACKAGE_NAME = 'thecodingmachine/splash';
 
-    /**
-     * Returns a list of all container entries registered by this service provider.
-     *
-     * - the key is the entry name
-     * - the value is a callable that will return the entry, aka the **factory**
-     *
-     * Factories have the following signature:
-     *        function(ContainerInterface $container, callable $getPrevious = null)
-     *
-     * About factories parameters:
-     *
-     * - the container (instance of `Interop\Container\ContainerInterface`)
-     * - a callable that returns the previous entry if overriding a previous entry, or `null` if not
-     *
-     * @return callable[]
-     */
-    public function getServices()
+    public function getFactories()
     {
         return [
             SplashDefaultRouter::class => [self::class, 'createDefaultRouter'],
@@ -50,8 +34,14 @@ class SplashServiceProvider implements ServiceProvider
             SplashRequestFetcher::class => [self::class, 'createSplashRequestFetcher'],
             SplashRequestParameterFetcher::class => [self::class, 'createSplashRequestParameterFetcher'],
             'thecodingmachine.splash.mode' => new Parameter(SplashUtils::MODE_STRICT),
-            MiddlewareListServiceProvider::MIDDLEWARES_QUEUE => [self::class, 'updatePriorityQueue'],
             'thecodingmachine.splash.controllers' => new Parameter([])
+        ];
+    }
+
+    public function getExtensions()
+    {
+        return [
+            MiddlewareListServiceProvider::MIDDLEWARES_QUEUE => [self::class, 'updatePriorityQueue'],
         ];
     }
 
@@ -129,14 +119,9 @@ class SplashServiceProvider implements ServiceProvider
         return new SplashRequestParameterFetcher();
     }
 
-    public static function updatePriorityQueue(ContainerInterface $container, callable $previous = null) : \SplPriorityQueue
+    public static function updatePriorityQueue(ContainerInterface $container, \SplPriorityQueue $priorityQueue) : \SplPriorityQueue
     {
-        if ($previous) {
-            $priorityQueue = $previous();
-            $priorityQueue->insert($container->get(SplashDefaultRouter::class), MiddlewareOrder::ROUTER);
-            return $priorityQueue;
-        } else {
-            throw new InvalidArgumentException("Could not find declaration for service '".MiddlewareListServiceProvider::MIDDLEWARES_QUEUE."'.");
-        }
+        $priorityQueue->insert($container->get(SplashDefaultRouter::class), MiddlewareOrder::ROUTER);
+        return $priorityQueue;
     }
 }
