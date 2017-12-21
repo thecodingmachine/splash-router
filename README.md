@@ -47,7 +47,7 @@ class MyController
      */
     public function index(ServerRequestInterface $request)
     {
-        return new JsonResponse("Hello" => "World!");
+        return new JsonResponse(["Hello" => "World!"]);
     }
 }
 ```
