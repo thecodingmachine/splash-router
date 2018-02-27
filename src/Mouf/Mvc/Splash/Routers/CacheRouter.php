@@ -2,14 +2,15 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Mouf\Utils\Cache\CacheInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Mouf\Utils\Common\ConditionInterface\ConditionInterface;
 
+//todo: delete or test
 class CacheRouter implements MiddlewareInterface
 {
     /**
@@ -39,11 +40,11 @@ class CacheRouter implements MiddlewareInterface
      * to the next middleware component to create the response.
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     *
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
+     *
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $requestMethod = $request->getMethod();
         $key = str_replace(['\\', '/', ':', '*', '?', '"', '<', '>', '|'], '_', $request->getUri()->getPath().'?'.$request->getUri()->getQuery());
@@ -56,7 +57,7 @@ class CacheRouter implements MiddlewareInterface
                 return $cacheResponse;
             } else {
                 $this->log->debug("Cache MISS on key $key");
-                $response = $delegate->process($request);
+                $response = $handler->handle($request);
 
                 $noCache = false;
                 if ($response->hasHeader('Mouf-Cache-Control') && $response->getHeader('Mouf-Cache-Control')[0] == 'no-cache') {

@@ -4,8 +4,6 @@ namespace Mouf\Mvc\Splash\Routers;
 
 use Cache\Adapter\Void\VoidCachePool;
 use Interop\Container\ContainerInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Mouf\Mvc\Splash\Controllers\Http400HandlerInterface;
 use Mouf\Mvc\Splash\Controllers\Http404HandlerInterface;
 use Mouf\Mvc\Splash\Controllers\Http500HandlerInterface;
@@ -19,6 +17,8 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Mouf\Mvc\Splash\Store\SplashUrlNode;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Mouf\Mvc\Splash\Services\SplashRequestContext;
 use Mouf\Mvc\Splash\Services\SplashUtils;
@@ -409,17 +409,17 @@ class SplashDefaultRouter implements MiddlewareInterface
      * to the next middleware component to create the response.
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      *
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // create a dummy response to keep compatibility with old middlewares.
         $response = new Response();
 
-        return $this($request, $response, function($request) use ($delegate) {
-            return $delegate->process($request);
+        return $this($request, $response, function($request) use ($handler) {
+            return $handler->handle($request);
         });
     }
 }

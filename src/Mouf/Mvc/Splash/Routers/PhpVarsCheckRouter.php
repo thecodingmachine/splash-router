@@ -2,11 +2,12 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Mouf\Mvc\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -113,12 +114,12 @@ class PhpVarsCheckRouter implements MiddlewareInterface
      * to the next middleware component to create the response.
      *
      * @param Request $request
-     * @param DelegateInterface $delegate
      *
-     * @return Response
-     * @throws \Mouf\Mvc\Splash\Utils\SplashException
+     * @param RequestHandlerInterface $handler
+     * @return ResponseInterface
+     * @throws SplashException
      */
-    public function process(Request $request, DelegateInterface $delegate)
+    public function process(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // Check if there is a limit of input number in php
         // Throw exception if the limit is reached
@@ -177,6 +178,6 @@ class PhpVarsCheckRouter implements MiddlewareInterface
         }
 
         //If no Exception has been thrown, call next router
-        return $delegate->process($request);
+        return $handler->handle($request);
     }
 }

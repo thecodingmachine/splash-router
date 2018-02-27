@@ -2,12 +2,12 @@
 
 namespace Mouf\Mvc\Splash\Routers;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Mouf\Mvc\Splash\Controllers\Http500HandlerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Mouf\Mvc\Splash\Services\SplashUtils;
 
@@ -77,14 +77,14 @@ class ExceptionRouter implements MiddlewareInterface
      * to the next middleware component to create the response.
      *
      * @param Request $request
-     * @param DelegateInterface $delegate
      *
-     * @return Response
+     * @param RequestHandlerInterface $handler
+     * @return ResponseInterface
      */
-    public function process(Request $request, DelegateInterface $delegate)
+    public function process(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            return $delegate->process($request);
+            return $handler->handle($request);
         } catch (\Throwable $t) {
             return $this->handleException($t, $request);
         }
