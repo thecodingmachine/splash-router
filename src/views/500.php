@@ -1,6 +1,6 @@
 <?php
-use Mouf\Mvc\Splash\Controllers\HttpErrorsController;
-use Mouf\Mvc\Splash\Utils\ExceptionUtils;
+use TheCodingMachine\Splash\Controllers\HttpErrorsController;
+use TheCodingMachine\Splash\Utils\ExceptionUtils;
 
 /* @var $this HttpErrorsController */
 ?>

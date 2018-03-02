@@ -65,7 +65,7 @@ use TheCodingMachine\DoctrineCacheBridgeServiceProvider;
 use TheCodingMachine\MiddlewareListServiceProvider;
 use TheCodingMachine\StashServiceProvider;
 use TheCodingMachine\StratigilityServiceProvider;
-use Mouf\Mvc\Splash\DI\SplashServiceProvider;
+use TheCodingMachine\Splash\DI\SplashServiceProvider;
 use TheCodingMachine\WhoopsMiddlewareServiceProvider;
 
 $container = new Container();

@@ -7,13 +7,13 @@ In order to upgrade from Splash 7 to Splash 8, you need to perform the following
 - Run `php composer.phar update`
 - Remove `extends Controller` in each controller. Starting from Splash 8, controllers do not extend any class.
 - Update all `@URL` annotations. In Splash 8, annotations are handled by the Doctrine annotations library. Therefore:
-    - You must add a `use Mouf\Mvc\Splash\Annotations\URL;` in each controller.
+    - You must add a `use TheCodingMachine\Splash\Annotations\URL;` in each controller.
     - You must rewrite annotations to the Doctrine format:
     ```
     @URL my/path => @URL("my/path")
     ```
 - Update all `@Action` annotations.
-    - You must add a `use Mouf\Mvc\Splash\Annotations\Action;` in each controller.
+    - You must add a `use TheCodingMachine\Splash\Annotations\Action;` in each controller.
 - Assuming you are using Mouf (this is a safe assumption since Splash 7 is highly tied to Mouf), run the Splash installer again.
     - Connect to Mouf UI (http://localhost/[yourproject]/vendor/mouf/mouf)
     - Click on *Project > Installation tasks*

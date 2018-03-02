@@ -1,5 +1,5 @@
 {
-	"name" : "mouf/mvc.splash-common",
+	"name" : "thecodingmachine/splash",
 	"description" : "Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.",
 	"type" : "mouf-library",
 	"authors" : [{
@@ -49,13 +49,12 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"Mouf\\Annotations\\" : "src/Mouf/Annotations",
-			"Mouf\\Mvc\\Splash\\" : "src/Mouf/Mvc/Splash"
+			"TheCodingMachine\\Splash\\" : "src/TheCodingMachine/Splash"
 		}
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"Mouf\\Mvc\\Splash\\" : "tests/Mouf/Mvc/Splash"
+			"TheCodingMachine\\Splash\\" : "tests/TheCodingMachine/Splash"
 		}
 	},
 	"minimum-stability": "dev",

@@ -36,8 +36,8 @@ Clean controllers
 Want to get a feeling of Splash? Here is a typical controller:
 
 ```php
-use Mouf\Mvc\Splash\Annotations\Get;
-use Mouf\Mvc\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\Get;
+use TheCodingMachine\Splash\Annotations\URL;
 
 class MyController
 {
@@ -69,8 +69,8 @@ But Splash can provide much more than this.
 Here is a more advanced routing scenario:
 
 ```php
-use Mouf\Mvc\Splash\Annotations\Post;
-use Mouf\Mvc\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\Post;
+use TheCodingMachine\Splash\Annotations\URL;
 use Psr\Http\Message\UploadedFileInterface;
 
 class MyController

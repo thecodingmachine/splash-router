@@ -26,7 +26,7 @@ This is the preferred way of declaring an action:
 <?php
 namespace Test\Controllers;
 
-use Mouf\Mvc\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\URL;
 
 class MyController {
     
@@ -88,9 +88,9 @@ Splash makes that very easy to handle. You can just add a @Get or @Post annotati
 <?php
 namespace Test\Controllers;
 
-use Mouf\Mvc\Splash\Annotations\URL;
-use Mouf\Mvc\Splash\Annotations\Get;
-use Mouf\Mvc\Splash\Annotations\Post;
+use TheCodingMachine\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\Get;
+use TheCodingMachine\Splash\Annotations\Post;
 
 /**
  * This is a sample user controller.
@@ -168,7 +168,7 @@ Therefore, you can write things like:
 
 ```php
 <?php
-use Mouf\Mvc\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\URL;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -200,8 +200,8 @@ implementing the [`HtmlElementInterface`](http://mouf-php.com/packages/mouf/html
 
 ```php
 <?php
-use Mouf\Mvc\Splash\Annotations\URL;
-use Mouf\Mvc\Splash\HtmlResponse;
+use TheCodingMachine\Splash\Annotations\URL;
+use TheCodingMachine\Splash\HtmlResponse;
 
 class MyController {
     /**
@@ -236,7 +236,7 @@ Uploaded files are also directly available from the signature of the method:
 **PHP**:
 ```php
 <?php
-use Mouf\Mvc\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\URL;
 use Psr\Http\Message\UploadedFileInterface;
 
 class MyController {
@@ -269,7 +269,7 @@ Here is a sample:
 
 ```php
 <?php
-use Mouf\Mvc\Splash\Annotations\Action;
+use TheCodingMachine\Splash\Annotations\Action;
 
 /**
  * This is my test controller.

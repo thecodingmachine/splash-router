@@ -78,7 +78,7 @@ Splash makes that very easy to handle. You can just add a @Get or @Post annotati
 namespace Test\Controllers;
 
 use Zend\Diactoros\Response\HtmlResponse;
-use Mouf\Mvc\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\URL;
 
 /**
  * This is a sample user controller.
@@ -123,7 +123,7 @@ You can put parameters in the URLs and fetch them very easily:
 
 ```php
 <?php
-use Mouf\Mvc\Splash\Annotations\URL;
+use TheCodingMachine\Splash\Annotations\URL;
 
 /**
  * This is a sample user controller.
