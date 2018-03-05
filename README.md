@@ -1,10 +1,10 @@
-[![Latest Stable Version](https://poser.pugx.org/mouf/mvc.splash-common/v/stable)](https://packagist.org/packages/mouf/mvc.splash-common)
-[![Total Downloads](https://poser.pugx.org/mouf/mvc.splash-common/downloads)](https://packagist.org/packages/mouf/mvc.splash-common)
-[![Latest Unstable Version](https://poser.pugx.org/mouf/mvc.splash-common/v/unstable)](https://packagist.org/packages/mouf/mvc.splash-common)
-[![License](https://poser.pugx.org/mouf/mvc.splash-common/license)](https://packagist.org/packages/mouf/mvc.splash-common)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/mvc.splash-common/badges/quality-score.png?b=8.0)](https://scrutinizer-ci.com/g/thecodingmachine/mvc.splash-common/?branch=8.0)
-[![Build Status](https://travis-ci.org/thecodingmachine/mvc.splash-common.svg?branch=8.0)](https://travis-ci.org/thecodingmachine/mvc.splash-common)
-[![Coverage Status](https://coveralls.io/repos/thecodingmachine/mvc.splash-common/badge.svg?branch=8.0&service=github)](https://coveralls.io/github/thecodingmachine/mvc.splash-common?branch=8.0)
+[![Latest Stable Version](https://poser.pugx.org/thecodingmachine/splash-router/v/stable)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![Total Downloads](https://poser.pugx.org/thecodingmachine/splash-router/downloads)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![Latest Unstable Version](https://poser.pugx.org/thecodingmachine/splash-router/v/unstable)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![License](https://poser.pugx.org/thecodingmachine/splash-router/license)](https://packagist.org/packages/mouf/mvc.splash-common)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/splash-router/badges/quality-score.png?b=8.0)](https://scrutinizer-ci.com/g/thecodingmachine/mvc.splash-common/?branch=8.0)
+[![Build Status](https://travis-ci.org/thecodingmachine/splash-router.svg?branch=8.0)](https://travis-ci.org/thecodingmachine/mvc.splash-common)
+[![Coverage Status](https://coveralls.io/repos/thecodingmachine/splash-router/badge.svg?branch=8.0&service=github)](https://coveralls.io/github/thecodingmachine/mvc.splash-common?branch=8.0)
 
 Splash: a highly configurable PSR-7 router
 ==========================================
@@ -14,8 +14,8 @@ What is Splash?
 
 Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.
   
-- Splash is [PSR-7 compatible](http://www.php-fig.org/psr/psr-7/)
-- It acts as a [PSR-7 middleware](https://akrabat.com/writing-psr-7-middleware/)
+- Splash is [PSR-15 compatible](http://www.php-fig.org/psr/psr-15/)
+- It acts as a [PSR-15 middleware]
 - It is based on **controllers** and **annotations** (routes are declared as annotations in the controllers)
 - It is heavily optimized, relying on an underlying [PSR-6 cache](http://www.php-fig.org/psr/psr-6/)
 - It is a **pure** router. It is not a full-featured MVC framework. No views management, no model, only routing!
