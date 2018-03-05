@@ -1,5 +1,5 @@
 {
-	"name" : "thecodingmachine/splash",
+	"name" : "thecodingmachine/splash-router",
 	"description" : "Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.",
 	"type" : "mouf-library",
 	"authors" : [{
