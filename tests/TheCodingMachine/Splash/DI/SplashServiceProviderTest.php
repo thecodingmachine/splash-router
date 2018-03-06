@@ -6,7 +6,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Reader;
 use TheCodingMachine\Splash\Fixtures\TestController2;
-use TheCodingMachine\Splash\Routers\SplashDefaultRouter;
+use TheCodingMachine\Splash\Routers\SplashRouter;
 use Simplex\Container;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -37,8 +37,8 @@ class SplashServiceProviderTest extends PHPUnit_Framework_TestCase
             TestController2::class,
         ];
 
-        $defaultRouter = $simplex->get(SplashDefaultRouter::class);
-        $this->assertInstanceOf(SplashDefaultRouter::class, $defaultRouter);
+        $defaultRouter = $simplex->get(SplashRouter::class);
+        $this->assertInstanceOf(SplashRouter::class, $defaultRouter);
 
         // Now, let's test the redirect
         $request = new ServerRequest([], [], '/foo/var/bar/', 'GET', 'php://input',

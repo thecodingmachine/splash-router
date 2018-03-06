@@ -26,7 +26,7 @@ use Psr\Log\NullLogger;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\RedirectResponse;
 
-class SplashDefaultRouter implements MiddlewareInterface
+class SplashRouter implements MiddlewareInterface
 {
     /**
      * The container that will be used to fetch controllers.

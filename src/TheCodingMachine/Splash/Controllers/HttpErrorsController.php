@@ -146,7 +146,7 @@ class HttpErrorsController implements Http400HandlerInterface, Http404HandlerInt
     /**
      * (non-PHPdoc).
      *
-     * @see Mouf\Mvc\Splash\Controllers.Http500HandlerInterface::serverError()
+     * @see TheCodingMachine\Splash\Controllers.Http500HandlerInterface::serverError()
      */
     public function serverError(\Throwable $exception, ServerRequestInterface $request) : ResponseInterface
     {

@@ -25,7 +25,7 @@ use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 use TheCodingMachine\Splash\Fixtures\TestController3;
 
-class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
+class SplashRouterTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -43,7 +43,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
@@ -86,7 +86,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $container = new Picotainer([
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry);
+        $defaultRouter = new SplashRouter($container, [], $parameterFetcherRegistry);
 
         $request = new ServerRequest([], [], '/foo', 'GET');
         $response = new HtmlResponse('');
@@ -114,7 +114,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
         
@@ -129,7 +129,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $container = new Picotainer([
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry);
+        $defaultRouter = new SplashRouter($container, [], $parameterFetcherRegistry);
         $errorsController = HttpErrorsController::createDefault();
         $defaultRouter->setHttp404Handler($errorsController);
 
@@ -148,7 +148,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $container = new Picotainer([
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry, null, null, SplashUtils::MODE_STRICT, true, '/baseUrl/');
+        $defaultRouter = new SplashRouter($container, [], $parameterFetcherRegistry, null, null, SplashUtils::MODE_STRICT, true, '/baseUrl/');
 
         $request = new ServerRequest([], [], '/foo', 'GET');
         $response = new HtmlResponse('');
@@ -166,7 +166,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
@@ -187,7 +187,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
@@ -211,7 +211,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
@@ -232,7 +232,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
 
         $container = new Picotainer([]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry, $cache->reveal());
+        $defaultRouter = new SplashRouter($container, [], $parameterFetcherRegistry, $cache->reveal());
         $defaultRouter->purgeUrlsCache();
     }
 
@@ -246,7 +246,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
@@ -266,7 +266,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry, new ArrayCachePool());
 
@@ -294,7 +294,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry, new ArrayCachePool());
 
@@ -318,7 +318,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry, new ArrayCachePool());
 

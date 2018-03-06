@@ -6,7 +6,7 @@ use Doctrine\Common\Annotations\Reader;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Factories\Parameter;
 use Interop\Container\ServiceProviderInterface;
-use TheCodingMachine\Splash\Routers\SplashDefaultRouter;
+use TheCodingMachine\Splash\Routers\SplashRouter;
 use TheCodingMachine\Splash\Services\ControllerAnalyzer;
 use TheCodingMachine\Splash\Services\ControllerRegistry;
 use TheCodingMachine\Splash\Services\ParameterFetcherRegistry;
@@ -25,7 +25,7 @@ class SplashServiceProvider implements ServiceProviderInterface
     public function getFactories()
     {
         return [
-            SplashDefaultRouter::class => [self::class, 'createDefaultRouter'],
+            SplashRouter::class => [self::class, 'createDefaultRouter'],
             'thecodingmachine.splash.route-providers' => [self::class, 'createRouteProviders'],
             ControllerRegistry::class => [self::class, 'createControllerRegistry'],
             ControllerAnalyzer::class => [self::class, 'createControllerAnalyzer'],
@@ -121,7 +121,7 @@ class SplashServiceProvider implements ServiceProviderInterface
 
     public static function updatePriorityQueue(ContainerInterface $container, \SplPriorityQueue $priorityQueue) : \SplPriorityQueue
     {
-        $priorityQueue->insert($container->get(SplashDefaultRouter::class), MiddlewareOrder::ROUTER);
+        $priorityQueue->insert($container->get(SplashRouter::class), MiddlewareOrder::ROUTER);
         return $priorityQueue;
     }
 }
