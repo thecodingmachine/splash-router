@@ -5,6 +5,7 @@ namespace TheCodingMachine\Splash\Routers;
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Controllers\HttpErrorsController;
 use TheCodingMachine\Splash\Exception\PageNotFoundException;
 use TheCodingMachine\Splash\Exception\SplashMissingParameterException;
@@ -25,11 +26,11 @@ use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 use TheCodingMachine\Splash\Fixtures\TestController3;
 
-class SplashRouterTest extends \PHPUnit_Framework_TestCase
+class SplashRouterTest extends TestCase
 {
     protected function setUp()
     {
-        $loader = require __DIR__.'../../../../../../vendor/autoload.php';
+        $loader = require __DIR__.'/../../../../../../autoload.php';
         AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
     }
 

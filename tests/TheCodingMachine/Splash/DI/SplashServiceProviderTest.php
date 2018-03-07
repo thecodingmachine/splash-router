@@ -5,6 +5,7 @@ namespace TheCodingMachine\Splash\DI;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Reader;
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Fixtures\TestController2;
 use TheCodingMachine\Splash\Routers\SplashRouter;
 use Simplex\Container;
@@ -12,11 +13,11 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 
-class SplashServiceProviderTest extends PHPUnit_Framework_TestCase
+class SplashServiceProviderTest extends TestCase
 {
     protected function setUp()
     {
-        $loader = require __DIR__.'../../../../../../vendor/autoload.php';
+        $loader = require __DIR__.'/../../../../../../autoload.php';
         AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
     }
 

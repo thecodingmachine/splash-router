@@ -4,15 +4,16 @@ namespace TheCodingMachine\Splash\Services;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Fixtures\TestController;
 use TheCodingMachine\Splash\Fixtures\TestController2;
 use Mouf\Picotainer\Picotainer;
 
-class ControllerRegistryTest extends \PHPUnit_Framework_TestCase
+class ControllerRegistryTest extends TestCase
 {
     protected function setUp()
     {
-        $loader = require __DIR__.'../../../../../../vendor/autoload.php';
+        $loader = require __DIR__.'/../../../../../../autoload.php';
         AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
     }
 

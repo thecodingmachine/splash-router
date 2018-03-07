@@ -2,11 +2,12 @@
 
 namespace TheCodingMachine\Splash\Services;
 
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Fixtures\TestController2;
 use ReflectionMethod;
 use Zend\Diactoros\ServerRequest;
 
-class ParameterFetcherRegistryTest extends \PHPUnit_Framework_TestCase
+class ParameterFetcherRegistryTest extends TestCase
 {
     public function testRegistry()
     {

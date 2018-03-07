@@ -2,6 +2,7 @@
 
 namespace TheCodingMachine\Splash\Store;
 
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Services\SplashRoute;
 use TheCodingMachine\Splash\Utils\SplashException;
 use Zend\Diactoros\ServerRequest;
@@ -12,7 +13,7 @@ use Zend\Diactoros\ServerRequest;
  *
  * @author David Negrier
  */
-class SplashUrlNodeTest extends \PHPUnit_Framework_TestCase
+class SplashUrlNodeTest extends TestCase
 {
     public function testAddUrl()
     {

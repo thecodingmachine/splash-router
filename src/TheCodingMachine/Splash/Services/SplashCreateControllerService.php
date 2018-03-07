@@ -31,7 +31,7 @@ class SplashCreateControllerService
     {
         $namespace = rtrim($namespace, '\\').'\\';
 
-        $classNameMapper = ClassNameMapper::createFromComposerFile(__DIR__ . '/../../../../../../../../composer.json');
+        $classNameMapper = ClassNameMapper::createFromComposerFile(__DIR__ . '/../../../../../../../composer.json');
         $possibleFileNames = $classNameMapper->getPossibleFileNames($namespace.$controllerName);
         if (!isset($possibleFileNames[0])) {
             throw new SplashException("The class '".$namespace.$controllerName."' cannot be loaded using rules defined in composer autoload section");
