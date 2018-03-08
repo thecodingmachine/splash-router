@@ -45,7 +45,7 @@ class SplashServiceProvider implements ServiceProviderInterface
         ];
     }
 
-    public static function createDefaultRouter(ContainerInterface $container) : SplashDefaultRouter
+    public static function createDefaultRouter(ContainerInterface $container) : SplashRouter
     {
         if ($container->has(CacheItemPoolInterface::class)) {
             $cache = $container->get(CacheItemPoolInterface::class);
@@ -61,7 +61,7 @@ class SplashServiceProvider implements ServiceProviderInterface
 
         $routeProviders = $container->get('thecodingmachine.splash.route-providers');
 
-        $router = new SplashDefaultRouter($container, $routeProviders, $container->get(ParameterFetcherRegistry::class), $cache, $logger, SplashUtils::MODE_STRICT, true, self::getRootUrl($container));
+        $router = new SplashRouter($container, $routeProviders, $container->get(ParameterFetcherRegistry::class), $cache, $logger, SplashUtils::MODE_STRICT, true, self::getRootUrl($container));
 
         return $router;
     }

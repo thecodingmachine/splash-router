@@ -141,22 +141,22 @@ class SplashRouter implements MiddlewareInterface
     /**
      * @param Http404HandlerInterface $http404Handler
      */
-    public function setHttp404Handler($http404Handler)
-    {
-        $this->http404Handler = $http404Handler;
-
-        return $this;
-    }
+//    public function setHttp404Handler($http404Handler)
+//    {
+//        $this->http404Handler = $http404Handler;
+//
+//        return $this;
+//    }
 
     /**
      * @param Http500HandlerInterface $http500Handler
      */
-    public function setHttp500Handler($http500Handler)
-    {
-        $this->http500Handler = $http500Handler;
-
-        return $this;
-    }
+//    public function setHttp500Handler($http500Handler)
+//    {
+//        $this->http500Handler = $http500Handler;
+//
+//        return $this;
+//    }
 
     /**
      * Process an incoming request and/or response.
@@ -194,19 +194,20 @@ class SplashRouter implements MiddlewareInterface
             } else {
                 throw $e;
             }
-        } catch (PageNotFoundException $e) {
-            if ($this->http404Handler !== null) {
-                return $this->http404Handler->pageNotFound($request);
-            } else {
-                throw $e;
-            }
-        } catch (\Throwable $t) {
-            if ($this->http500Handler !== null) {
-                return $this->http500Handler->serverError($t, $request);
-            } else {
-                throw $t;
-            }
         }
+//        catch (PageNotFoundException $e) {
+//            if ($this->http404Handler !== null) {
+//                return $this->http404Handler->pageNotFound($request);
+//            } else {
+//                throw $e;
+//            }
+//        } catch (\Throwable $t) {
+//            if ($this->http500Handler !== null) {
+//                return $this->http500Handler->serverError($t, $request);
+//            } else {
+//                throw $t;
+//            }
+//        }
     }
 
     /**

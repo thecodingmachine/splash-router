@@ -2,9 +2,7 @@
 
 namespace TheCodingMachine\Splash\Fixtures;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\JsonResponse;
 use TheCodingMachine\Splash\Annotations\URL;
 
 /**
