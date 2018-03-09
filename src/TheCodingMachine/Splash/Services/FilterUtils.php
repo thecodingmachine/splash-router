@@ -6,7 +6,9 @@ namespace TheCodingMachine\Splash\Services;
  * Utility class for filters.
  */
 use Doctrine\Common\Annotations\Reader;
+use Psr\Http\Server\MiddlewareInterface;
 use ReflectionMethod;
+use TheCodingMachine\Splash\Filters\FilterInterface;
 
 class FilterUtils
 {
@@ -43,7 +45,7 @@ class FilterUtils
             $annotations = $reader->getClassAnnotations($class);
 
             foreach ($annotations as $annotation) {
-                if (is_callable($annotation)) {
+                if ($annotation instanceof FilterInterface) {
                     $filterArray[] = $annotation;
                 }
             }
@@ -53,7 +55,7 @@ class FilterUtils
         $annotations = $reader->getMethodAnnotations($refMethod);
 
         foreach ($annotations as $annotation) {
-            if (is_callable($annotation)) {
+            if ($annotation instanceof FilterInterface) {
                 $filterArray[] = $annotation;
             }
         }

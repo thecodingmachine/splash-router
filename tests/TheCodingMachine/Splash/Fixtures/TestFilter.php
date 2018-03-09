@@ -2,14 +2,16 @@
 
 namespace TheCodingMachine\Splash\Fixtures;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use TheCodingMachine\Splash\Filters\FilterInterface;
 
 /**
  * @Annotation
  */
-class TestFilter
+class TestFilter implements FilterInterface
 {
     private $params;
 
@@ -23,11 +25,13 @@ class TestFilter
         $this->params = $params;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next, ContainerInterface $container)
+    /**
+     * Process an incoming server request and return a response, optionally delegating
+     * response creation to a handler.
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next, ContainerInterface $container): ResponseInterface
     {
         $request = $request->withQueryParams(array_merge($request->getQueryParams(), $this->params));
-        $response = $next($request, $response);
-
-        return $response;
+        return $next->handle($request);
     }
 }

@@ -6,6 +6,10 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Reader;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TheCodingMachine\Splash\Fixtures\TestController2;
 use TheCodingMachine\Splash\Routers\SplashRouter;
 use Simplex\Container;
@@ -17,7 +21,7 @@ class SplashServiceProviderTest extends TestCase
 {
     protected function setUp()
     {
-        $loader = require __DIR__.'/../../../../../../autoload.php';
+        $loader = require __DIR__.'/../../../../vendor/autoload.php';
         AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
     }
 
@@ -47,8 +51,13 @@ class SplashServiceProviderTest extends TestCase
             [],
             ['id' => 42]
         );
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("", 404);
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals('/foo/var/bar', $response->getHeader('Location')[0]);
     }

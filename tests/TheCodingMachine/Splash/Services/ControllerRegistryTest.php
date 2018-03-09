@@ -13,7 +13,7 @@ class ControllerRegistryTest extends TestCase
 {
     protected function setUp()
     {
-        $loader = require __DIR__.'/../../../../../../autoload.php';
+        $loader = require __DIR__.'/../../../../vendor/autoload.php';
         AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
     }
 

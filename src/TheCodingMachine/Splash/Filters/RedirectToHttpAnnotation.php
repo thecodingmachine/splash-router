@@ -2,7 +2,8 @@
 
 namespace TheCodingMachine\Splash\Filters;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TheCodingMachine\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,7 +16,7 @@ use Zend\Diactoros\Response\RedirectResponse;
  *
  * @Annotation
  */
-class RedirectToHttpAnnotation
+class RedirectToHttpAnnotation implements FilterInterface
 {
     /**
      * The value passed to the filter.
@@ -27,7 +28,11 @@ class RedirectToHttpAnnotation
         $this->port = $values['port'] ?? 80;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next, ContainerInterface $container)
+    /**
+     * Process an incoming server request and return a response, optionally delegating
+     * response creation to a handler.
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next,ContainerInterface $container): ResponseInterface
     {
         $uri = $request->getUri();
         $scheme = $uri->getScheme();
@@ -40,6 +45,6 @@ class RedirectToHttpAnnotation
             return new RedirectResponse($uri);
         }
 
-        return $next($request, $response);
+        return $next->handle($request);
     }
 }

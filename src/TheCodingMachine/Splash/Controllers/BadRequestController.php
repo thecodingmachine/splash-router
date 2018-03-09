@@ -12,7 +12,8 @@ class BadRequestController implements Http400HandlerInterface
 {
     public function badRequest(BadRequestException $e, ServerRequestInterface $request) : ResponseInterface
     {
-        if($request->getHeader("Accept") === 'application/json') {
+        $acceptType = $request->getHeader('Accept');
+        if(\is_array($acceptType) && \count($acceptType) > 0 && \strpos($acceptType[0], 'json') !== false) {
             return new JsonResponse("Bad request", 400);
         }
         return new HtmlResponse("Bad request", 400);
