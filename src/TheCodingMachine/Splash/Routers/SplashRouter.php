@@ -100,10 +100,16 @@ class SplashRouter implements MiddlewareInterface
      * @param bool                     $debug                    In debug mode, Splash will display more accurate messages if output starts (in strict mode)
      * @param string                   $rootUrl
      */
-    public function __construct(ContainerInterface $container, array $routeProviders, ParameterFetcherRegistry $parameterFetcherRegistry,
-                                CacheItemPoolInterface $cachePool = null, LoggerInterface $log = null, string $mode = SplashUtils::MODE_STRICT,
-                                bool $debug = true, string $rootUrl = '/')
-    {
+    public function __construct(
+        ContainerInterface $container,
+        array $routeProviders,
+        ParameterFetcherRegistry $parameterFetcherRegistry,
+        CacheItemPoolInterface $cachePool = null,
+        LoggerInterface $log = null,
+        string $mode = SplashUtils::MODE_STRICT,
+        bool $debug = true,
+        string $rootUrl = '/'
+    ) {
         $this->container = $container;
         $this->routeProviders = $routeProviders;
         $this->parameterFetcherRegistry = $parameterFetcherRegistry;

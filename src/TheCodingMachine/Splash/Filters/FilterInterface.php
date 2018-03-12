@@ -14,5 +14,4 @@ interface FilterInterface
      * response creation to a handler.
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler, ContainerInterface $container): ResponseInterface;
-
 }

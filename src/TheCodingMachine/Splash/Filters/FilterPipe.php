@@ -2,7 +2,6 @@
 
 namespace TheCodingMachine\Splash\Filters;
 
-
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,7 +34,7 @@ class FilterPipe implements RequestHandlerInterface
      * @param RequestHandlerInterface $handler
      * @param ContainerInterface $container
      */
-    public function __construct(array $filters, RequestHandlerInterface $handler,ContainerInterface $container)
+    public function __construct(array $filters, RequestHandlerInterface $handler, ContainerInterface $container)
     {
         $this->queue = new \SplQueue();
         foreach ($filters as $filter) {

@@ -32,7 +32,7 @@ class RedirectToHttpAnnotation implements FilterInterface
      * Process an incoming server request and return a response, optionally delegating
      * response creation to a handler.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $next,ContainerInterface $container): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next, ContainerInterface $container): ResponseInterface
     {
         $uri = $request->getUri();
         $scheme = $uri->getScheme();

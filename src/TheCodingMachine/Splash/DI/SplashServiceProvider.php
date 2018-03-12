@@ -86,14 +86,19 @@ class SplashServiceProvider implements ServiceProviderInterface
 
     public static function createControllerRegistry(ContainerInterface $container) : ControllerRegistry
     {
-        return new ControllerRegistry($container->get(ControllerAnalyzer::class),
-            $container->get('thecodingmachine.splash.controllers'));
+        return new ControllerRegistry(
+            $container->get(ControllerAnalyzer::class),
+            $container->get('thecodingmachine.splash.controllers')
+        );
     }
 
     public static function createControllerAnalyzer(ContainerInterface $container) : ControllerAnalyzer
     {
-        return new ControllerAnalyzer($container, $container->get(ParameterFetcherRegistry::class),
-            $container->get(Reader::class));
+        return new ControllerAnalyzer(
+            $container,
+            $container->get(ParameterFetcherRegistry::class),
+            $container->get(Reader::class)
+        );
     }
 
     public static function createParameterFetcherRegistry(ContainerInterface $container) : ParameterFetcherRegistry
