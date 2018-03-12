@@ -6,7 +6,7 @@ use Doctrine\Common\Annotations\Reader;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Factories\Parameter;
 use Interop\Container\ServiceProviderInterface;
-use TheCodingMachine\Splash\Routers\SplashDefaultRouter;
+use TheCodingMachine\Splash\Routers\SplashRouter;
 use TheCodingMachine\Splash\Services\ControllerAnalyzer;
 use TheCodingMachine\Splash\Services\ControllerRegistry;
 use TheCodingMachine\Splash\Services\ParameterFetcherRegistry;
@@ -25,7 +25,7 @@ class SplashServiceProvider implements ServiceProviderInterface
     public function getFactories()
     {
         return [
-            SplashDefaultRouter::class => [self::class, 'createDefaultRouter'],
+            SplashRouter::class => [self::class, 'createDefaultRouter'],
             'thecodingmachine.splash.route-providers' => [self::class, 'createRouteProviders'],
             ControllerRegistry::class => [self::class, 'createControllerRegistry'],
             ControllerAnalyzer::class => [self::class, 'createControllerAnalyzer'],
@@ -45,7 +45,7 @@ class SplashServiceProvider implements ServiceProviderInterface
         ];
     }
 
-    public static function createDefaultRouter(ContainerInterface $container) : SplashDefaultRouter
+    public static function createDefaultRouter(ContainerInterface $container) : SplashRouter
     {
         if ($container->has(CacheItemPoolInterface::class)) {
             $cache = $container->get(CacheItemPoolInterface::class);
@@ -61,7 +61,7 @@ class SplashServiceProvider implements ServiceProviderInterface
 
         $routeProviders = $container->get('thecodingmachine.splash.route-providers');
 
-        $router = new SplashDefaultRouter($container, $routeProviders, $container->get(ParameterFetcherRegistry::class), $cache, $logger, SplashUtils::MODE_STRICT, true, self::getRootUrl($container));
+        $router = new SplashRouter($container, $routeProviders, $container->get(ParameterFetcherRegistry::class), $cache, $logger, SplashUtils::MODE_STRICT, true, self::getRootUrl($container));
 
         return $router;
     }
@@ -86,14 +86,19 @@ class SplashServiceProvider implements ServiceProviderInterface
 
     public static function createControllerRegistry(ContainerInterface $container) : ControllerRegistry
     {
-        return new ControllerRegistry($container->get(ControllerAnalyzer::class),
-            $container->get('thecodingmachine.splash.controllers'));
+        return new ControllerRegistry(
+            $container->get(ControllerAnalyzer::class),
+            $container->get('thecodingmachine.splash.controllers')
+        );
     }
 
     public static function createControllerAnalyzer(ContainerInterface $container) : ControllerAnalyzer
     {
-        return new ControllerAnalyzer($container, $container->get(ParameterFetcherRegistry::class),
-            $container->get(Reader::class));
+        return new ControllerAnalyzer(
+            $container,
+            $container->get(ParameterFetcherRegistry::class),
+            $container->get(Reader::class)
+        );
     }
 
     public static function createParameterFetcherRegistry(ContainerInterface $container) : ParameterFetcherRegistry
@@ -121,7 +126,7 @@ class SplashServiceProvider implements ServiceProviderInterface
 
     public static function updatePriorityQueue(ContainerInterface $container, \SplPriorityQueue $priorityQueue) : \SplPriorityQueue
     {
-        $priorityQueue->insert($container->get(SplashDefaultRouter::class), MiddlewareOrder::ROUTER);
+        $priorityQueue->insert($container->get(SplashRouter::class), MiddlewareOrder::ROUTER);
         return $priorityQueue;
     }
 }

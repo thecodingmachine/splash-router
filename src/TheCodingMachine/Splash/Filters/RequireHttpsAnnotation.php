@@ -2,7 +2,12 @@
 
 namespace TheCodingMachine\Splash\Filters;
 
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TheCodingMachine\Splash\Utils\SplashException;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Filter that requires the use of HTTPS (if enabled in the conf)
@@ -12,7 +17,7 @@ use TheCodingMachine\Splash\Utils\SplashException;
  *
  * @Annotation
  */
-class RequireHttpsAnnotation
+class RequireHttpsAnnotation implements FilterInterface
 {
     /**
      * The value passed to the filter.
@@ -35,7 +40,11 @@ class RequireHttpsAnnotation
         }
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next, ContainerInterface $container)
+    /**
+     * Process an incoming server request and return a response, optionally delegating
+     * response creation to a handler.
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next, ContainerInterface $container): ResponseInterface
     {
         $uri = $request->getUri();
         $scheme = $uri->getScheme();
@@ -48,6 +57,6 @@ class RequireHttpsAnnotation
             return new RedirectResponse($uri);
         }
 
-        return $next($request, $response);
+        return $next->handle($request);
     }
 }

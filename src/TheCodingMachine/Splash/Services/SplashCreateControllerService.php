@@ -26,12 +26,19 @@ class SplashCreateControllerService
      * @param string $injectDaoFactory
      * @param array  $actions
      */
-    public function generate(MoufManager $moufManager, $controllerName, $instanceName, $namespace, $injectLogger = false,
-            $injectTemplate = false, $injectDaoFactory = false, $actions = array())
-    {
+    public function generate(
+        MoufManager $moufManager,
+        $controllerName,
+        $instanceName,
+        $namespace,
+        $injectLogger = false,
+        $injectTemplate = false,
+        $injectDaoFactory = false,
+        $actions = array()
+    ) {
         $namespace = rtrim($namespace, '\\').'\\';
 
-        $classNameMapper = ClassNameMapper::createFromComposerFile(__DIR__ . '/../../../../../../../../composer.json');
+        $classNameMapper = ClassNameMapper::createFromComposerFile(__DIR__ . '/../../../../../../../composer.json');
         $possibleFileNames = $classNameMapper->getPossibleFileNames($namespace.$controllerName);
         if (!isset($possibleFileNames[0])) {
             throw new SplashException("The class '".$namespace.$controllerName."' cannot be loaded using rules defined in composer autoload section");
@@ -135,21 +142,18 @@ use TheCodingMachine\Splash\Annotations\URL;
 use Mouf\Html\Template\TemplateInterface;
 use Mouf\Html\HtmlElement\HtmlBlock;
 <?php
-
 }
                 ?>
 <?php if ($injectLogger) {
     ?>
 use Psr\Log\LoggerInterface;
 <?php
-
 }
                 ?>
 <?php if ($injectDaoFactory) {
     ?>
 use <?= $moufManager->getVariable('tdbmDefaultDaoNamespace').'\\Generated\\'.$moufManager->getVariable('tdbmDefaultDaoFactoryName') ?>;
 <?php
-
 }
                 ?>
 <?php if ($injectTwig) {
@@ -157,28 +161,24 @@ use <?= $moufManager->getVariable('tdbmDefaultDaoNamespace').'\\Generated\\'.$mo
 use \Twig_Environment;
 use Mouf\Html\Renderer\Twig\TwigTemplate;
 <?php
-
 }
                 ?>
 <?php if ($importJsonResponse) {
     ?>
 use Zend\Diactoros\Response\JsonResponse;
 <?php
-
 }
                 ?>
 <?php if ($importRedirectResponse) {
     ?>
 use Zend\Diactoros\Response\RedirectResponse;
 <?php
-
 }
                 ?>
 <?php if ($importHtmlResponse) {
     ?>
 use TheCodingMachine\Splash\HtmlResponse;
 <?php
-
 }
                 ?>
 
@@ -196,7 +196,6 @@ class <?= $controllerName ?> {
     private $logger;
 
 <?php
-
 }
                 ?>
 <?php if ($injectTemplate) {
@@ -214,7 +213,6 @@ class <?= $controllerName ?> {
     private $content;
 
 <?php
-
 }
                 ?>
 <?php if ($injectDaoFactory) {
@@ -226,7 +224,6 @@ class <?= $controllerName ?> {
     private $daoFactory;
 
 <?php
-
 }
                 ?>
 <?php if ($injectTwig) {
@@ -238,7 +235,6 @@ class <?= $controllerName ?> {
     private $twig;
 
 <?php
-
 }
                 ?>
 
@@ -248,64 +244,60 @@ class <?= $controllerName ?> {
 if ($injectLogger) {
     echo "     * @param LoggerInterface \$logger The logger\n";
 }
-                if ($injectTemplate) {
-                    echo "     * @param TemplateInterface \$template The template used by this controller\n";
-                    echo "     * @param HtmlBlock \$content The main content block of the page\n";
-                }
-                if ($injectDaoFactory) {
-                    echo "     * @param DaoFactory \$daoFactory The object in charge of retrieving DAOs\n";
-                }
-                if ($injectTwig) {
-                    echo "     * @param Twig_Environment \$twig The Twig environment (used to render Twig templates)\n";
-                }
+if ($injectTemplate) {
+    echo "     * @param TemplateInterface \$template The template used by this controller\n";
+    echo "     * @param HtmlBlock \$content The main content block of the page\n";
+}
+if ($injectDaoFactory) {
+    echo "     * @param DaoFactory \$daoFactory The object in charge of retrieving DAOs\n";
+}
+if ($injectTwig) {
+    echo "     * @param Twig_Environment \$twig The Twig environment (used to render Twig templates)\n";
+}
                 ?>
      */
     public function __construct(<?php
-$parameters = array();
-                if ($injectLogger) {
-                    $parameters[] = 'LoggerInterface $logger';
-                }
-                if ($injectTemplate) {
-                    $parameters[] = 'TemplateInterface $template';
-                    $parameters[] = 'HtmlBlock $content';
-                }
-                if ($injectDaoFactory) {
-                    $parameters[] = 'DaoFactory $daoFactory';
-                }
-                if ($injectTwig) {
-                    $parameters[] = 'Twig_Environment $twig';
-                }
+    $parameters = array();
+    if ($injectLogger) {
+        $parameters[] = 'LoggerInterface $logger';
+    }
+    if ($injectTemplate) {
+        $parameters[] = 'TemplateInterface $template';
+        $parameters[] = 'HtmlBlock $content';
+    }
+    if ($injectDaoFactory) {
+        $parameters[] = 'DaoFactory $daoFactory';
+    }
+    if ($injectTwig) {
+        $parameters[] = 'Twig_Environment $twig';
+    }
                 echo implode(', ', $parameters);
                 ?>) {
 <?php if ($injectLogger) {
     ?>
         $this->logger = $logger;
 <?php
-
 }
-                if ($injectTemplate) {
-                    ?>
-        $this->template = $template;
-        $this->content = $content;
+if ($injectTemplate) {
+    ?>
+$this->template = $template;
+$this->content = $content;
 <?php
-
-                }
-                if ($injectDaoFactory) {
-                    ?>
-        $this->daoFactory = $daoFactory;
+}
+if ($injectDaoFactory) {
+    ?>
+$this->daoFactory = $daoFactory;
 <?php
-
-                }
-                if ($injectTwig) {
-                    ?>
-        $this->twig = $twig;
+}
+if ($injectTwig) {
+    ?>
+$this->twig = $twig;
 <?php
-
-                }
+}
                 ?>
     }
 
-<?php foreach ($actions as $action):
+<?php foreach ($actions as $action) :
     // First step, let's detect the {parameters} in the URL and add them if necessary
     // TODO
     // TODO
@@ -330,54 +322,52 @@ $parameters = array();
         echo "     * @Delete\n";
     }
 }
-                if (isset($action['parameters'])) {
-                    $parameters = $action['parameters'];
-                    foreach ($parameters as $parameter) {
-                        echo '     * @param '.$parameter['type'].' $'.$parameter['name']."\n";
-                    }
-                } else {
-                    $parameters = array();
-                }
+if (isset($action['parameters'])) {
+    $parameters = $action['parameters'];
+    foreach ($parameters as $parameter) {
+        echo '     * @param '.$parameter['type'].' $'.$parameter['name']."\n";
+    }
+} else {
+    $parameters = array();
+}
                 ?>
      */
     public function <?= $action['method'] ?>(<?php
-$parametersCode = array();
-                foreach ($parameters as $parameter) {
-                    $parameterCode = '$'.$parameter['name'];
-                    if ($parameter['optionnal'] == 'true') {
-                        if ($parameter['type'] == 'int') {
-                            $defaultValue = (int) $parameter['defaultValue'];
-                        } elseif ($parameter['type'] == 'number') {
-                            $defaultValue = (float) $parameter['defaultValue'];
-                        } else {
-                            $defaultValue = $parameter['defaultValue'];
-                        }
-                        $parameterCode .= ' = '.var_export($defaultValue, true);
-                    }
-                    $parametersCode[] = $parameterCode;
-                }
+    $parametersCode = array();
+    foreach ($parameters as $parameter) {
+        $parameterCode = '$'.$parameter['name'];
+        if ($parameter['optionnal'] == 'true') {
+            if ($parameter['type'] == 'int') {
+                $defaultValue = (int) $parameter['defaultValue'];
+            } elseif ($parameter['type'] == 'number') {
+                $defaultValue = (float) $parameter['defaultValue'];
+            } else {
+                $defaultValue = $parameter['defaultValue'];
+            }
+            $parameterCode .= ' = '.var_export($defaultValue, true);
+        }
+        $parametersCode[] = $parameterCode;
+    }
                 echo implode(', ', $parametersCode);
                 ?>) {
         // TODO: write content of action here
 
-<?php if ($injectTemplate && $action['view'] == 'twig'): ?>
+<?php if ($injectTemplate && $action['view'] == 'twig') : ?>
         // Let's add the twig file to the template.
         $this->content->addHtmlElement(new TwigTemplate($this->twig, <?php var_export($action['twigFile']);
                 ?>, array("message"=>"world")));
 
         return new HtmlResponse($this->template);
-<?php elseif ($injectTemplate && $action['view'] == 'php'): ?>
+<?php elseif ($injectTemplate && $action['view'] == 'php') : ?>
         // Let's add the view to the content.
         // Note: $this is passed as the scope, so in the view file, you can refer to protected
         // and public variables and methods of this constructor using "$this".
         $this->content->addFile(ROOT_PATH.<?php var_export($action['phpFile']) ?>, $this);
 
         return new HtmlResponse($this->template);
-<?php elseif ($action['view'] == 'json'): ?>
-
+<?php elseif ($action['view'] == 'json') : ?>
         return new JsonResponse([ "status"=>"ok" ]);
-<?php elseif ($action['view'] == 'redirect'): ?>
-
+<?php elseif ($action['view'] == 'redirect') : ?>
         return new RedirectResponse(<?php var_export($action['redirect']);
                 ?>);
 <?php endif;
@@ -393,50 +383,50 @@ $parametersCode = array();
                 chmod(ROOT_PATH.'../../../'.$fileName, 0664);
 
                 // Now, let's create the views files
-                foreach ($actions as $action) {
-                    if ($injectTemplate && $action['view'] == 'twig') {
-                        $twigTemplateFile = $this->generateTwigView();
+foreach ($actions as $action) {
+    if ($injectTemplate && $action['view'] == 'twig') {
+        $twigTemplateFile = $this->generateTwigView();
 
-                        $twigFile = ltrim($action['twigFile'], '/\\');
+        $twigFile = ltrim($action['twigFile'], '/\\');
 
-                        file_put_contents(ROOT_PATH.'../../../'.$twigFile, $twigTemplateFile);
-                        chmod(ROOT_PATH.'../../../'.$twigFile, 0664);
-                    } elseif ($injectTemplate && $action['view'] == 'php') {
-                        $phpTemplateFile = $this->generatePhpView($namespace.'\\'.$controllerName);
+        file_put_contents(ROOT_PATH.'../../../'.$twigFile, $twigTemplateFile);
+        chmod(ROOT_PATH.'../../../'.$twigFile, 0664);
+    } elseif ($injectTemplate && $action['view'] == 'php') {
+        $phpTemplateFile = $this->generatePhpView($namespace.'\\'.$controllerName);
 
-                        $phpFile = ltrim($action['phpFile'], '/\\');
+        $phpFile = ltrim($action['phpFile'], '/\\');
 
-                        file_put_contents(ROOT_PATH.'../../../'.$phpFile, $phpTemplateFile);
-                        chmod(ROOT_PATH.'../../../'.$phpFile, 0664);
-                    }
-                }
+        file_put_contents(ROOT_PATH.'../../../'.$phpFile, $phpTemplateFile);
+        chmod(ROOT_PATH.'../../../'.$phpFile, 0664);
+    }
+}
 
                 // Now, let's create the instance
                 $controllerInstance = $moufManager->createInstance($namespace.'\\'.$controllerName);
                 $controllerInstance->setName($instanceName);
-                if ($injectLogger) {
-                    if ($moufManager->has('psr.errorLogLogger')) {
-                        $controllerInstance->getProperty('logger')->setValue($moufManager->getInstanceDescriptor('psr.errorLogLogger'));
-                    }
-                }
-                if ($injectTemplate) {
-                    if ($moufManager->has('bootstrapTemplate')) {
-                        $controllerInstance->getProperty('template')->setValue($moufManager->getInstanceDescriptor('bootstrapTemplate'));
-                    }
-                    if ($moufManager->has('block.content')) {
-                        $controllerInstance->getProperty('content')->setValue($moufManager->getInstanceDescriptor('block.content'));
-                    }
-                }
-                if ($injectDaoFactory) {
-                    if ($moufManager->has('daoFactory')) {
-                        $controllerInstance->getProperty('daoFactory')->setValue($moufManager->getInstanceDescriptor('daoFactory'));
-                    }
-                }
-                if ($injectTwig) {
-                    if ($moufManager->has('twigEnvironment')) {
-                        $controllerInstance->getProperty('twig')->setValue($moufManager->getInstanceDescriptor('twigEnvironment'));
-                    }
-                }
+if ($injectLogger) {
+    if ($moufManager->has('psr.errorLogLogger')) {
+        $controllerInstance->getProperty('logger')->setValue($moufManager->getInstanceDescriptor('psr.errorLogLogger'));
+    }
+}
+if ($injectTemplate) {
+    if ($moufManager->has('bootstrapTemplate')) {
+        $controllerInstance->getProperty('template')->setValue($moufManager->getInstanceDescriptor('bootstrapTemplate'));
+    }
+    if ($moufManager->has('block.content')) {
+        $controllerInstance->getProperty('content')->setValue($moufManager->getInstanceDescriptor('block.content'));
+    }
+}
+if ($injectDaoFactory) {
+    if ($moufManager->has('daoFactory')) {
+        $controllerInstance->getProperty('daoFactory')->setValue($moufManager->getInstanceDescriptor('daoFactory'));
+    }
+}
+if ($injectTwig) {
+    if ($moufManager->has('twigEnvironment')) {
+        $controllerInstance->getProperty('twig')->setValue($moufManager->getInstanceDescriptor('twigEnvironment'));
+    }
+}
 
                 $moufManager->rewriteMouf();
 

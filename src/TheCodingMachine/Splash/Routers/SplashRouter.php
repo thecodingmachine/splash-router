@@ -5,10 +5,9 @@ namespace TheCodingMachine\Splash\Routers;
 use Cache\Adapter\Void\VoidCachePool;
 use Interop\Container\ContainerInterface;
 use TheCodingMachine\Splash\Controllers\Http400HandlerInterface;
-use TheCodingMachine\Splash\Controllers\Http404HandlerInterface;
-use TheCodingMachine\Splash\Controllers\Http500HandlerInterface;
 use TheCodingMachine\Splash\Exception\BadRequestException;
 use TheCodingMachine\Splash\Exception\PageNotFoundException;
+use TheCodingMachine\Splash\Filters\FilterPipe;
 use TheCodingMachine\Splash\Services\ParameterFetcher;
 use TheCodingMachine\Splash\Services\ParameterFetcherRegistry;
 use TheCodingMachine\Splash\Services\UrlProviderInterface;
@@ -20,13 +19,12 @@ use TheCodingMachine\Splash\Store\SplashUrlNode;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
-use TheCodingMachine\Splash\Services\SplashRequestContext;
 use TheCodingMachine\Splash\Services\SplashUtils;
 use Psr\Log\NullLogger;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Stratigility\MiddlewarePipe;
 
-class SplashDefaultRouter implements MiddlewareInterface
+class SplashRouter implements MiddlewareInterface
 {
     /**
      * The container that will be used to fetch controllers.
@@ -91,20 +89,6 @@ class SplashDefaultRouter implements MiddlewareInterface
     private $http400Handler;
 
     /**
-     * (optional) Handles HTTP 404 status code (if no $out provided).
-     *
-     * @var Http404HandlerInterface
-     */
-    private $http404Handler;
-
-    /**
-     * (optional) Handles HTTP 500 status code.
-     *
-     * @var Http500HandlerInterface
-     */
-    private $http500Handler;
-
-    /**
      * @Important
      *
      * @param ContainerInterface       $container                The container that will be used to fetch controllers.
@@ -116,8 +100,16 @@ class SplashDefaultRouter implements MiddlewareInterface
      * @param bool                     $debug                    In debug mode, Splash will display more accurate messages if output starts (in strict mode)
      * @param string                   $rootUrl
      */
-    public function __construct(ContainerInterface $container, array $routeProviders, ParameterFetcherRegistry $parameterFetcherRegistry, CacheItemPoolInterface $cachePool = null, LoggerInterface $log = null, string $mode = SplashUtils::MODE_STRICT, bool $debug = true, string $rootUrl = '/')
-    {
+    public function __construct(
+        ContainerInterface $container,
+        array $routeProviders,
+        ParameterFetcherRegistry $parameterFetcherRegistry,
+        CacheItemPoolInterface $cachePool = null,
+        LoggerInterface $log = null,
+        string $mode = SplashUtils::MODE_STRICT,
+        bool $debug = true,
+        string $rootUrl = '/'
+    ) {
         $this->container = $container;
         $this->routeProviders = $routeProviders;
         $this->parameterFetcherRegistry = $parameterFetcherRegistry;
@@ -139,84 +131,13 @@ class SplashDefaultRouter implements MiddlewareInterface
     }
 
     /**
-     * @param Http404HandlerInterface $http404Handler
-     */
-    public function setHttp404Handler($http404Handler)
-    {
-        $this->http404Handler = $http404Handler;
-
-        return $this;
-    }
-
-    /**
-     * @param Http500HandlerInterface $http500Handler
-     */
-    public function setHttp500Handler($http500Handler)
-    {
-        $this->http500Handler = $http500Handler;
-
-        return $this;
-    }
-
-    /**
-     * Process an incoming request and/or response.
-     *
-     * Accepts a server-side request and a response instance, and does
-     * something with them.
-     *
-     * If the response is not complete and/or further processing would not
-     * interfere with the work done in the middleware, or if the middleware
-     * wants to delegate to another process, it can use the `$out` callable
-     * if present.
-     *
-     * If the middleware does not return a value, execution of the current
-     * request is considered complete, and the response instance provided will
-     * be considered the response to return.
-     *
-     * Alternately, the middleware may return a response instance.
-     *
-     * Often, middleware will `return $out();`, with the assumption that a
-     * later middleware will return a response.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param null|callable          $out
-     *
-     * @return null|ResponseInterface
-     */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
-    {
-        try {
-            return $this->route($request, $response, $out);
-        } catch (BadRequestException $e) {
-            if ($this->http400Handler !== null) {
-                return $this->http400Handler->badRequest($e, $request);
-            } else {
-                throw $e;
-            }
-        } catch (PageNotFoundException $e) {
-            if ($this->http404Handler !== null) {
-                return $this->http404Handler->pageNotFound($request);
-            } else {
-                throw $e;
-            }
-        } catch (\Throwable $t) {
-            if ($this->http500Handler !== null) {
-                return $this->http500Handler->serverError($t, $request);
-            } else {
-                throw $t;
-            }
-        }
-    }
-
-    /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
      * @param callable|null          $out
      *
      * @return ResponseInterface
      */
-    private function route(ServerRequestInterface $request, ResponseInterface $response, callable $out = null, $retry = false) : ResponseInterface
+    private function route(ServerRequestInterface $request, RequestHandlerInterface $next = null, $retry = false) : ResponseInterface
     {
         $this->purgeExpiredRoutes();
 
@@ -264,8 +185,8 @@ class SplashDefaultRouter implements MiddlewareInterface
 
             if ($this->debug === false || $retry === true) {
                 // No route found, let's pass control to the next middleware.
-                if ($out !== null) {
-                    return $out($request, $response);
+                if ($next !== null) {
+                    return $next->handle($request);
                 } else {
                     $this->log->debug('Found no route for URL {url}.', [
                         'url' => $request_path,
@@ -277,7 +198,7 @@ class SplashDefaultRouter implements MiddlewareInterface
                 // Let's purge the cache and retry!
                 $this->purgeUrlsCache();
 
-                return $this->route($request, $response, $out, true);
+                return $this->route($request, $next, true);
             }
         }
 
@@ -286,7 +207,7 @@ class SplashDefaultRouter implements MiddlewareInterface
             // The route is invalid! Let's purge the cache and retry!
             $this->purgeUrlsCache();
 
-            return $this($request, $response, $out);
+            return $this->process($request, $next);
         }
 
         $controller = $this->container->get($splashRoute->getControllerInstanceName());
@@ -299,39 +220,9 @@ class SplashDefaultRouter implements MiddlewareInterface
         ]);
 
         $filters = $splashRoute->getFilters();
-
-        $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($controller, $action, $splashRoute) {
-            // Let's recreate a new context object (because request can be modified by the filters)
-            $context = new SplashRequestContext($request);
-            $context->setUrlParameters($splashRoute->getFilledParameters());
-            // Let's pass everything to the controller:
-            $args = $this->parameterFetcherRegistry->toArguments($context, $splashRoute->getParameters());
-
-            try {
-                $response = SplashUtils::buildControllerResponse(
-                    function () use ($controller, $action, $args) {
-                        return $controller->$action(...$args);
-                    },
-                    $this->mode,
-                    $this->debug
-                );
-            } catch (SplashException $e) {
-                throw new SplashException($e->getMessage(). ' (in '.$splashRoute->getControllerInstanceName().'->'.$splashRoute->getMethodName().')', $e->getCode(), $e);
-            }
-            return $response;
-        };
-
-        // Apply filters
-        for ($i = count($filters) - 1; $i >= 0; --$i) {
-            $filter = $filters[$i];
-            $middlewareCaller = function (ServerRequestInterface $request, ResponseInterface $response) use ($middlewareCaller, $filter) {
-                return $filter($request, $response, $middlewareCaller, $this->container);
-            };
-        }
-
-        $response = $middlewareCaller($request, $response);
-
-        return $response;
+        $pipeHandler = new ControllerHandler($splashRoute, $controller, $this->parameterFetcherRegistry, $this->mode, $this->debug);
+        $filterPipe = new FilterPipe($filters, $pipeHandler, $this->container);
+        return $filterPipe->process($request);
     }
 
     /**
@@ -415,11 +306,16 @@ class SplashDefaultRouter implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // create a dummy response to keep compatibility with old middlewares.
-        $response = new Response();
-
-        return $this($request, $response, function($request) use ($handler) {
+        try {
+            return $this->route($request, $handler);
+        } catch (BadRequestException $e) {
+            if ($this->http400Handler !== null) {
+                return $this->http400Handler->badRequest($e, $request);
+            } else {
+                throw $e;
+            }
+        } catch (PageNotFoundException $e) {
             return $handler->handle($request);
-        });
+        }
     }
 }

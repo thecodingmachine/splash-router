@@ -3,12 +3,13 @@
 namespace TheCodingMachine\Splash\Services;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Fixtures\TestAction;
 use TheCodingMachine\Splash\Fixtures\TestController2;
 use TheCodingMachine\Splash\Fixtures\TestFilter;
 use Mouf\Picotainer\Picotainer;
 
-class ControllerAnalyzerTest extends \PHPUnit_Framework_TestCase
+class ControllerAnalyzerTest extends TestCase
 {
     public function testControllerRegistryWithDetector()
     {

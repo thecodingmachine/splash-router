@@ -11,7 +11,7 @@ class SplashUtils
     const MODE_WEAK = 'weak';
     const MODE_STRICT = 'strict';
 
-    public static function buildControllerResponse($callback, $mode = self::MODE_STRICT, $debug = false)
+    public static function buildControllerResponse($callback, $mode = self::MODE_STRICT, $debug = false) : ResponseInterface
     {
         ob_start();
         try {
@@ -62,31 +62,6 @@ class SplashUtils
         }
 
         return $result;
-
-        // TODO: If Symfony Response convert to psr-7
-//        if ($result instanceof Response) {
-//            if ($html !== "") {
-//                throw new SplashException("You cannot output text AND return Response object in the same action. Output already started :'$html");
-//            }
-//
-//            if (headers_sent()) {
-//                $headers = headers_list();
-//                throw new SplashException("Headers already sent. Detected headers are : ".var_export($headers, true));
-//            }
-//
-//            return $result;
-//        }
-//
-//        $code = http_response_code();
-//        $headers = SplashUtils::greatResponseHeaders();
-//
-//        // Suppress actual headers (re-add by Symfony Response)
-//        // If you don't remove old headers, it's duplicated in HTTP Headers
-//        foreach ($headers as $key => $head) {
-//            header_remove($key);
-//        }
-//
-//        return new Response($html, $code, $headers);
     }
 
     /**

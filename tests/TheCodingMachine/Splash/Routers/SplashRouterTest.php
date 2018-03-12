@@ -5,8 +5,11 @@ namespace TheCodingMachine\Splash\Routers;
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use TheCodingMachine\Splash\Controllers\HttpErrorsController;
-use TheCodingMachine\Splash\Exception\PageNotFoundException;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use TheCodingMachine\Splash\Controllers\BadRequestController;
 use TheCodingMachine\Splash\Exception\SplashMissingParameterException;
 use TheCodingMachine\Splash\Fixtures\TestBadParamController;
 use TheCodingMachine\Splash\Fixtures\TestController2;
@@ -25,11 +28,11 @@ use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\ServerRequest;
 use TheCodingMachine\Splash\Fixtures\TestController3;
 
-class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
+class SplashRouterTest extends TestCase
 {
     protected function setUp()
     {
-        $loader = require __DIR__.'../../../../../../vendor/autoload.php';
+        $loader = require __DIR__.'/../../../../vendor/autoload.php';
         AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
     }
 
@@ -43,7 +46,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
@@ -52,8 +55,13 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             [],
             ['id' => 42]
             );
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("");
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(JsonResponse::class, $response);
         /* @var $response JsonResponse */
         $decodedResponse = json_decode((string) $response->getBody(), true);
@@ -68,15 +76,13 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             [],
             ['id' => 42]
         );
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals('/foo/var/bar', $response->getHeader('Location')[0]);
 
         // Now, let's test the second kind of redirect
         $request = new ServerRequest([], [], '/controller', 'GET');
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals('/controller/', $response->getHeader('Location')[0]);
     }
@@ -86,21 +92,20 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $container = new Picotainer([
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry);
+        $defaultRouter = new SplashRouter($container, [], $parameterFetcherRegistry);
 
         $request = new ServerRequest([], [], '/foo', 'GET');
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response, function () {
-            return new HtmlResponse('Not found', 404);
-        });
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse('Not found', 404);
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(HtmlResponse::class, $response);
         /* @var $response HtmlResponse */
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertEquals('Not found', (string) $response->getBody());
-
-        // Now, let's retry without a $out parameter and let's check we get an exception
-        $this->expectException(PageNotFoundException::class);
-        $response = $defaultRouter($request, $response);
     }
 
 
@@ -114,33 +119,19 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
         
         $request = new ServerRequest([], [], '/'.urlencode('🍕'), 'GET');
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("ok");
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-    
-    public function testUnknownRouteWith404Handler()
-    {
-        $container = new Picotainer([
-        ]);
-        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry);
-        $errorsController = HttpErrorsController::createDefault();
-        $defaultRouter->setHttp404Handler($errorsController);
-
-        $request = new ServerRequest([], [], '/foo', 'GET');
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
-        /* @var $response HtmlResponse */
-
-        // Now, let's retry without a $out parameter and let's check we get an exception
-        $response = $defaultRouter($request, $response);
-        $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function testRootUrlError()
@@ -148,12 +139,17 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $container = new Picotainer([
         ]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry, null, null, SplashUtils::MODE_STRICT, true, '/baseUrl/');
+        $defaultRouter = new SplashRouter($container, [], $parameterFetcherRegistry, null, null, SplashUtils::MODE_STRICT, true, '/baseUrl/');
 
         $request = new ServerRequest([], [], '/foo', 'GET');
-        $response = new HtmlResponse('');
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("ok");
+            }
+        };
         $this->expectException(SplashException::class);
-        $response = $defaultRouter($request, $response);
+        $response = $defaultRouter->process($request, $handler);
     }
 
     public function testMissingCompulsoryParameter()
@@ -166,15 +162,20 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
         // We need an ID parameter
         $request = new ServerRequest([], [], '/foo/var/bar', 'GET');
-        $response = new HtmlResponse('');
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("ok");
+            }
+        };
         $this->expectException(SplashMissingParameterException::class);
-        $response = $defaultRouter($request, $response);
+        $response = $defaultRouter->process($request, $handler);
     }
 
     public function testMissingCompulsoryParameterWithHandler()
@@ -187,42 +188,22 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
-        $errorsController = HttpErrorsController::createDefault();
-        $defaultRouter->setHttp400Handler($errorsController);
+        $defaultRouter->setHttp400Handler(new BadRequestController());
 
         // We need an ID parameter
         $request = new ServerRequest([], [], '/foo/var/bar', 'GET');
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("ok");
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertEquals(400, $response->getStatusCode());
-    }
-
-    public function testExceptionWithHandler()
-    {
-        $container = new Picotainer([
-            'controller' => function () {
-                return new TestController2();
-            },
-        ]);
-        $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
-        $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
-            $controllerRegistry,
-        ], $parameterFetcherRegistry);
-
-        $errorsController = HttpErrorsController::createDefault();
-        $defaultRouter->setHttp500Handler($errorsController);
-
-        // We need an ID parameter
-        $request = new ServerRequest([], [], '/controller/triggerException', 'GET');
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
-        $this->assertEquals(500, $response->getStatusCode());
     }
 
     public function testPurgeUrlCache()
@@ -232,7 +213,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
 
         $container = new Picotainer([]);
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
-        $defaultRouter = new SplashDefaultRouter($container, [], $parameterFetcherRegistry, $cache->reveal());
+        $defaultRouter = new SplashRouter($container, [], $parameterFetcherRegistry, $cache->reveal());
         $defaultRouter->purgeUrlsCache();
     }
 
@@ -246,13 +227,18 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry);
 
         $request = new ServerRequest([], [], '/foo', 'GET');
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("");
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertEquals('42bar', (string) $response->getBody());
     }
 
@@ -266,7 +252,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry, new ArrayCachePool());
 
@@ -275,12 +261,17 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             [],
             ['id' => 42]
         );
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("ok");
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(JsonResponse::class, $response);
 
-        // Now, let's make another request (this time, we should go through the cache with unchanged etag)
-        $response2 = $defaultRouter($request, $response);
+        // Now, let's make another request (this time, we should go through the cache with unchanged tag)
+        $response2 = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(JsonResponse::class, $response2);
     }
 
@@ -294,7 +285,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry, new ArrayCachePool());
 
@@ -303,8 +294,13 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             [],
             []
         );
-        $response = new HtmlResponse('');
-        $response = $defaultRouter($request, $response);
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("");
+            }
+        };
+        $response = $defaultRouter->process($request, $handler);
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
@@ -318,7 +314,7 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
         $parameterFetcherRegistry = ParameterFetcherRegistry::buildDefaultControllerRegistry();
         $controllerAnalyzer = new ControllerAnalyzer($container, $parameterFetcherRegistry, new AnnotationReader());
         $controllerRegistry = new ControllerRegistry($controllerAnalyzer, ['controller']);
-        $defaultRouter = new SplashDefaultRouter($container, [
+        $defaultRouter = new SplashRouter($container, [
             $controllerRegistry,
         ], $parameterFetcherRegistry, new ArrayCachePool());
 
@@ -327,9 +323,15 @@ class SplashDefaultRouterTest extends \PHPUnit_Framework_TestCase
             [],
             []
         );
-        $response = new HtmlResponse('');
+        $handler = new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return new HtmlResponse("");
+            }
+        };
+
         $this->expectException(\InvalidArgumentException::class);
-        $response = $defaultRouter($request, $response);
+        $response = $defaultRouter->process($request, $handler);
 
     }
 }

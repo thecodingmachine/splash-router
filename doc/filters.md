@@ -56,10 +56,7 @@ Each filter is represented by a class.
 To create a filter:
 
  - The filters must be a valid [Doctrine annotation](http://doctrine-orm.readthedocs.io/projects/doctrine-common/en/latest/reference/annotations.html).
- - The filter must implement a `__invoke` method whose signature is:
-     ```php
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next, ContainerInterface $container);
-    ```
+ - The filter must implement the  FilterInterface.
 
 Note that a filter is very similar to a PSR-7 middleware, except the `__invoke` method is additionally passed a container (useful to bind the annotation to a given service).
 
