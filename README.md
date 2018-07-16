@@ -2,20 +2,19 @@
 [![Total Downloads](https://poser.pugx.org/thecodingmachine/splash-router/downloads)](https://packagist.org/packages/mouf/mvc.splash-common)
 [![Latest Unstable Version](https://poser.pugx.org/thecodingmachine/splash-router/v/unstable)](https://packagist.org/packages/mouf/mvc.splash-common)
 [![License](https://poser.pugx.org/thecodingmachine/splash-router/license)](https://packagist.org/packages/mouf/mvc.splash-common)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/splash-router/badges/quality-score.png?b=8.0)](https://scrutinizer-ci.com/g/thecodingmachine/mvc.splash-common/?branch=8.0)
-[![Build Status](https://travis-ci.org/thecodingmachine/splash-router.svg?branch=8.0)](https://travis-ci.org/thecodingmachine/mvc.splash-common)
-[![Coverage Status](https://coveralls.io/repos/thecodingmachine/splash-router/badge.svg?branch=8.0&service=github)](https://coveralls.io/github/thecodingmachine/mvc.splash-common?branch=8.0)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/splash-router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thecodingmachine/mvc.splash-common/?branch=master)
+[![Build Status](https://travis-ci.org/thecodingmachine/splash-router.svg?branch=master)](https://travis-ci.org/thecodingmachine/mvc.splash-common)
+[![Coverage Status](https://coveralls.io/repos/thecodingmachine/splash-router/badge.svg?branch=master&service=github)](https://coveralls.io/github/thecodingmachine/mvc.splash-common?branch=master)
 
-Splash: a highly configurable PSR-7 router
-==========================================
+Splash: a highly configurable PSR-15 router
+===========================================
 
 What is Splash?
 ---------------
 
 Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.
   
-- Splash is [PSR-15 compatible](http://www.php-fig.org/psr/psr-15/)
-- It acts as a [PSR-15 middleware]
+- Splash is a [PSR-15 middleware](http://www.php-fig.org/psr/psr-15/)
 - It is based on **controllers** and **annotations** (routes are declared as annotations in the controllers)
 - It is heavily optimized, relying on an underlying [PSR-6 cache](http://www.php-fig.org/psr/psr-6/)
 - It is a **pure** router. It is not a full-featured MVC framework. No views management, no model, only routing!
@@ -27,7 +26,7 @@ Splash is a PHP router. It takes an HTTP request and dispatches it to the approp
     - With [Wordpress (through Moufpress, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
     - With [Joomla (through Moufla, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.wordpress.moufpress),
     - With [Magento (through Moufgento, a plugin that adds a Splash-compatible MVC framework)](http://mouf-php.com/packages/mouf/integration.magento.moufgento),
-- And it supports emoji routes (mydomain.com/😍)
+- ... and it supports emoji routes! (mydomain.com/😍)
 
 
 Clean controllers
