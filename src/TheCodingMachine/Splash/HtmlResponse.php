@@ -3,6 +3,7 @@
 namespace TheCodingMachine\Splash;
 
 use Mouf\Html\HtmlElement\HtmlElementInterface;
+use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 

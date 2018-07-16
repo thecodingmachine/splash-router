@@ -7,11 +7,11 @@ class ExceptionUtils
     /**
      * Returns the Exception Backtrace as a nice HTML view.
      *
-     * @param unknown_type $backtrace
+     * @param array $backtrace
      *
-     * @return unknown
+     * @return string
      */
-    private static function getHTMLBackTrace($backtrace)
+    private static function getHTMLBackTrace(array $backtrace): string
     {
         $str = '';
 
@@ -103,11 +103,11 @@ class ExceptionUtils
     /**
      * Returns the Exception Backtrace as a text string.
      *
-     * @param unknown_type $backtrace
+     * @param array $backtrace
      *
      * @return unknown
      */
-    private static function getTextBackTrace($backtrace)
+    private static function getTextBackTrace(array $backtrace): string
     {
         $str = '';
 
@@ -145,11 +145,11 @@ class ExceptionUtils
     /**
      * Used by the debug function to display a nice view of the parameters.
      *
-     * @param unknown_type $var
+     * @param mixed $var
      *
-     * @return unknown
+     * @return string
      */
-    private static function getPhpVariableAsText($var)
+    private static function getPhpVariableAsText($var): string
     {
         if (is_string($var)) {
             return('"'.str_replace(array("\x00", "\x0a", "\x0d", "\x1a", "\x09"), array('\0', '\n', '\r', '\Z', '\t'), $var).'"');

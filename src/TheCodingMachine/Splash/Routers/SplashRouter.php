@@ -10,6 +10,7 @@ use TheCodingMachine\Splash\Exception\PageNotFoundException;
 use TheCodingMachine\Splash\Filters\FilterPipe;
 use TheCodingMachine\Splash\Services\ParameterFetcher;
 use TheCodingMachine\Splash\Services\ParameterFetcherRegistry;
+use TheCodingMachine\Splash\Services\SplashRoute;
 use TheCodingMachine\Splash\Services\UrlProviderInterface;
 use TheCodingMachine\Splash\Utils\SplashException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -254,9 +255,9 @@ class SplashRouter implements MiddlewareInterface
      * Returns the list of all SplashActions.
      * This call is LONG and should be cached.
      *
-     * @return array<SplashAction>
+     * @return SplashRoute[]
      */
-    public function getSplashActionsList()
+    public function getSplashActionsList(): array
     {
         $urls = array();
 
@@ -273,7 +274,7 @@ class SplashRouter implements MiddlewareInterface
      * Generates the URLNodes from the list of URLS.
      * URLNodes are a very efficient way to know whether we can access our page or not.
      *
-     * @param array<SplashAction> $urlsList
+     * @param UrlProviderInterface[] $urlsList
      *
      * @return SplashUrlNode
      */

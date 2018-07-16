@@ -43,7 +43,8 @@
 		"mouf/picotainer": "~1.0",
 		"mnapoli/simplex": "^0.3",
 		"cache/array-adapter": "^0.4.0",
-		"squizlabs/php_codesniffer": "^3.1"
+		"squizlabs/php_codesniffer": "^3.1",
+		"phpstan/phpstan": "^0.10.1"
 	},
 	"conflict": {
 		"zendframework/zend-stratigility": "<2.0"
@@ -60,7 +61,8 @@
 	},
 	"scripts": {
 		"cs-check": "phpcs",
-		"cs-fix": "phpcbf"
+		"cs-fix": "phpcbf",
+		"phpstan": "phpstan analyse src -c phpstan.neon --level=0 --no-progress -vvv"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,

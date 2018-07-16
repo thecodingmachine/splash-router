@@ -34,7 +34,7 @@ class SplashRoute implements SplashRouteInterface
      * The first parameter to be passed to the method will be fetched from values set $parameters[0], etc...
      *
      *
-     * @var array<SplashParameterFetcherInterface>
+     * @var array An array representing serializable fetchers. Each fetcher is represented as an array with 2 keys: "fetcherId" (an ID for the fetcher) and "data" (data required by the fetcher)
      */
     private $parameters;
 
@@ -67,6 +67,19 @@ class SplashRoute implements SplashRouteInterface
      */
     private $fileModificationTime;
 
+    /**
+     * SplashRoute constructor.
+     * @param string $url
+     * @param string $controllerInstanceName
+     * @param string $methodName
+     * @param string|null $title
+     * @param string|null $fullComment
+     * @param array $httpMethods
+     * @param array $parameters An array representing serializable fetchers. Each fetcher is represented as an array with 2 keys: "fetcherId" (an ID for the fetcher) and "data" (data required by the fetcher)
+     * @param array $filters
+     * @param string|null $fileName
+     * @throws SplashException
+     */
     public function __construct(string $url, string $controllerInstanceName, string $methodName, string $title = null, string $fullComment = null, array $httpMethods = array(), array $parameters = array(), array $filters = array(), string $fileName = null)
     {
         $this->url = $url;
