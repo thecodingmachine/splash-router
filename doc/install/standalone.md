@@ -32,7 +32,7 @@ Here is a typical `composer.json` file to load all dependencies.
       "psr-4": {"Test\\": "src/Test"}
   },
   "require": {
-    "mouf/mvc.splash-common": "~8.2",
+      "thecodingmachine/splash-service-provider": "^10",
       "mnapoli/simplex": "~0.2.1",
       "zendframework/zend-diactoros": "^1.3",
       "zendframework/zend-stratigility": "^2.0",

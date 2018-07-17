@@ -32,9 +32,6 @@
 		"mouf/utils.cache.cache-interface": "~2.0",
         "zendframework/zend-diactoros": "~1.0",
 		"mouf/html.template.templateinterface": "^2.1",
-		"container-interop/service-provider": "^0.4",
-		"thecodingmachine/common-factories": "^0.4",
-		"thecodingmachine/middleware-list-universal-module": "~1.0",
 		"psr/http-server-middleware": "^1.0"
 	},
 	"require-dev": {
