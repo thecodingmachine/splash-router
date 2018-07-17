@@ -6,6 +6,8 @@
 [![Build Status](https://travis-ci.org/thecodingmachine/splash-router.svg?branch=master)](https://travis-ci.org/thecodingmachine/splash-router)
 [![Coverage Status](https://coveralls.io/repos/thecodingmachine/splash-router/badge.svg?branch=master&service=github)](https://coveralls.io/github/thecodingmachine/splash-router?branch=master)
 
+**v10 is work in progress. Use mouf/mvc.splash for now**
+
 Splash: a highly configurable PSR-15 router
 ===========================================
 

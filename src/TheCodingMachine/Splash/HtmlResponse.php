@@ -8,7 +8,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 /**
- * This class is a PSR-6 response that takes in parameter a HtmlElementInterface element and will render it.
+ * This class is a PSR-7 response that takes in parameter a HtmlElementInterface element and will render it.
  *
  * @author David Négrier <david@mouf-php.com>
  */
