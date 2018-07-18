@@ -24,14 +24,8 @@
 		"psr/cache": "^1.0",
 		"cache/void-adapter": "^0.3.0",
 		"doctrine/annotations": "^1.2",
-		"mouf/html.htmlelement" : "^2.0",
-		"mouf/utils.action.common-action" : "~1.0",
 		"mouf/utils.common.url-interface" : "~1.0",
-		"mouf/html.renderer.twig-extensions": "~1.0",
-		"mouf/utils.common.conditioninterface": "~2.0",
-		"mouf/utils.cache.cache-interface": "~2.0",
         "zendframework/zend-diactoros": "~1.0",
-		"mouf/html.template.templateinterface": "^2.1",
 		"psr/http-server-middleware": "^1.0"
 	},
 	"require-dev": {
