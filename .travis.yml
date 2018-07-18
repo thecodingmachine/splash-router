@@ -10,7 +10,7 @@ before_script:
 script:
  - composer cs-check
  - composer phpstan
- - composer-require-checker
+ - ./vendor/bin/composer-require-checker
  - ./vendor/bin/phpunit
 
 after_script:
