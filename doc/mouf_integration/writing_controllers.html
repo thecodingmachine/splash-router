@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#" class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Writing controllers | Splash router</title>
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/dist/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/dist/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/dist/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/dist/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/dist/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/dist/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/dist/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/dist/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/dist/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/dist/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/dist/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/dist/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/dist/img/favicon/favicon-16x16.png">
+
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,700,300,500" rel="stylesheet" type="text/css">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/dist/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="msapplication-TileColor" content="#f01d4f">
+    <meta name="msapplication-TileImage" content="//www.thecodingmachine.com/wp-content/themes/thecodingmachine/library/images/win8-tile-icon.png">
+
+    <script>
+        window.resourceBaseUrl = 'https://thecodingmachine.github.io/splash-router';
+    </script>
+
+    <style>
+        /** quick fix because bootstrap <pre> has a background-color. */
+        pre code { background-color: inherit; }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://thecodingmachine.github.io/splash-router/assets/main.css">
+                
+
+    <link rel='stylesheet' id='font-awesome-css'  href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='google-roboto-css'  href='//fonts.googleapis.com/css?family=Roboto%3A100%2C400%2C300%2C400italic%2C500%2C700' type='text/css' media='all' />
+
+    <style>
+        pre.hljs {padding: 5px;}
+        pre.hljs code {}
+            </style>
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-10196481-4', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    </head>
+<body class="">
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div >
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <img class="img-responsive" src="https://thecodingmachine.github.io/splash-router/doc/images/logo.png" alt="" style="position: absolute;">
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav text-left">
+                <li><a href="https://thecodingmachine.github.io/splash-router/">ABOUT</a></li>
+                                                            <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/index.html">
+                                Introduction
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/index.html">
+                                Installing Splash
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/mouf.html">
+                                Install in Mouf
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/standalone.html">
+                                Install using Service providers
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/writing_controllers_manually.html">
+                                Writing controllers
+                            </a>
+                        </li>
+                                                                                                                    <li class="active visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/writing_controllers.html">
+                                Controller creation wizard
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/url_routing.html">
+                                Advanced: configuring routing
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/url_parameters.html">
+                                Managing URL parameters
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/filters.html">
+                                Writing your own filters
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/migrating.html">
+                                Migrating from older version
+                            </a>
+                        </li>
+                                                    <li><a href="http://www.thecodingmachine.com/">TheCodingMachine</a></li>
+                                <li><a href="https://github.com/thecodingmachine/splash-router"><img src="https://thecodingmachine.github.io/splash-router/img/GitHub-Mark-Light-20px.png" /> Github</a></li>
+                            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+<!-- Full Width Image Header with Logo -->
+<!-- Image backgrounds are set within the full-width-pics.css file. -->
+<div id="wrapper">
+    <a href="#menu-toggle" class="burger-position" id="menu-toggle" ><img src="https://thecodingmachine.github.io/splash-router/doc/images/hamburger.png"> </a>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/index.html">
+                            Introduction
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Installation</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/index.html">
+                            Installing Splash
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/mouf.html">
+                            Install in Mouf
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/standalone.html">
+                            Install using Service providers
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Basics</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/writing_controllers_manually.html">
+                            Writing controllers
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Integrations - Mouf</h4>
+                    </li>
+                                                                <li class="active">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/writing_controllers.html">
+                            Controller creation wizard
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/url_routing.html">
+                            Advanced: configuring routing
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Advanced</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/url_parameters.html">
+                            Managing URL parameters
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/filters.html">
+                            Writing your own filters
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/migrating.html">
+                            Migrating from older version
+                        </a>
+                    </li>
+                                    </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <header class="image-bg-fluid-height skew">
+            <div class="wrapper content">
+                <!-- /
+              <h4 class="glitch">DISCOVERY</h4>
+               -->
+            </div>
+
+        </header>
+        <div class="container pt100">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1>Writing controllers <small></small></h1>                    <h2 id="what-is-a-controller">What is a controller?</h2>
+<p>In Splash, a controller is a class that contains a number of <em>Actions</em>.
+<em>Actions</em> are methods that can be directly accessed from the browser.
+What binds a URL to an action is called a <em>route</em>.</p>
+<p>Controllers can be created very easily, using Splash user interface. Check it out!</p>
+<iframe width="640" height="480" src="//www.youtube.com/embed/Jnsu1rpgD7g" frameborder="0" allowfullscreen></iframe>
+<h2 id="creating-a-controller-using-splashs-wizard">Creating a controller using Splash's wizard</h2>
+<p>For your application to print some HTML when you call a URL, you need 4 things:</p>
+<ul>
+<li>A <strong>controller</strong> class: this is the class that will contain the actions declaration</li>
+<li><strong>Actions</strong> methods: these are the methods that will be called when a URL is called</li>
+<li>A controller <strong>instance</strong>, declared in Mouf: you must create one instance of your class in Mouf (usually, only one instance)</li>
+<li><strong>Views</strong>: these are files that contain the HTML to be outputed. We keep the HTML out of the controller to make the code
+more readable and to separate concerns between the controller (in charge of the logic) and the view (in charge of the rendering)</li>
+</ul>
+<p>The Splash create-a-controller wizard will create those 4 things for you.</p>
+<p>Let's start. Go in the <strong>MVC</strong> &gt; <strong>Splash</strong> &gt; <strong>Create a new controller</strong> menu.</p>
+<p><img src="../images/wizard_menu.png" alt="Create a controller menu" /></p>
+<p>You will be displayed a page you can use to create your controller.</p>
+<p><img src="../images/wizard.png" alt="Create a controller menu" /></p>
+<p>Use this page to configure your controller! You can add as many actions as you want, you can even
+decide what parameters must be passed to those actions.
+You shall also decide what instances should be injected by default in your controller (you can of
+course later change the class code and add more properties to the controller).</p>
+<p>By default, you can inject in your controller:</p>
+<ul>
+<li>a logger</li>
+<li>an HTML template</li>
+<li>the content block of the HTML template</li>
+<li>the <a href="http://mouf-php.com/packages/mouf/database.tdbm/index.html">TDBM DAO factory</a> (if you are using TDBM)</li>
+</ul>
+<h2 id="the-url-annotation">The @URL annotation</h2>
+<p>Have a look at the actions that have been declared:</p>
+<pre><code class="language-php">&lt;?php
+    /**
+     * @URL("test/action")
+     * @param int $var1
+     * @param int $var2
+     */
+    public function index($var1 = 0, $var2 = 0) { ... }
+?&gt;</code></pre>
+<p>The <em>@URL</em> annotation points to the web path the action is bound to.</p>
+<p>The action takes 2 parameters: var1 and var2. This means that the page needs both parameters passed
+either in GET or POST.</p>
+<h2 id="the-get--post-annotations">The @Get / @Post annotations</h2>
+<p>We might decide that an action should always be called via GET, or via POST (or PUT or DELETE if you want to provide REST services).
+Splash makes that very easy to handle. You can just add a @Get or @Post annotation (or @Put or @Delete). Here is a sample:</p>
+<pre><code class="language-php">&lt;?php
+namespace Test\Controllers;
+
+use Zend\Diactoros\Response\HtmlResponse;
+use TheCodingMachine\Splash\Annotations\URL;
+
+/**
+ * This is a sample user controller.
+ *
+ */
+class UserController {
+
+    /**
+     * Viewing the user is performed by a @Get.
+     *
+     * @URL("/user")
+     * @Get
+     * @param string $id
+     */
+    public function viewUser($id) {
+         return new HtmlResponse("Here, we might put the form for user ".htmlentities($id));
+    }
+
+    /**
+     * Modifying the user is performed by a @Post.
+     *
+     * @URL("/user")
+     * @Post
+     * @param string $id
+     * @param string $name
+     * @param string $email
+     */
+    public function editUser($id, $name, $email) {
+         return new HtmlResponse("Here, we might put the code to change the user object.");
+    }
+
+}</code></pre>
+<p>In the example above (a sample controller to view/modify users), the &quot;/user&quot; URL is bound to 2 different methods
+based in the HTTP method used to access this URL.</p>
+<h2 id="parametrized-urls">Parametrized URLs</h2>
+<p>You can put parameters in the URLs and fetch them very easily:</p>
+<pre><code class="language-php">&lt;?php
+use TheCodingMachine\Splash\Annotations\URL;
+
+/**
+ * This is a sample user controller.
+ *
+ */
+class UserController {
+
+    /**
+     * Viewing the user is performed by a @Get.
+     *
+     * @URL("/user/{id}/view")
+     * @Get
+     * @param string $id
+     */
+    public function viewUser($id) {
+         return new HtmlResponse("Here, we might put the form for user ".htmlentities($id));
+    }
+}
+?&gt;</code></pre>
+<p>Do you see the @URL annotation? The {id} part is a placeholder that will be replaced by any value found in the URL.
+So for instance, if you access <a href="http://[server]/[appname]/user/42/view">http://[server]/[appname]/user/42/view</a>, the $id parameter will be filled with &quot;42&quot;. </p>
+
+                    <p class="fork-and-edit">
+                        Found a typo? Something is wrong in this documentation? Just
+                        <a href="https://github.com/thecodingmachine/splash-router/blob/master/doc/mouf_integration/writing_controllers.md">fork and edit it</a>!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+</div>
+<div class="footer">
+    <div class="container-fluid">
+        <footer class="row" id="footer">
+            <div class="col-xs-12">
+                Made with <span class="pulse2 glyphicon glyphicon-heart" style="color: red" aria-hidden="true"></span><span class="sr-only">love</span> by <a href="https://www.thecodingmachine.com/"><img src="https://thecodingmachine.github.io/splash-router/img/logo.png" alt="TheCodingMachine"></a> for all open-source lovers
+                <span class="copyright">&copy; 2016 - 2018 <a href="https://www.thecodingmachine.com/">TheCodingMachine</a> - All Rights Reserved</span>
+                Powered by <a href="http://couscous.io/">Couscous</a></span>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- /#wrapper -->
+<script type='text/javascript' src='https://thecodingmachine.github.io/splash-router/assets/app.bundle.js'></script>
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+</body>
+</html>

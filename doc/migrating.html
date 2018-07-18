@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#" class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Migrating / ChangeLog | Splash router</title>
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/dist/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/dist/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/dist/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/dist/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/dist/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/dist/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/dist/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/dist/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/dist/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/dist/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/dist/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/dist/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/dist/img/favicon/favicon-16x16.png">
+
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,700,300,500" rel="stylesheet" type="text/css">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/dist/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="msapplication-TileColor" content="#f01d4f">
+    <meta name="msapplication-TileImage" content="//www.thecodingmachine.com/wp-content/themes/thecodingmachine/library/images/win8-tile-icon.png">
+
+    <script>
+        window.resourceBaseUrl = 'https://thecodingmachine.github.io/splash-router';
+    </script>
+
+    <style>
+        /** quick fix because bootstrap <pre> has a background-color. */
+        pre code { background-color: inherit; }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://thecodingmachine.github.io/splash-router/assets/main.css">
+                
+
+    <link rel='stylesheet' id='font-awesome-css'  href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='google-roboto-css'  href='//fonts.googleapis.com/css?family=Roboto%3A100%2C400%2C300%2C400italic%2C500%2C700' type='text/css' media='all' />
+
+    <style>
+        pre.hljs {padding: 5px;}
+        pre.hljs code {}
+            </style>
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-10196481-4', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    </head>
+<body class="">
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div >
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <img class="img-responsive" src="https://thecodingmachine.github.io/splash-router/doc/images/logo.png" alt="" style="position: absolute;">
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav text-left">
+                <li><a href="https://thecodingmachine.github.io/splash-router/">ABOUT</a></li>
+                                                            <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/index.html">
+                                Introduction
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/index.html">
+                                Installing Splash
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/mouf.html">
+                                Install in Mouf
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/standalone.html">
+                                Install using Service providers
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/writing_controllers_manually.html">
+                                Writing controllers
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/writing_controllers.html">
+                                Controller creation wizard
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/url_routing.html">
+                                Advanced: configuring routing
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/url_parameters.html">
+                                Managing URL parameters
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/filters.html">
+                                Writing your own filters
+                            </a>
+                        </li>
+                                                                                <li class="active visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/migrating.html">
+                                Migrating from older version
+                            </a>
+                        </li>
+                                                    <li><a href="http://www.thecodingmachine.com/">TheCodingMachine</a></li>
+                                <li><a href="https://github.com/thecodingmachine/splash-router"><img src="https://thecodingmachine.github.io/splash-router/img/GitHub-Mark-Light-20px.png" /> Github</a></li>
+                            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+<!-- Full Width Image Header with Logo -->
+<!-- Image backgrounds are set within the full-width-pics.css file. -->
+<div id="wrapper">
+    <a href="#menu-toggle" class="burger-position" id="menu-toggle" ><img src="https://thecodingmachine.github.io/splash-router/doc/images/hamburger.png"> </a>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/index.html">
+                            Introduction
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Installation</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/index.html">
+                            Installing Splash
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/mouf.html">
+                            Install in Mouf
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/standalone.html">
+                            Install using Service providers
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Basics</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/writing_controllers_manually.html">
+                            Writing controllers
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Integrations - Mouf</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/writing_controllers.html">
+                            Controller creation wizard
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/url_routing.html">
+                            Advanced: configuring routing
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Advanced</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/url_parameters.html">
+                            Managing URL parameters
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/filters.html">
+                            Writing your own filters
+                        </a>
+                    </li>
+                                                                <li class="active">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/migrating.html">
+                            Migrating from older version
+                        </a>
+                    </li>
+                                    </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <header class="image-bg-fluid-height skew">
+            <div class="wrapper content">
+                <!-- /
+              <h4 class="glitch">DISCOVERY</h4>
+               -->
+            </div>
+
+        </header>
+        <div class="container pt100">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1>Migrating / ChangeLog <small></small></h1>                    <h2 id="migrating-from-splash-8-to-splash-10">Migrating from Splash 8 to Splash 10</h2>
+<p>In order to upgrade from Splash 8 to Splash 10, you need to perform the following steps:</p>
+<ul>
+<li>Assuming you are using Mouf: update &quot;mouf/mvc.splash&quot; version to &quot;^10&quot; in your <code>composer.json</code> file.</li>
+<li>Otherwise, Splash is now in a new package: &quot;thecodingmachine/splash-router&quot; (version: ^10)</li>
+<li>Run <code>composer update</code></li>
+<li>Update all your annotations. Splash 10 uses a new namespace. Scan your code and replace <code>Mouf\Mvc\Splash</code> with <code>TheCodingMachine\Splash</code></li>
+<li>If you are using Mouf, run the Splash installer again.
+<ul>
+<li>Connect to Mouf UI (<a href="http://localhost/[yourproject]/vendor/mouf/mouf">http://localhost/[yourproject]/vendor/mouf/mouf</a>)</li>
+<li>Click on <em>Project &gt; Installation tasks</em></li>
+<li>There are 2 install tasks for &quot;mouf/mvc.splash&quot;. Locate those in the table.</li>
+<li>Click on the <strong>Reinstall</strong> button for both tasks.</li>
+</ul></li>
+</ul>
+<h2 id="migrating-from-splash-7-to-splash-8">Migrating from Splash 7 to Splash 8</h2>
+<p>In order to upgrade from Splash 7 to Splash 8, you need to perform the following steps:</p>
+<ul>
+<li>Update &quot;mouf/mvc.splash&quot; version to &quot;~8.0&quot; in your <code>composer.json</code> file.</li>
+<li>Run <code>php composer.phar update</code></li>
+<li>Remove <code>extends Controller</code> in each controller. Starting from Splash 8, controllers do not extend any class.</li>
+<li>Update all <code>@URL</code> annotations. In Splash 8, annotations are handled by the Doctrine annotations library. Therefore:
+<ul>
+<li>You must add a <code>use TheCodingMachine\Splash\Annotations\URL;</code> in each controller.</li>
+<li>You must rewrite annotations to the Doctrine format:
+<pre><code>@URL my/path =&gt; @URL("my/path")</code></pre></li>
+</ul></li>
+<li>Update all <code>@Action</code> annotations.
+<ul>
+<li>You must add a <code>use TheCodingMachine\Splash\Annotations\Action;</code> in each controller.</li>
+</ul></li>
+<li>Assuming you are using Mouf (this is a safe assumption since Splash 7 is highly tied to Mouf), run the Splash installer again.
+<ul>
+<li>Connect to Mouf UI (<a href="http://localhost/[yourproject]/vendor/mouf/mouf">http://localhost/[yourproject]/vendor/mouf/mouf</a>)</li>
+<li>Click on <em>Project &gt; Installation tasks</em></li>
+<li>There are 2 install tasks for &quot;mouf/mvc.splash&quot;. Locate those in the table.</li>
+<li>Click on the <strong>Reinstall</strong> button for both tasks.</li>
+</ul></li>
+</ul>
+<p>You are done. Enjoy the new features!</p>
+<h2 id="migrating-from-splash-5-to-splash-7">Migrating from Splash 5 to Splash 7</h2>
+<p>In order to upgrade from Splash 5 to Splash 7, you need to perform the following steps:</p>
+<ul>
+<li>Update &quot;mouf/mvc.splash&quot; version to &quot;~7.0&quot; in your <code>composer.json</code> file.</li>
+<li>Run <code>php composer.phar update</code></li>
+<li>Connect to Mouf UI (<a href="http://localhost/[yourproject]/vendor/mouf/mouf">http://localhost/[yourproject]/vendor/mouf/mouf</a>)</li>
+<li>Click on <em>Project &gt; Installation tasks</em></li>
+<li>There are 2 install tasks for &quot;mouf/mvc.splash&quot;. Locate those in the table.</li>
+<li>Click on the <strong>Reinstall</strong> button for both tasks.</li>
+<li>In your controllers, stop using the <code>Request</code> and <code>Response</code> classes and start using PSR-7's <code>ServerRequestInterface</code> and <code>ResponseInterface</code></li>
+</ul>
+<p>You are done. Enjoy the new features!</p>
+<p>Hey! What about Splash 6?
+Mmmm... there was never a stable Splash 6. Splash 6 is a release targeting Mouf 2.1 that is not released as we write these lines.</p>
+<h2 id="migrating-from-splash-4-to-splash-5">Migrating from Splash 4 to Splash 5</h2>
+<p>In order to upgrade from Splash 4 to Splash 5, you need to perform the following steps:</p>
+<ul>
+<li>Update &quot;mouf/mvc.splash&quot; version to &quot;~5.0&quot; in your <code>composer.json</code> file.</li>
+<li>Run <code>php composer.phar update</code></li>
+<li>Connect to Mouf UI (<a href="http://localhost/[yourproject]/vendor/mouf/mouf">http://localhost/[yourproject]/vendor/mouf/mouf</a>)</li>
+<li>Click on <em>Instances &gt; View declared instances</em></li>
+<li>Look for the &quot;splash&quot; instance.</li>
+<li>Click on it, then click on the &quot;Delete&quot; button</li>
+<li>Click on <em>Project &gt; Installation tasks</em></li>
+<li>There are 2 install tasks for &quot;mouf/mvc.splash&quot;. Locate those in the table.</li>
+<li>Click on the <strong>Reinstall</strong> button for both tasks.</li>
+</ul>
+<p>You are done. Enjoy <a href="http://mouf-php.com/stackphp-support-added-to-splash">the new features</a>!</p>
+
+                    <p class="fork-and-edit">
+                        Found a typo? Something is wrong in this documentation? Just
+                        <a href="https://github.com/thecodingmachine/splash-router/blob/master/doc/migrating.md">fork and edit it</a>!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+</div>
+<div class="footer">
+    <div class="container-fluid">
+        <footer class="row" id="footer">
+            <div class="col-xs-12">
+                Made with <span class="pulse2 glyphicon glyphicon-heart" style="color: red" aria-hidden="true"></span><span class="sr-only">love</span> by <a href="https://www.thecodingmachine.com/"><img src="https://thecodingmachine.github.io/splash-router/img/logo.png" alt="TheCodingMachine"></a> for all open-source lovers
+                <span class="copyright">&copy; 2016 - 2018 <a href="https://www.thecodingmachine.com/">TheCodingMachine</a> - All Rights Reserved</span>
+                Powered by <a href="http://couscous.io/">Couscous</a></span>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- /#wrapper -->
+<script type='text/javascript' src='https://thecodingmachine.github.io/splash-router/assets/app.bundle.js'></script>
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#" class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title> | Splash router</title>
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/dist/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/dist/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/dist/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/dist/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/dist/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/dist/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/dist/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/dist/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/dist/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/dist/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/dist/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/dist/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/dist/img/favicon/favicon-16x16.png">
+
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,700,300,500" rel="stylesheet" type="text/css">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/dist/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="msapplication-TileColor" content="#f01d4f">
+    <meta name="msapplication-TileImage" content="//www.thecodingmachine.com/wp-content/themes/thecodingmachine/library/images/win8-tile-icon.png">
+
+    <script>
+        window.resourceBaseUrl = 'https://thecodingmachine.github.io/splash-router';
+    </script>
+
+    <style>
+        /** quick fix because bootstrap <pre> has a background-color. */
+        pre code { background-color: inherit; }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://thecodingmachine.github.io/splash-router/assets/main.css">
+                
+
+    <link rel='stylesheet' id='font-awesome-css'  href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='google-roboto-css'  href='//fonts.googleapis.com/css?family=Roboto%3A100%2C400%2C300%2C400italic%2C500%2C700' type='text/css' media='all' />
+
+    <style>
+        pre.hljs {padding: 5px;}
+        pre.hljs code {}
+            </style>
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-10196481-4', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    </head>
+<body class="">
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div >
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <img class="img-responsive" src="https://thecodingmachine.github.io/splash-router/doc/images/logo.png" alt="" style="position: absolute;">
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav text-left">
+                <li><a href="https://thecodingmachine.github.io/splash-router/">ABOUT</a></li>
+                                                            <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/index.html">
+                                Introduction
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/index.html">
+                                Installing Splash
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/mouf.html">
+                                Install in Mouf
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/install/standalone.html">
+                                Install using Service providers
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/writing_controllers_manually.html">
+                                Writing controllers
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/writing_controllers.html">
+                                Controller creation wizard
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/url_routing.html">
+                                Advanced: configuring routing
+                            </a>
+                        </li>
+                                                                                                                    <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/url_parameters.html">
+                                Managing URL parameters
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/filters.html">
+                                Writing your own filters
+                            </a>
+                        </li>
+                                                                                <li class=" visible-xs-block">
+                            <a href="https://thecodingmachine.github.io/splash-router/doc/migrating.html">
+                                Migrating from older version
+                            </a>
+                        </li>
+                                                    <li><a href="http://www.thecodingmachine.com/">TheCodingMachine</a></li>
+                                <li><a href="https://github.com/thecodingmachine/splash-router"><img src="https://thecodingmachine.github.io/splash-router/img/GitHub-Mark-Light-20px.png" /> Github</a></li>
+                            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+<!-- Full Width Image Header with Logo -->
+<!-- Image backgrounds are set within the full-width-pics.css file. -->
+<div id="wrapper">
+    <a href="#menu-toggle" class="burger-position" id="menu-toggle" ><img src="https://thecodingmachine.github.io/splash-router/doc/images/hamburger.png"> </a>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+                                                <li class="active">
+                        <a href="https://thecodingmachine.github.io/splash-router/index.html">
+                            Introduction
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Installation</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/index.html">
+                            Installing Splash
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/mouf.html">
+                            Install in Mouf
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/install/standalone.html">
+                            Install using Service providers
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Basics</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/writing_controllers_manually.html">
+                            Writing controllers
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Integrations - Mouf</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/writing_controllers.html">
+                            Controller creation wizard
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/mouf_integration/url_routing.html">
+                            Advanced: configuring routing
+                        </a>
+                    </li>
+                                                                <li>
+                        <h4>Advanced</h4>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/url_parameters.html">
+                            Managing URL parameters
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/filters.html">
+                            Writing your own filters
+                        </a>
+                    </li>
+                                                                <li class="">
+                        <a href="https://thecodingmachine.github.io/splash-router/doc/migrating.html">
+                            Migrating from older version
+                        </a>
+                    </li>
+                                    </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <header class="image-bg-fluid-height skew">
+            <div class="wrapper content">
+                <!-- /
+              <h4 class="glitch">DISCOVERY</h4>
+               -->
+            </div>
+
+        </header>
+        <div class="container pt100">
+            <div class="row">
+                <div class="col-xs-12">
+                                        <p><a href="https://packagist.org/packages/thecodingmachine/splash-router"><img src="https://poser.pugx.org/thecodingmachine/splash-router/v/stable" alt="Latest Stable Version" /></a>
+<a href="https://packagist.org/packages/thecodingmachine/splash-router"><img src="https://poser.pugx.org/thecodingmachine/splash-router/downloads" alt="Total Downloads" /></a>
+<a href="https://packagist.org/packages/thecodingmachine/splash-router"><img src="https://poser.pugx.org/thecodingmachine/splash-router/v/unstable" alt="Latest Unstable Version" /></a>
+<a href="https://packagist.org/packages/thecodingmachine/splash-router"><img src="https://poser.pugx.org/thecodingmachine/splash-router/license" alt="License" /></a>
+<a href="https://scrutinizer-ci.com/g/thecodingmachine/splash-router/?branch=master"><img src="https://scrutinizer-ci.com/g/thecodingmachine/splash-router/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality" /></a>
+<a href="https://travis-ci.org/thecodingmachine/splash-router"><img src="https://travis-ci.org/thecodingmachine/splash-router.svg?branch=master" alt="Build Status" /></a>
+<a href="https://coveralls.io/github/thecodingmachine/splash-router?branch=master"><img src="https://coveralls.io/repos/thecodingmachine/splash-router/badge.svg?branch=master&amp;service=github" alt="Coverage Status" /></a></p>
+<p>Previous versions (Splash &lt;10):
+<a href="https://packagist.org/packages/mouf/mvc.splash-common"><img src="https://poser.pugx.org/mouf/mvc.splash-common/downloads" alt="Total Downloads" /></a></p>
+<p><strong>v10 is work in progress. Use mouf/mvc.splash for now</strong></p>
+<h1 id="splash-a-highly-configurable-psr-15-router">Splash: a highly configurable PSR-15 router</h1>
+<h2 id="what-is-splash">What is Splash?</h2>
+<p>Splash is a PHP router. It takes an HTTP request and dispatches it to the appropriate controller.</p>
+<ul>
+<li>Splash is a <a href="http://www.php-fig.org/psr/psr-15/">PSR-15 middleware</a></li>
+<li>It is based on <strong>controllers</strong> and <strong>annotations</strong> (routes are declared as annotations in the controllers)</li>
+<li>It is heavily optimized, relying on an underlying <a href="http://www.php-fig.org/psr/psr-6/">PSR-6 cache</a></li>
+<li>It is a <strong>pure</strong> router. It is not a full-featured MVC framework. No views management, no model, only routing!</li>
+<li>It promotes best practices. Controllers must be declared in a <a href="https://github.com/container-interop/container-interop/">container-interop compatible container</a>.</li>
+<li>It is extensible.</li>
+<li>It integrates with a high number of tools:
+<ul>
+<li>With <a href="http://mouf-php.com">Mouf</a>: this provides a friendly UI to generate controllers</li>
+<li>With <a href="http://mouf-php.com/packages/mouf/integration.drupal.druplash">Drupal (through Druplash, a module that adds a Splash-compatible MVC framework)</a>,</li>
+<li>With <a href="http://mouf-php.com/packages/mouf/integration.wordpress.moufpress">Wordpress (through Moufpress, a plugin that adds a Splash-compatible MVC framework)</a>,</li>
+<li>With <a href="http://mouf-php.com/packages/mouf/integration.wordpress.moufpress">Joomla (through Moufla, a plugin that adds a Splash-compatible MVC framework)</a>,</li>
+<li>With <a href="http://mouf-php.com/packages/mouf/integration.magento.moufgento">Magento (through Moufgento, a plugin that adds a Splash-compatible MVC framework)</a>,</li>
+</ul></li>
+<li>... and it supports emoji routes! (mydomain.com/😍)</li>
+</ul>
+<h2 id="clean-controllers">Clean controllers</h2>
+<p>Want to get a feeling of Splash? Here is a typical controller:</p>
+<pre><code class="language-php">use TheCodingMachine\Splash\Annotations\Get;
+use TheCodingMachine\Splash\Annotations\URL;
+
+class MyController
+{
+    /**
+     * @URL("/my/path")
+     * @Get
+     */
+    public function index(ServerRequestInterface $request)
+    {
+        return new JsonResponse(["Hello" =&gt; "World!"]);
+    }
+}</code></pre>
+<p>Ok, so far, things should be fairly obvious to anyone used to PSR-7. The important parts are:</p>
+<ul>
+<li>Routing is done using the <strong>@URL</strong> annotation. When a method has the <strong>@URL</strong> annotation, we call it an <em>action</em>.</li>
+<li><strong>Controllers are clean</strong>. They don't extend any &quot;Splash&quot; object (so are reusable in any other PSR-7 compatible MVC framework)</li>
+<li>Actions can optionally have a <strong>@Get</strong>, <strong>@Post</strong>, <strong>@Put</strong>, <strong>@Delete</strong> annotation to restrict the response to some HTTP method.</li>
+<li>Splash analyzes the action signature. If it finds a type-hinted <code>ServerRequestInterface</code> parameter, it will fill it the PSR-7 request object.</li>
+<li>Actions must return an object implementing the PSR-7 <code>ResponseInterface</code>.</li>
+</ul>
+<h2 id="even-better">Even better</h2>
+<p>But Splash can provide much more than this.</p>
+<p>Here is a more advanced routing scenario:</p>
+<pre><code class="language-php">use TheCodingMachine\Splash\Annotations\Post;
+use TheCodingMachine\Splash\Annotations\URL;
+use Psr\Http\Message\UploadedFileInterface;
+
+class MyController
+{
+    /**
+     * @URL("/user/{id}")
+     * @Post
+     */
+    public function index($id, $firstName, $lastName, UploadedFileInterface $logo)
+    {
+        return //...;
+    }
+}</code></pre>
+<p>Look at the signature: <code>public function index($id, $firstName, $lastName, UploadedFileInterface $logo)</code>.</p>
+<ul>
+<li><code>$id</code> will be fetched from the URL (<code>@URL("/user/{id}")</code>)</li>
+<li><code>$firstName</code> and <code>$lastName</code> will be automatically fetched from the GET/POST parameters</li>
+<li>finally, <code>$logo</code> will contain the uploaded file from <code>$_FILES['logo']</code></li>
+</ul>
+<p>See the magic? <strong>Just by looking at your method signature, you know what parameters your route is expecting.</strong> The method signature is self-documenting the route!</p>
+<p>Even better, Splash is highly extensible. You can add your own plugins to automatically fill some parameters of the request (we call those <code>ParameterFetchers</code>).
+You could for instance write a parameter fetcher to automatically load Doctrine entities:</p>
+<pre><code class="language-php">    /**
+     * Lo and behold: you can extend Splash to automatically fill the function parameters with objects of your liking
+     *
+     * @URL("/product/{product}")
+     * @Post
+     */
+    public function index(My\Entities\Product $product)
+    {
+        return //...;
+    }
+</code></pre>
+<h2 id="best-practices">Best practices</h2>
+<p>You might wonder: &quot;<em>How will Splash instantiate your controller</em>?&quot; Well, Splash will not instantiate your controller.
+Instantiating services and containers is the role of the dependency injection container. Splash connects to any <em>container-interop</em> compatible container and will fetch your controllers from the container.</p>
+<p>This means that you <strong>must</strong> declare your controller in the container you are using. This is actually a <em>good thing</em> as this encourages you to not use the container as a service locator.</p>
+<h2 id="high-performance">High performance</h2>
+<p>For best performance, Splash is caching the list of routes it detects. Unlike what can be seen in most micro-frameworks where the application slows down as the number of routes increases, in Splash, <strong>performance stays constant as the number of routes increases</strong>.</p>
+
+                    <p class="fork-and-edit">
+                        Found a typo? Something is wrong in this documentation? Just
+                        <a href="https://github.com/thecodingmachine/splash-router/blob/master/index.md">fork and edit it</a>!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+</div>
+<div class="footer">
+    <div class="container-fluid">
+        <footer class="row" id="footer">
+            <div class="col-xs-12">
+                Made with <span class="pulse2 glyphicon glyphicon-heart" style="color: red" aria-hidden="true"></span><span class="sr-only">love</span> by <a href="https://www.thecodingmachine.com/"><img src="https://thecodingmachine.github.io/splash-router/img/logo.png" alt="TheCodingMachine"></a> for all open-source lovers
+                <span class="copyright">&copy; 2016 - 2018 <a href="https://www.thecodingmachine.com/">TheCodingMachine</a> - All Rights Reserved</span>
+                Powered by <a href="http://couscous.io/">Couscous</a></span>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- /#wrapper -->
+<script type='text/javascript' src='https://thecodingmachine.github.io/splash-router/assets/app.bundle.js'></script>
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+</body>
+</html>
