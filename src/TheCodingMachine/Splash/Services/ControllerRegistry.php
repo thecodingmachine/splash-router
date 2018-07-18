@@ -3,6 +3,7 @@
 namespace TheCodingMachine\Splash\Services;
 
 use TheCodingMachine\Splash\Annotations\Action;
+use TheCodingMachine\Splash\Utils\SplashException;
 
 /**
  * This class is in charge of registering controller's routes.
@@ -58,7 +59,7 @@ class ControllerRegistry implements UrlProviderInterface
      *
      * @return SplashRoute[]
      *
-     * @throws \Mouf\Mvc\Splash\Utils\SplashException
+     * @throws SplashException
      */
     public function getUrlsList($instanceName)
     {
@@ -88,8 +89,6 @@ class ControllerRegistry implements UrlProviderInterface
      * If the tag changes, the cache is flushed by Splash.
      *
      * Important! This must be quick to compute.
-     *
-     * @return mixed
      */
     public function getExpirationTag() : string
     {

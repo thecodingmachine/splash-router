@@ -131,14 +131,7 @@ class SplashRouter implements MiddlewareInterface
         return $this;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable|null          $out
-     *
-     * @return ResponseInterface
-     */
-    private function route(ServerRequestInterface $request, RequestHandlerInterface $next = null, $retry = false) : ResponseInterface
+    private function route(ServerRequestInterface $request, RequestHandlerInterface $next = null, bool $retry = false) : ResponseInterface
     {
         $this->purgeExpiredRoutes();
 

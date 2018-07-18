@@ -9,9 +9,6 @@ namespace TheCodingMachine\Splash\Services;
  */
 interface SplashRouteInterface
 {
-    /**
-     * @return mixed
-     */
     public function getUrl() : string;
 
     /**
