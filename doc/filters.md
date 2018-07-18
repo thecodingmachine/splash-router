@@ -58,7 +58,7 @@ To create a filter:
  - The filters must be a valid [Doctrine annotation](http://doctrine-orm.readthedocs.io/projects/doctrine-common/en/latest/reference/annotations.html).
  - The filter must implement the  FilterInterface.
 
-Note that a filter is very similar to a PSR-7 middleware, except the `__invoke` method is additionally passed a container (useful to bind the annotation to a given service).
+Note that a filter is very similar to a PSR-15 middleware, except the `process` method is additionally passed a container (useful to bind the annotation to a given service).
 
 Here is the typical filter layout:
 
