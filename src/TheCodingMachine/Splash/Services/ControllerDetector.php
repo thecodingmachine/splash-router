@@ -22,8 +22,6 @@ interface ControllerDetector
      * If the tag changes, the cache is flushed by Splash.
      *
      * Important! This must be quick to compute.
-     *
-     * @return mixed
      */
     public function getExpirationTag() : string;
 }

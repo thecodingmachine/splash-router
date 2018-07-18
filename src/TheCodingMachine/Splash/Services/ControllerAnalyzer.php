@@ -12,6 +12,7 @@ use TheCodingMachine\Splash\Annotations\Post;
 use TheCodingMachine\Splash\Annotations\Put;
 use TheCodingMachine\Splash\Annotations\Title;
 use ReflectionMethod;
+use TheCodingMachine\Splash\Utils\SplashException;
 
 /**
  * This class is in charge of analyzing a controller instance and returning the routes it contains.
@@ -72,11 +73,9 @@ class ControllerAnalyzer
     /**
      * Returns an array of SplashRoute for the controller passed in parameter.
      *
-     * @param object $controller
-     *
      * @return SplashRoute[]
      *
-     * @throws \Mouf\Mvc\Splash\Utils\SplashException
+     * @throws SplashException
      */
     public function analyzeController(string $controllerInstanceName) : array
     {
@@ -90,9 +89,9 @@ class ControllerAnalyzer
         foreach ($refClass->getMethods() as $refMethod) {
             $title = null;
             // Now, let's check the "Title" annotation (note: we do not support multiple title annotations for the same method)
+            /** @var Title */
             $titleAnnotation = $this->annotationReader->getMethodAnnotation($refMethod, Title::class);
             if ($titleAnnotation !== null) {
-                /* @var $titleAnnotation TitleAnnotation */
                 $title = $titleAnnotation->getTitle();
             }
 

@@ -100,9 +100,6 @@ class SplashRoute implements SplashRouteInterface
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function getUrl() : string
     {
         return $this->url;

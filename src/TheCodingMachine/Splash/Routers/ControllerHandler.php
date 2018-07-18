@@ -22,7 +22,7 @@ class ControllerHandler implements RequestHandlerInterface
      */
     private $splashRoute;
     /**
-     * @var
+     * @var object
      */
     private $controller;
     /**
