@@ -1,5 +1,8 @@
-Installing Splash 8 in Mouf
-===========================
+---
+title: Installing Splash 10 in Mouf
+subTitle: 
+currentMenu: install_mouf
+---
 
 Dependencies
 ------------

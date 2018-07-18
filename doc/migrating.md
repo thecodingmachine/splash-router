@@ -1,3 +1,24 @@
+---
+title: Migrating / ChangeLog
+subTitle: 
+currentMenu: migrating
+---
+
+Migrating from Splash 8 to Splash 10
+------------------------------------
+
+In order to upgrade from Splash 8 to Splash 10, you need to perform the following steps:
+
+- Assuming you are using Mouf: update "mouf/mvc.splash" version to "^10" in your `composer.json` file.
+- Otherwise, Splash is now in a new package: "thecodingmachine/splash-router" (version: ^10)
+- Run `composer update`
+- Update all your annotations. Splash 10 uses a new namespace. Scan your code and replace `Mouf\Mvc\Splash` with `TheCodingMachine\Splash`
+- If you are using Mouf, run the Splash installer again.
+    - Connect to Mouf UI (http://localhost/[yourproject]/vendor/mouf/mouf)
+    - Click on *Project > Installation tasks*
+    - There are 2 install tasks for "mouf/mvc.splash". Locate those in the table.
+    - Click on the **Reinstall** button for both tasks.
+
 Migrating from Splash 7 to Splash 8
 -----------------------------------
 

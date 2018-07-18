@@ -1,5 +1,8 @@
-Writing controllers
-===================
+---
+title: Writing controllers
+subTitle: 
+currentMenu: writing_controllers
+---
 
 In this document, we will see how to create a controller.
 You will also learn more about what makes a controller.
@@ -326,4 +329,4 @@ The test page can be accessed using the URL:
 
     http://[server-url]/[webapp-path]/my_controller/.
 
-[Wanna learn more? Have a look at the Mouf controller cration wizard](mouf/writing_controllers.md)
+[Wanna learn more? Have a look at the Mouf controller cration wizard](mouf_integration/writing_controllers.md)

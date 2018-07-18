@@ -1,5 +1,6 @@
 /build/
-/vendor/
+vendor
 /composer.lock
 /.puli/
 /mouf/
+/.couscous/

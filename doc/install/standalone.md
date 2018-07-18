@@ -1,7 +1,17 @@
-Installing Splash 8 in standalone / microframework mode
-=======================================================
+---
+title: Installing Splash 10 in standalone / microframework mode
+subTitle: 
+currentMenu: standalone_install
+---
 
 There are [many ways to install Splash](index.md). In this article, we will show you how to get started with a standalone install (no framework).
+
+This install will use "container-interop/service-provider" to set-up your container.
+Splash comes with a ready to use universal [service-provider](https://github.com/thecodingmachine/splash-service-provider/) in a separate Composer package:
+
+```
+$ composer require thecodingmachine/splash-service-provider
+```
 
 In order to work, Splash needs:
 

@@ -40,7 +40,8 @@
 		"cache/array-adapter": "^0.4.0",
 		"squizlabs/php_codesniffer": "^3.1",
 		"phpstan/phpstan": "^0.10.1",
-		"maglnet/composer-require-checker": "^1.0"
+		"maglnet/composer-require-checker": "^1.0",
+		"bamarni/composer-bin-plugin": "^1.2"
 	},
 	"conflict": {
 		"zendframework/zend-stratigility": "<2.0"
@@ -58,72 +59,13 @@
 	"scripts": {
 		"cs-check": "phpcs",
 		"cs-fix": "phpcbf",
-		"phpstan": "phpstan analyse src -c phpstan.neon --level=5 --no-progress -vvv"
+		"phpstan": "phpstan analyse src -c phpstan.neon --level=5 --no-progress -vvv",
+		"post-install-cmd": ["@composer bin all install --ansi"],
+		"post-update-cmd": ["@composer bin all update --ansi"]
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"extra" : {
-		"mouf" : {
-			"logo" : "doc/images/logo.png",
-			"doc" : [{
-				"title" : "Installing Splash",
-				"url" : "doc/install/index.md",
-				"children": [
-					{
-						"title" : "Standalone mode",
-						"url" : "doc/install/standalone.md"
-					},
-					{
-						"title" : "Mouf integration",
-						"url" : "doc/install/mouf.md"
-					},
-					{
-						"title" : "Service provider",
-						"url" : "doc/service-provider.md"
-					}
-				]
-				},
-				{
-					"title" : "Writing controllers",
-					"url" : "doc/writing_controllers_manually.md"
-				},
-				{
-					"title" : "Integrations",
-					"children" : [
-						{
-							"title" : "Mouf",
-							"children" : [
-								{
-									"title" : "Controller creation wizard",
-									"url" : "doc/mouf/writing_controllers.md"
-								},
-								{
-									"title" : "Advanced: configuring routing",
-									"url" : "doc/url_routing.md"
-								}
-							]
-						}
-					]
-				},
-				{
-					"title" : "Managing URL parameters",
-					"url" : "doc/url_parameters.md"
-				},
-				{
-					"title" : "Writing your own filters",
-					"url" : "doc/filters.md"
-				},
-				{
-					"title" : "Migrating from older version",
-					"url" : "doc/migrating.md"
-				}
-			],
-			"section": {
-				"name": "MVC",
-				"description": "All the tools you need to route requests and display pages",
-				"weight": 10
-			}
-		},
 		"branch-alias": {
 			"dev-master": "10.0.x-dev"
 		}

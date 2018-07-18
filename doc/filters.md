@@ -1,5 +1,8 @@
-Filters
-=======
+---
+title: Filters
+subTitle: 
+currentMenu: filters
+---
 
 Using filters
 -------------
