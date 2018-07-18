@@ -13,7 +13,7 @@ class ControllerRegistry implements UrlProviderInterface
     private $controllers;
 
     /**
-     * @var ControllerDetector
+     * @var ControllerDetector|null
      */
     private $controllerDetector;
 

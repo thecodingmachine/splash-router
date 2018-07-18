@@ -59,7 +59,7 @@
 	"scripts": {
 		"cs-check": "phpcs",
 		"cs-fix": "phpcbf",
-		"phpstan": "phpstan analyse src -c phpstan.neon --level=3 --no-progress -vvv"
+		"phpstan": "phpstan analyse src -c phpstan.neon --level=5 --no-progress -vvv"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,

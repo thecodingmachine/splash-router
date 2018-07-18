@@ -136,7 +136,7 @@ class SplashUrlNode
      * @param array                  $urlParts
      * @param ServerRequestInterface $request
      * @param array                  $parameters
-     * @param SplashRoute            $closestWildcardRoute The last wildcard (*) route encountered while navigating the tree.
+     * @param SplashRouteInterface   $closestWildcardRoute The last wildcard (*) route encountered while navigating the tree.
      *
      * @return SplashRouteInterface
      *

@@ -11,6 +11,7 @@ use TheCodingMachine\Splash\Filters\FilterPipe;
 use TheCodingMachine\Splash\Services\ParameterFetcher;
 use TheCodingMachine\Splash\Services\ParameterFetcherRegistry;
 use TheCodingMachine\Splash\Services\SplashRoute;
+use TheCodingMachine\Splash\Services\SplashRouteInterface;
 use TheCodingMachine\Splash\Services\UrlProviderInterface;
 use TheCodingMachine\Splash\Utils\SplashException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -267,7 +268,7 @@ class SplashRouter implements MiddlewareInterface
      * Generates the URLNodes from the list of URLS.
      * URLNodes are a very efficient way to know whether we can access our page or not.
      *
-     * @param UrlProviderInterface[] $urlsList
+     * @param SplashRouteInterface[] $urlsList
      *
      * @return SplashUrlNode
      */
