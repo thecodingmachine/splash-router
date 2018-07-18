@@ -2,7 +2,7 @@
 [![Total Downloads](https://poser.pugx.org/thecodingmachine/splash-router/downloads)](https://packagist.org/packages/thecodingmachine/splash-router)
 [![Latest Unstable Version](https://poser.pugx.org/thecodingmachine/splash-router/v/unstable)](https://packagist.org/packages/thecodingmachine/splash-router)
 [![License](https://poser.pugx.org/thecodingmachine/splash-router/license)](https://packagist.org/packages/thecodingmachine/splash-router)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/splash-router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thecodingmachine/splash-router/?branch=master)
+[![PHPStan](https://img.shields.io/badge/style-level%205-brightgreen.svg?style=flat&label=phpstan)](https://github.com/phpstan/phpstan)
 [![Build Status](https://travis-ci.org/thecodingmachine/splash-router.svg?branch=master)](https://travis-ci.org/thecodingmachine/splash-router)
 [![Coverage Status](https://coveralls.io/repos/thecodingmachine/splash-router/badge.svg?branch=master&service=github)](https://coveralls.io/github/thecodingmachine/splash-router?branch=master)
 
