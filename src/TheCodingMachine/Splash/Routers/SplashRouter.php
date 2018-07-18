@@ -71,7 +71,7 @@ class SplashRouter implements MiddlewareInterface
     private $debug;
 
     /**
-     * @var ParameterFetcher[]
+     * @var ParameterFetcherRegistry
      */
     private $parameterFetcherRegistry;
 

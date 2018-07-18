@@ -33,14 +33,14 @@ class SplashUrlNode
     /**
      * A list of callbacks (assicated to there HTTP method).
      *
-     * @var array<string, SplashRoute>
+     * @var array<string, SplashRouteInterface>
      */
     private $callbacks = array();
 
     /**
      * A list of callbacks (assicated to there HTTP method) finishing with "*".
      *
-     * @var array<string, SplashRoute>
+     * @var array<string, SplashRouteInterface>
      */
     private $wildcardCallbacks = array();
 
@@ -123,7 +123,7 @@ class SplashUrlNode
      * @param string                 $url
      * @param ServerRequestInterface $request
      *
-     * @return SplashRoute
+     * @return SplashRouteInterface
      */
     public function walk($url, ServerRequestInterface $request)
     {
@@ -138,7 +138,7 @@ class SplashUrlNode
      * @param array                  $parameters
      * @param SplashRoute            $closestWildcardRoute The last wildcard (*) route encountered while navigating the tree.
      *
-     * @return SplashRoute
+     * @return SplashRouteInterface
      *
      * @throws SplashException
      */
