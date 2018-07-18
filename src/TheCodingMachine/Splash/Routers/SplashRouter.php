@@ -3,12 +3,11 @@
 namespace TheCodingMachine\Splash\Routers;
 
 use Cache\Adapter\Void\VoidCachePool;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use TheCodingMachine\Splash\Controllers\Http400HandlerInterface;
 use TheCodingMachine\Splash\Exception\BadRequestException;
 use TheCodingMachine\Splash\Exception\PageNotFoundException;
 use TheCodingMachine\Splash\Filters\FilterPipe;
-use TheCodingMachine\Splash\Services\ParameterFetcher;
 use TheCodingMachine\Splash\Services\ParameterFetcherRegistry;
 use TheCodingMachine\Splash\Services\SplashRoute;
 use TheCodingMachine\Splash\Services\SplashRouteInterface;
@@ -24,7 +23,6 @@ use Psr\Log\LoggerInterface;
 use TheCodingMachine\Splash\Services\SplashUtils;
 use Psr\Log\NullLogger;
 use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Stratigility\MiddlewarePipe;
 
 class SplashRouter implements MiddlewareInterface
 {
