@@ -1,5 +1,8 @@
-Installing Splash
-=================
+---
+title: Installing Splash
+subTitle: 
+currentMenu: install
+---
 
 Splash can integrate in many different ways with your application. Therefore, installation will highly vary depending on the kind of install you are looking to perform.
 

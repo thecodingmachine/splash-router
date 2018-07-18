@@ -1,17 +1,27 @@
 language: php
-
-php:
- - 7.1
- - 7.2
+matrix:
+  include:
+  - php: 7.2
+    env: PREFER_LOWEST=""
+  - php: 7.1
+    env: PREFER_LOWEST="" COUSCOUS="true"
+  - php: 7.1
+    env: PREFER_LOWEST="--prefer-lowest"
+env:
+  global:
+  - GIT_NAME: "'Couscous auto deploy'"
+  - GIT_EMAIL: d.negrier@thecodingmachine.com
+  - GH_REF: github.com/thecodingmachine/splash-router
+  - secure: AWTRwhUcAQ7oW20Zv0VfHhZiRyHLRVXgKspdcqkMuqmaUV5oVlkc8M+3OFRHwjlY5ddS8AURKX59zfvEH2SFrq8pw2ILgkpmtq4/jTM2DwIdJ8t+wBa+txQJOBaWSBAjf9r8dSAX/AjONWfT0zrth098PHaspx7910qmNMpQYeOgq9EcxJEeaotivEnRSvBkgUCFkqqpsfablA79NEpU3wH9897HfS6H1a9mn/duaZZLPlWt8H/97ypTVx57fixv8DMrun6IuuiFLwkfGuL+EUzYE0O0evq19mhBN0lsFVfBAC5c+7K6vDZH4na4q0olpfWNf32S/NDRuVMaG/1RU5JbTqGvy3F1vsuWLNx4jdbfQuBEz6gmv2atpW7vIDtJMDfIdIRZxb0OO7uQhi1IZoT7a7bS4ZU+v90vnUsZ+DI6bQz+GsGOJmxdzZmY65wM+CY/68wqINQVasRVYAjKfMjko5iIpYStMp2KlGuV30FQ2lBj55kUAaZQSBYBCkEcU5tqp7J8sxD2Iy+TXa91ROpFvOgyjd/CRI4Rkfqj2WwmUkJDftkCLVIs/UouAwzMCKkzHlWq9NCFLecx2B1IK93RqflY4YHoMhsP9jQzJnjo0NEmnX8a2doO9ZVlofucV+7Rrwu+kyzaPemfSXb/ZuUy9TuEIjKRZpoPX285IUM=
 
 before_script:
- - composer install --no-interaction
- - mkdir -p build/logs
+- composer update $PREFER_LOWEST --no-interaction
+- mkdir -p build/logs
 script:
- - composer cs-check
- - composer phpstan
- - ./vendor/bin/composer-require-checker
- - ./vendor/bin/phpunit
-
+- composer cs-check
+- composer phpstan
+- "./vendor/bin/composer-require-checker"
+- "./vendor/bin/phpunit"
 after_script:
- - php vendor/bin/coveralls -v
+- php vendor/bin/coveralls -v
+- if [ "$COUSCOUS" = "true" ] ; then vendor/bin/couscous travis-auto-deploy --php-version=7.1 -vvv; fi

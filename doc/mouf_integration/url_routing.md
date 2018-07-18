@@ -1,5 +1,8 @@
-URL routing
-===========
+---
+title: URL routing
+subTitle: 
+currentMenu: configuring_routing
+---
 
 Since version 7.0, Splash implements a routing system based on [Stratigility](https://github.com/zendframework/zend-stratigility).
 

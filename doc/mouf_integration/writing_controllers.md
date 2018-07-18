@@ -1,5 +1,8 @@
-Writing controllers
-===================
+---
+title: Writing controllers
+subTitle: 
+currentMenu: controller_creation_wizard
+---
 
 What is a controller?
 ---------------------
