@@ -21,12 +21,16 @@
 	],
 	"require" : {
 		"php" : ">=7.1",
-		"psr/cache": "^1.0",
 		"cache/void-adapter": "^0.3.0",
 		"doctrine/annotations": "^1.2",
-		"mouf/utils.common.url-interface" : "~1.0",
-        "zendframework/zend-diactoros": "~1.0",
-		"psr/http-server-middleware": "^1.0"
+		"mouf/utils.common.url-interface" : "^1",
+        "zendframework/zend-diactoros": "^1",
+		"psr/cache": "^1.0",
+		"psr/http-server-handler": "^1",
+		"psr/http-server-middleware": "^1",
+		"psr/http-message": "^1",
+		"psr/container": "^1",
+		"psr/log": "^1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^7.0",
@@ -35,7 +39,8 @@
 		"mnapoli/simplex": "^0.3",
 		"cache/array-adapter": "^0.4.0",
 		"squizlabs/php_codesniffer": "^3.1",
-		"phpstan/phpstan": "^0.10.1"
+		"phpstan/phpstan": "^0.10.1",
+		"maglnet/composer-require-checker": "^1.0"
 	},
 	"conflict": {
 		"zendframework/zend-stratigility": "<2.0"

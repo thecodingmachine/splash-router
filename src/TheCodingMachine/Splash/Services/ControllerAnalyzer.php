@@ -3,7 +3,7 @@
 namespace TheCodingMachine\Splash\Services;
 
 use Doctrine\Common\Annotations\Reader;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use TheCodingMachine\Splash\Annotations\Action;
 use TheCodingMachine\Splash\Annotations\URL;
 use TheCodingMachine\Splash\Annotations\Delete;
