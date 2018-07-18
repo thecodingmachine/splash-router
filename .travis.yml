@@ -9,6 +9,7 @@ before_script:
  - mkdir -p build/logs
 script:
  - composer cs-check
+ - composer phpstan
  - ./vendor/bin/phpunit
 
 after_script:
