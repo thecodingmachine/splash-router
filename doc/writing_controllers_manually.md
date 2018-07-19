@@ -30,6 +30,7 @@ This is the preferred way of declaring an action:
 namespace Test\Controllers;
 
 use TheCodingMachine\Splash\Annotations\URL;
+use Psr\Http\Message\ResponseInterface;
 
 class MyController {
     
@@ -40,7 +41,7 @@ class MyController {
      * @param string $var1
      * @param string $var2
      */
-    public function myUrl($var1, $var2) {
+    public function myUrl(string $var1, string $var2): ResponseInterface {
         $str = "<html><head></head>";
         $str .= "<body>";
         $str .= "var1 value is ".htmlentities($var1)." and var2 value is ".htmlentities($var2);
@@ -108,7 +109,7 @@ class UserController {
      * @Get
      * @param string $id
      */
-    public function viewUser($id) {
+    public function viewUser(string $id): ResponseInterface {
         return new HtmlResponse("Here, we might put the form for user ".htmlentities($id));
     }
 
@@ -121,7 +122,7 @@ class UserController {
      * @param string $name
      * @param string $email
      */
-    public function editUser($id, $name, $email) {
+    public function editUser(string $id, string $name, string $email): ResponseInterface {
          return new HtmlResponse("Here, we might put the code to change the user object.");
     }
 
@@ -151,7 +152,7 @@ class UserController {
      * @Get
      * @param string $id
      */
-    public function viewUser($id) {
+    public function viewUser(string $id): ResponseInterface {
          return new HtmlResponse("Here, we might put the form for user ".htmlentities($id));
     }
 }
@@ -182,7 +183,7 @@ class MyController {
 	 *
 	 * @URL("/myurl1")
 	 */
-	public function test1() {
+	public function test1(): ResponseInterface {
 		 return new HtmlResponse('Hello World', 200, array('content-type' => 'text/html'));
 	}
 
@@ -191,7 +192,7 @@ class MyController {
 	 *
 	 * @URL("/myjsonurl")
 	 */
-	public function testJson() {
+	public function testJson(): ResponseInterface {
 		 return new JsonResponse({ "status" => "ok", "message" => "Hello world!" });
 	}
 }
@@ -219,7 +220,7 @@ class MyController {
 	 *
 	 * @URL("/test_template")
 	 */
-	public function test1() {
+	public function test1(): ResponseInterface {
 	    // do stuff
 		return new HtmlResponse($this->template);
 	}
@@ -251,9 +252,9 @@ class MyController {
 	 *
 	 * @URL("/upload")
 	 */
-	public function uploadLogo(UploadedFileInterface $logo) {
+	public function uploadLogo(UploadedFileInterface $logo): ResponseInterface {
 		$logo->moveTo(__DIR__.'/uploads/logo.png');
-		...
+		// ...
 	}
 }
 ```
@@ -287,7 +288,7 @@ class MyController {
      * @param string $var1
      * @param string $var2
      */
-    public function my_action($var1, $var2) {
+    public function my_action(string $var1, string $var2): ResponseInterface {
         return new HtmlResponse("Hello!");
     }
 }
@@ -318,7 +319,7 @@ class MyController extends Controller {
      *
      * @Action
      */
-    public function index() {
+    public function index(): ResponseInterface {
         return new HtmlResponse("This is the index");
     }
 }
