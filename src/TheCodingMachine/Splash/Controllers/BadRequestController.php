@@ -5,8 +5,8 @@ namespace TheCodingMachine\Splash\Controllers;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TheCodingMachine\Splash\Exception\BadRequestException;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 class BadRequestController implements Http400HandlerInterface
 {

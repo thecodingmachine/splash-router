@@ -9,7 +9,7 @@ use TheCodingMachine\Splash\Annotations\Post;
 use TheCodingMachine\Splash\Annotations\Put;
 use TheCodingMachine\Splash\Annotations\Title;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 use TheCodingMachine\Splash\Annotations\URL;
 
 class TestController2

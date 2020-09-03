@@ -5,7 +5,7 @@ namespace TheCodingMachine\Splash\Store;
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Services\SplashRoute;
 use TheCodingMachine\Splash\Utils\SplashException;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
 
 /**
  * A SplashUrlNode is a datastructure optimised to navigate all possible URLs known to the application.

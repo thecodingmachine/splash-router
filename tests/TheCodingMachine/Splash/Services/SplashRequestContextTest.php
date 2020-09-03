@@ -4,8 +4,8 @@ namespace TheCodingMachine\Splash\Services;
 
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Exception\SplashMissingParameterException;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\UploadedFile;
+use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\UploadedFile;
 
 class SplashRequestContextTest extends TestCase
 {

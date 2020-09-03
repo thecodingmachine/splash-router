@@ -4,7 +4,7 @@ namespace TheCodingMachine\Splash\Services;
 
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Fixtures\TestController;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
 
 class SplashRequestFetcherTest extends TestCase
 {

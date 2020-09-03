@@ -22,10 +22,10 @@ use TheCodingMachine\Splash\Services\SplashUtils;
 use TheCodingMachine\Splash\Utils\SplashException;
 use Mouf\Picotainer\Picotainer;
 use Psr\Cache\CacheItemPoolInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\ServerRequest;
 use TheCodingMachine\Splash\Fixtures\TestController3;
 
 class SplashRouterTest extends TestCase

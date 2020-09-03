@@ -22,7 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use TheCodingMachine\Splash\Services\SplashUtils;
 use Psr\Log\NullLogger;
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 
 class SplashRouter implements MiddlewareInterface
 {

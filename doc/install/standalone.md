@@ -26,7 +26,7 @@ All these components are up to you. In this article, we will show you how to get
 
 - [Stash (for a PSR-6 caching library)](http://www.stashphp.com/)
 - [Simplex (for a container)](https://github.com/mnapoli/simplex/). Note: Simplex is a Pimple 3 fork that adds compatibility with container-interop and with container-interop/service-providers. This will be hugely useful to speed up container configuration.
-- [Stratigility (for PSR-7 middleware piping)](https://github.com/zendframework/zend-stratigility)
+- [Stratigility (for PSR-7 middleware piping)](https://github.com/laminas/laminas-stratigility)
 
 Of course, your mileage may vary and you can really use any compatible library here.
 
@@ -44,8 +44,8 @@ Here is a typical `composer.json` file to load all dependencies.
   "require": {
       "thecodingmachine/splash-service-provider": "^10",
       "mnapoli/simplex": "~0.2.1",
-      "zendframework/zend-diactoros": "^1.3",
-      "zendframework/zend-stratigility": "^2.0",
+      "laminas/laminas-diactoros": "^1.3",
+      "laminas/laminas-stratigility": "^2.0",
       "tedivm/stash": "~0.14.0",
       "thecodingmachine/doctrine-annotations-universal-module": "~1.0",
       "thecodingmachine/psr-6-doctrine-bridge-universal-module": "~1.0",
@@ -106,8 +106,8 @@ $container->set('thecodingmachine.splash.controllers', [
 $container->set('root_url', getenv('BASE'));
 
 // Let's get the PSR-7 server, and let's bootstrap it.
-$diactorosServer = $container->get(\Zend\Diactoros\Server::class);
-$diactorosServer->listen(new \Zend\Stratigility\NoopFinalHandler());
+$diactorosServer = $container->get(\Laminas\Diactoros\Server::class);
+$diactorosServer->listen(new \Laminas\Stratigility\NoopFinalHandler());
 ```
 
 The important part here is:

@@ -4,7 +4,7 @@ subTitle:
 currentMenu: configuring_routing
 ---
 
-Since version 7.0, Splash implements a routing system based on [Stratigility](https://github.com/zendframework/zend-stratigility).
+Since version 7.0, Splash implements a routing system based on [Stratigility](https://github.com/laminas/laminas-stratigility).
 
 The basics
 ----------
@@ -37,6 +37,6 @@ The `Exception` router should always be the last one
 Adding your own router into the stack
 -------------------------------------
 
-To do so, you just need to create an instance of a middleware. Check the [Stratigility](https://github.com/zendframework/zend-stratigility) documentation.
+To do so, you just need to create an instance of a middleware. Check the [Stratigility](https://github.com/laminas/laminas-stratigility) documentation.
 
 There are many existing PSR-7 middlewares that you can use and add to the pipeline.

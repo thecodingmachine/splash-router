@@ -2,7 +2,7 @@
 
 namespace TheCodingMachine\Splash\Fixtures;
 
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use TheCodingMachine\Splash\Annotations\URL;
 
 /**

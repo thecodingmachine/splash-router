@@ -7,7 +7,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use TheCodingMachine\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 
 /**
  * Filter that will bring the user back to HTTP if the user is in HTTPS.
