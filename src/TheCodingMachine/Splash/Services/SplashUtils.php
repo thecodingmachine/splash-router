@@ -4,7 +4,7 @@ namespace TheCodingMachine\Splash\Services;
 
 use TheCodingMachine\Splash\Utils\SplashException;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 class SplashUtils
 {

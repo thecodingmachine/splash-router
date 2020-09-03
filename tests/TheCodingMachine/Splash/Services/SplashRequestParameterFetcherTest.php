@@ -5,7 +5,7 @@ namespace TheCodingMachine\Splash\Services;
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\Splash\Fixtures\TestController;
 use ReflectionMethod;
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
 
 class SplashRequestParameterFetcherTest extends TestCase
 {

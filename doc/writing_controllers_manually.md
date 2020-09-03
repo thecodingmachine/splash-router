@@ -166,15 +166,15 @@ Returning / outputting values
 -----------------------------
 
 As you probably already guessed, you must return a [PSR-7 Response object](http://www.php-fig.org/psr/psr-7/#3-3-psr-http-message-responseinterface).
-Splash comes bundled with [Zend Diactoros](https://github.com/zendframework/zend-diactoros)
+Splash comes bundled with [Zend Diactoros](https://github.com/laminas/laminas-diactoros)
 
 Therefore, you can write things like:
 
 ```php
 <?php
 use TheCodingMachine\Splash\Annotations\URL;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 class MyController {
 

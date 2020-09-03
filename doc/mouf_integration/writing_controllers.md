@@ -80,7 +80,7 @@ Splash makes that very easy to handle. You can just add a @Get or @Post annotati
 <?php
 namespace Test\Controllers;
 
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use TheCodingMachine\Splash\Annotations\URL;
 
 /**
