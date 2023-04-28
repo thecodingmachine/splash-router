@@ -2,6 +2,7 @@
 
 namespace TheCodingMachine\Splash\Services;
 
+use ReflectionClass;
 use ReflectionParameter;
 
 /**
@@ -21,7 +22,9 @@ class SplashRequestFetcher implements ParameterFetcher
      */
     public function canHandle(ReflectionParameter $reflectionParameter, string $url = null) : bool
     {
-        $class = $reflectionParameter->getClass();
+        $class = $reflectionParameter->getType() && !$reflectionParameter->getType()->isBuiltin()
+            ? new ReflectionClass($reflectionParameter->getType()->getName())
+            : null;
         if ($class === null) {
             return false;
         }
